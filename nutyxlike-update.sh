@@ -15,7 +15,7 @@ main_cardslike_update() {
     else
         echo -e "\t>>> cards found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4.shutdown vm"
     fi
-    update_cards && shutdown 0
+    update_cards && sudo shutdown 0
 }
 
 main_cardslike_update
