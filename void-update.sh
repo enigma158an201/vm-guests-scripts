@@ -10,11 +10,11 @@ clean_void() {
     sudo xbps-remove -yO
 }
 main_void_update() {
-    if ! command -v pacman; then 
-	    echo -e "\t>>> pacman not found, exit now !!!"
+    if ! command -v xbps-install || ! command -v xbps-remove; then 
+	    echo -e "\t>>> xbps not found, exit now !!!"
         exit 1
     else
-        echo -e "\t>>> pacman found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4.shutdown vm"
+        echo -e "\t>>> xbps found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4.shutdown vm"
     fi
     #update_void && clean_void && shutdown 0
     update_void && shutdown 0
