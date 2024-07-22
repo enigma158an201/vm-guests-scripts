@@ -1,8 +1,10 @@
 # vm-guests-scripts
 ## useful scripts for VM guest
 
-These scrips simply intend to upgrade Pkg, remove obsoletes then clean pkg cache, to install si:
+These scrips simply intend to upgrade Pkg, remove obsoletes then clean pkg cache, to install them:
+ 
 ```
+[ cd <the_folder_you_want> ]
 git clone https://github.com/enigma158an201/vm-guests-scripts.git
 ```
 then from folder where you cloned this repo (given by ```pwd```)
