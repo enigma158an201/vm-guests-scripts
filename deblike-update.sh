@@ -7,7 +7,7 @@ update_apt() {
     sudo apt-get update && sudo apt-get full-upgrade
 }
 clean_apt() {
-    sudo apt clean
+    sudo apt-get autoremove --purge && sudo apt-get clean
 }
 main_deblike_update() {
     if ! command -v apt-get || ! command -v apt; then 
