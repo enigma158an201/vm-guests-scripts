@@ -5,7 +5,7 @@ These scrips simply intend to upgrade Pkg, remove obsoletes then clean pkg cache
 ```
 git clone https://github.com/enigma158an201/vm-guests-scripts.git
 ```
-then
+then from folder where you cloned this repo (given by ```pwd```)
 ```
 cd vm-guests-scripts
 ```
