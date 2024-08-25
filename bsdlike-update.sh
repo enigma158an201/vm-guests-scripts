@@ -12,14 +12,14 @@ update_freebsd() {
     fi 
 }
 update_bsd() {
-    if command -v sudo; then
-        sudo pkg update -f && sudo pkg upgrade
-    elif test $UID -eq 0; then
-        pkg update -f && pkg upgrade
+    if command -v sudo; then    sudo pkg update -f && sudo pkg upgrade
+    elif test $UID -eq 0; then  pkg update -f && pkg upgrade
     fi
 }
 clean_bsd() {
-    sudo pkg autoremove && sudo pkg clean
+    if command -v sudo; then    sudo pkg autoremove && sudo pkg clean
+    elif test $UID -eq 0; then  pkg autoremove && pkg clean
+    fi
 }
 main_bsdlike_update() {
     if ! command -v pkg; then 
