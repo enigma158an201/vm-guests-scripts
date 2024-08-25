@@ -18,11 +18,11 @@ clean_solus() {
     fi
 }
 main_soluslike_update() {
-    if ! command -v pkg; then 
-	    echo -e "\t>>> pkg command not found, exit now !!!"
+    if ! command -v eopkg; then 
+	    echo -e "\t>>> eopkg command not found, exit now !!!"
         exit 1
     else
-        echo -e "\t>>> pkg command found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4.shutdown vm"
+        echo -e "\t>>> eopkg command found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4.shutdown vm"
     fi
     #update_freebsd
     update_solus && clean_solus && poweroff
