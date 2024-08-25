@@ -8,13 +8,13 @@ update_solus() {
         if command -v sudo; then
             sudo eopkg update && sudo eopkg upgrade
         elif test $UID -eq 0; then
-            eopkg update fetch && eopkg upgrade
+            eopkg update && eopkg upgrade
         fi
     fi 
 }
 clean_solus() {
-    if command -v sudo; then    sudo eopkg remove --unused && sudo eopkg clean
-    elif test $UID -eq 0; then  eopkg remove --unused && eopkg clean
+    if command -v sudo; then    sudo eopkg remove --unused && sudo eopkg remove-orphans && sudo eopkg clean
+    elif test $UID -eq 0; then  eopkg remove --unused && eopkg remove-orphans && eopkg clean
     fi
 }
 main_soluslike_update() {
