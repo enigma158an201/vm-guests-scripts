@@ -6,9 +6,9 @@ set -euo pipefail # set -euxo pipefail
 update_solus() {
     if ! command -v freebsd-update; then
         if command -v sudo; then
-            sudo eopkg update && sudo eopkg upgrade
+            sudo eopkg update-repo && sudo eopkg upgrade
         elif test $UID -eq 0; then
-            eopkg update && eopkg upgrade
+            eopkg update-repo && eopkg upgrade
         fi
     fi 
 }
