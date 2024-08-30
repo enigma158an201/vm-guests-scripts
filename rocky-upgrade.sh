@@ -24,6 +24,8 @@ main_rockylinux_upgrade() {
     fi
     update_dnf && clean_dnf #&& shutdown 0
     sudo dnf install $REPO_URL/$RELEASE_PKG $REPO_URL/$REPOS_PKG $REPO_URL/$GPG_KEYS_PKG
+    #restorecon -Rv /var/lib/rpm
+    #rpmdb --rebuilddb
 }
 
 main_rockylinux_upgrade

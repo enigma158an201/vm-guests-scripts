@@ -4,10 +4,18 @@
 set -euo pipefail # set -euxo pipefail 
 
 update_apt() {
-    sudo apt-get update && sudo apt-get full-upgrade
+    if command -v sudo; then
+        sudo apt-get update && sudo apt-get full-upgrade
+    else
+        apt-get update && apt-get full-upgrade
+    fi
 }
 clean_apt() {
-    sudo apt-get autoremove --purge && sudo apt-get clean
+    if command -v sudo; then
+        sudo apt-get autoremove --purge && sudo apt-get clean
+    else
+        apt-get autoremove --purge && apt-get clean
+    fi
 }
 main_deblike_update() {
     if ! command -v apt-get || ! command -v apt; then 
