@@ -8,6 +8,8 @@ update_arch() {
 }
 clean_arch() {
     sudo pacman -Scc
+    clean_trizen
+    clean_paru
 }
 clean_paru() {
     if command -v paru &>/dev/null; then 
