@@ -13,13 +13,13 @@ clean_arch() {
 }
 clean_paru() {
     if command -v paru &>/dev/null; then 
-        sudo paru -Sccd
+        paru -Sccd
     else
         setup_paru
     fi
 }
 clean_trizen() {
-    if command -v trizen &>/dev/null; then sudo trizen -Sccd; fi
+    if command -v trizen &>/dev/null; then trizen -Sccd; fi
 }
 setup_paru() {
     cd /tmp
