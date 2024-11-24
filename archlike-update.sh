@@ -31,9 +31,11 @@ setup_paru() {
 }
 updateScriptsViaGit(){
 	sTargetScript=$(find ~ -type f -iname git-pull-refresh.sh 2>/dev/null) # -exec {} \;
-	sGitFolder=$(dirname "${sTargetScript}")
-	cd "${sGitFolder}"
-	eval "${sTargetScript}"
+	if test -f "${sTargetScript}"; then 
+		sGitFolder=$(dirname "${sTargetScript}")
+		cd "${sGitFolder}"
+		eval "${sTargetScript}"
+	fi
 }
 
 main_archlike_update() {
