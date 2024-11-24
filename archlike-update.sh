@@ -8,7 +8,7 @@ update_arch() {
 }
 clean_arch() {
 	pacman -Qdtq | sudo pacman -Rs - 
-	sudo pacman -Scc
+	sudo pacman -Scc --noconfirm
 	clean_trizen
 	clean_paru
 }
