@@ -14,9 +14,9 @@ checkUserSudoOrWheelGroup() {
 	bSudoGroup="false"
 	for sGr in sudo wheel; do
 		for sGr2 in ${sUserGroups}; do
-			if [ "${sGr}" = "${sGr2}" ]; then bSudoGroup="true"; break; fi
+			if [[ "${sGr}" = "${sGr2}" ]]; then bSudoGroup="true"; break; fi
 		done
-		if [ "${bSudoGroup}" = "true" ]; then break; fi
+		if [[ "${bSudoGroup}" = "true" ]]; then break; fi
 	done
 	echo "${bSudoGroup}"
 }
@@ -25,7 +25,7 @@ checkSudoers() {
 	#set +x #if false; then sudo -l -U ${USER}; fi
 	#if false; then
 		#printf "sPassword\n" | sudo -S /bin/chmod --help >/dev/null 2>&1
-		#if [ $? -eq 0 ];then
+		#if [[ $? -eq 0 ];then
 			#has_sudo_access="YES"
 		#else
 			#has_sudo_access="NO"
@@ -35,7 +35,7 @@ checkSudoers() {
 	#fi
 	#if false; then
 		#`timeout -k 2 2 bash -c "sudo /bin/chmod --help" >&/dev/null 2>&1` >/dev/null 2>&1
-		#if [ $? -eq 0 ];then
+		#if [[ $? -eq 0 ];then
 		# has_sudo_access="YES"
 		#else
 		# has_sudo_access="NO"
@@ -51,7 +51,7 @@ checkSudoers() {
 	#echo "a coder" #true
 	bUserSudo="$(LANG=C sudo -v -A 2>&1)" #bUserSudo=$(LANG=C sudo -v -A || echo "false") # if is sudo error no SUDO_ASKPASS otherwise not
 	keyWord="try setting SUDO_ASKPASS"
-	if [[ ${bUserSudo} =~ ${keyWord} ]] || [ "${bUserSudo}" = "" ]; then
+	if [[ ${bUserSudo} =~ ${keyWord} ]] || [[ "${bUserSudo}" = "" ]]; then
 		bSudoers="true"
 	else bSudoers="false"
 	fi
@@ -67,27 +67,27 @@ checkDoasUser() {		#set +x
 	echo "${bDoasUser}"
 }
 getSuCmd() {			#set +x
-	if [ ! "${sSudoPath}" = "false" ] && { [ ! "${bSudoGroup}" = "false" ] || [ ! "${bSudoersUser}" = "false" ] ; }; then	sSuCmd="${sSudoPath}" #"/usr/bin/sudo"
-	elif [ ! "${sDoasPath}" = "false" ] && [ -f /etc/doas.conf ] && [ ! "${bSudoGroup}" = "false" ]; then					sSuCmd="${sDoasPath}" #"/usr/bin/doas"
+	if [[ ! "${sSudoPath}" = "false" ]] && { [[ ! "${bSudoGroup}" = "false" ]] || [[ ! "${bSudoersUser}" = "false" ]] ; }; then	sSuCmd="${sSudoPath}" #"/usr/bin/sudo"
+	elif [[ ! "${sDoasPath}" = "false" ]] && [[ -f /etc/doas.conf ]] && [[ ! "${bSudoGroup}" = "false" ]]; then					sSuCmd="${sDoasPath}" #"/usr/bin/doas"
 	else																													sSuCmd="su -p -c"; fi #"su - -p -c"
 	echo "${sSuCmd}"
 }
 getSuCmdNoPreserveEnv() {			#set +x
-	if [ ! "${sSudoPath}" = "false" ] && { [ ! "${bSudoGroup}" = "false" ] || [ ! "${bSudoersUser}" = "false" ] ; }; then	sSuCmd="${sSudoPath}" #"/usr/bin/sudo"
-	elif [ ! "${sDoasPath}" = "false" ] && [ -f /etc/doas.conf ] && [ ! "${bSudoGroup}" = "false" ]; then					sSuCmd="${sDoasPath}" #"/usr/bin/doas"
+	if [[ ! "${sSudoPath}" = "false" ]] && { [[ ! "${bSudoGroup}" = "false" ]] || [[ ! "${bSudoersUser}" = "false" ]] ; }; then	sSuCmd="${sSudoPath}" #"/usr/bin/sudo"
+	elif [[ ! "${sDoasPath}" = "false" ]] && [[ -f /etc/doas.conf ]] && [[ ! "${bSudoGroup}" = "false" ]]; then					sSuCmd="${sDoasPath}" #"/usr/bin/doas"
 	else																													sSuCmd="su - -c"; fi #"su - -p -c"
 	echo "${sSuCmd}"
 }
 suExecCommand() {
 	sCommand="$*"
-	if [ ! "${EUID}" = "0" ]; then 									eval "${sPfxSu} ${sCommand}"
-	elif [ "${EUID}" = "0" ]; then 									eval "${sCommand}"
+	if [[ ! "${EUID}" = "0" ]]; then 									eval "${sPfxSu} ${sCommand}"
+	elif [[ "${EUID}" = "0" ]]; then 									eval "${sCommand}"
 	fi
 }
 suExecCommandNoPreserveEnv() {
 	sCommand="$*"
-	if [ ! "${EUID}" = "0" ]; then 									eval "${sPfxSuNoEnv} ${sCommand}"
-	elif [ "${EUID}" = "0" ]; then 									eval "${sCommand}"
+	if [[ ! "${EUID}" = "0" ]]; then 									eval "${sPfxSuNoEnv} ${sCommand}"
+	elif [[ "${EUID}" = "0" ]]; then 									eval "${sCommand}"
 	fi
 }
 
@@ -96,7 +96,7 @@ main_SU(){
 	sDoasPath="$(command -v doas || echo "false")"
 	bSudoGroup="$(checkUserSudoOrWheelGroup)"
 	bSudoersUser="$(checkSudoers)"
-	if [ ! "${sDoasPath}" = "false" ]; then 						bDoasUser="$(checkDoasUser)"
+	if [[ ! "${sDoasPath}" = "false" ]]; then 						bDoasUser="$(checkDoasUser)"
 	else 															bDoasUser="false"; fi
 	#suQuotes="$(getSuQuotes)"
 	if ! sPfxSu="$(getSuCmd) "; then 								exit 01; fi
@@ -104,7 +104,7 @@ main_SU(){
 	#tests
 	#command -v apt-get &> /dev/null && suExecCommand "apt-get upgrade" #install vim" #"cat /etc/sudoers"
 	#command -v zypper &> /dev/null && suExecCommand "zypper update" #install doas"
-	if [ -n "${sCmdParameters}" ]; then 							suExecCommand "${sCmdParameters}" || suExecCommandNoPreserveEnv "${sCmdParameters}"
+	if [[ -n "${sCmdParameters}" ]]; then 							suExecCommand "${sCmdParameters}" || suExecCommandNoPreserveEnv "${sCmdParameters}"
 	else 															echo ; fi
 }
 main_SU
