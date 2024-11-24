@@ -30,7 +30,10 @@ setup_paru() {
 	makepkg -si
 }
 updateScriptsViaGit(){
-	find ~ -type f -iname git-pull-refresh.sh -exec {} \;
+	sTargetScript=$(find ~ -type f -iname git-pull-refresh.sh) # -exec {} \;
+	sGitFolder=$(dirname "${sTargetScript}")
+	cd "${sGitFolder}"
+	eval "${sTargetScript}"
 }
 
 main_archlike_update() {
