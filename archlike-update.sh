@@ -14,19 +14,22 @@ clean_arch() {
 }
 clean_paru() {
 	if command -v paru &>/dev/null; then 
-		paru -Sccd
+		paru -Sccd --noconfirm
 	else
 		setup_paru
 	fi
 }
 clean_trizen() {
-	if command -v trizen &>/dev/null; then trizen -Sccd; fi
+	if command -v trizen &>/dev/null; then trizen -Sccd --noconfirm; fi
 }
 setup_paru() {
 	cd /tmp || exit
 	sudo pacman -S --needed base-devel
-	git clone https://aur.archlinux.org/paru.git
-	cd paru || exit
+	if false; then 	git clone https://aur.archlinux.org/paru.git
+					cd paru || exit
+	else 			git clone https://aur.archlinux.org/paru-bin.git
+					cd paru-bin || exit
+	fi
 	makepkg -si
 }
 updateScriptsViaGit(){
