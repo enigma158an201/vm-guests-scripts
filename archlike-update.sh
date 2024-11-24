@@ -7,6 +7,7 @@ update_arch() {
 	sudo pacman -Syyuu
 }
 clean_arch() {
+	pacman -Qdtq | sudo pacman -Rs - 
 	sudo pacman -Scc
 	clean_trizen
 	clean_paru
