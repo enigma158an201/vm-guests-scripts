@@ -8,7 +8,7 @@ findScriptsGitFolder() {
 }
 
 checkGitUpdates() {
-	git pull --dry-run | grep -q -v -E 'Already up-to-date.|Déjà à jour.' && return 0 || return 1 #changed=1
+	git pull --dry-run | grep -q -v -E 'Already up-to-date.|Déjà à jour.' && return 0 #|| return 1 #changed=1
 }
 
 pullGitUpdates() {
