@@ -7,7 +7,17 @@ update_cards() {
     sudo cards sync && sudo cards upgrade
 }
 #useless: clean_cards() {}
-    
+updateScriptsViaGit(){
+	set +euo pipefail #in case find cannot access some files or folders
+	sTargetScript="$(find ~ -type f -iname git-pull-refresh.sh 2>/dev/null)" # -exec {} \;
+	set -euo pipefail
+	if test -f "${sTargetScript}"; then 
+		sGitFolder="$(dirname "${sTargetScript}")"
+		cd "${sGitFolder}" || exit 1
+		bash -x "${sTargetScript}"
+	fi
+}
+
 main_cardslike_update() {
     if ! command -v cards; then 
 	    echo -e "\t>>> cards not found, exit now !!!"
@@ -15,6 +25,7 @@ main_cardslike_update() {
     else
         echo -e "\t>>> cards found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4.shutdown vm"
     fi
+    updateScriptsViaGit
     update_cards && sudo shutdown 0
 }
 
