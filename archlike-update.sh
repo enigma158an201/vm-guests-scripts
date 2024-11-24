@@ -30,7 +30,7 @@ setup_paru() {
 	makepkg -si
 }
 updateScriptsViaGit(){
-	set +euo pipefail
+	set +euo pipefail #in case find cannot access some files or folders
 	sTargetScript="$(find ~ -type f -iname git-pull-refresh.sh 2>/dev/null)" # -exec {} \;
 	set -euo pipefail
 	if test -f "${sTargetScript}"; then 
