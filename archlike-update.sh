@@ -30,7 +30,7 @@ setup_paru() {
 	makepkg -si
 }
 updateScriptsViaGit(){
-	find ~ -type f -iname git-pull-refresh.sh -exec ./{} \;
+	find ~ -type f -iname git-pull-refresh.sh -exec {} \;
 }
 
 main_archlike_update() {
