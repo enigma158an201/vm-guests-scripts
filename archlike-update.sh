@@ -23,17 +23,17 @@ clean_trizen() {
 	if command -v trizen &>/dev/null; then trizen -Sccd; fi
 }
 setup_paru() {
-	cd /tmp
+	cd /tmp || exit
 	sudo pacman -S --needed base-devel
 	git clone https://aur.archlinux.org/paru.git
-	cd paru
+	cd paru || exit
 	makepkg -si
 }
 updateScriptsViaGit(){
 	sTargetScript="$(find ~ -type f -iname git-pull-refresh.sh 2>/dev/null)" # -exec {} \;
 	if test -f "${sTargetScript}"; then 
 		sGitFolder="$(dirname "${sTargetScript}")"
-		cd "${sGitFolder}"
+		cd "${sGitFolder}" || exit 1
 		bash -x "${sTargetScript}"
 	fi
 }
