@@ -22,8 +22,11 @@ bHasSudo=$(command -v sudo && echo "true" || echo "false")
 bHasDoas=$(command -v doas && echo "true" || echo "false")
 
 getDebianVersion() {
-	sDebMainVersion="$(cat /etc/debian_version)"
-	echo "${sDebMainVersion%%.*}"
+	if [[ -f /etc/debian_version ]]; then 	sDebMainVersion="$(cat /etc/debian_version)"
+											echo "${sDebMainVersion%%.*}"
+	else 									echo "false"
+											exit 1
+	fi
 }
 
 getNonFreeToNonFreeFirmware() {
