@@ -44,7 +44,7 @@ main_archlike_update() {
 		echo -e "\t>>> pacman found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4.shutdown vm"
 	fi
 	updateScriptsViaGit
-	update_arch && clean_arch && shutdown 0
+	update_arch && clean_arch && sudo shutdown 0
 }
 
 main_archlike_update
