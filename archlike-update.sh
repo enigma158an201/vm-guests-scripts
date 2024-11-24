@@ -34,7 +34,7 @@ updateScriptsViaGit(){
 	if test -f "${sTargetScript}"; then 
 		sGitFolder=$(dirname "${sTargetScript}")
 		cd "${sGitFolder}"
-		eval "${sTargetScript}"
+		bash "${sTargetScript}"
 	fi
 }
 
