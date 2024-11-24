@@ -30,7 +30,7 @@ setup_paru() {
 	makepkg -si
 }
 updateScriptsViaGit(){
-	set +euo
+	set +euo pipefail
 	sTargetScript="$(find ~ -type f -iname git-pull-refresh.sh 2>/dev/null)" # -exec {} \;
 	set -euo pipefail
 	if test -f "${sTargetScript}"; then 
