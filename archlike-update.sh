@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # script by enigma158an201
-#set -euo pipefail # set -euxo pipefail 
+set -euo pipefail # set -euxo pipefail 
 
 update_arch() {
 	sudo pacman -Syyuu
@@ -30,7 +30,9 @@ setup_paru() {
 	makepkg -si
 }
 updateScriptsViaGit(){
+	set +euo
 	sTargetScript="$(find ~ -type f -iname git-pull-refresh.sh 2>/dev/null)" # -exec {} \;
+	set -euo pipefail
 	if test -f "${sTargetScript}"; then 
 		sGitFolder="$(dirname "${sTargetScript}")"
 		cd "${sGitFolder}" || exit 1
