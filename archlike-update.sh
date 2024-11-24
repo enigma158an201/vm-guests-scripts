@@ -30,11 +30,11 @@ setup_paru() {
 	makepkg -si
 }
 updateScriptsViaGit(){
-	sTargetScript=$(find ~ -type f -iname git-pull-refresh.sh 2>/dev/null) # -exec {} \;
+	sTargetScript="$(find ~ -type f -iname git-pull-refresh.sh 2>/dev/null)" # -exec {} \;
 	if test -f "${sTargetScript}"; then 
-		sGitFolder=$(dirname "${sTargetScript}")
+		sGitFolder="$(dirname "${sTargetScript}")"
 		cd "${sGitFolder}"
-		bash "${sTargetScript}"
+		bash -x "${sTargetScript}"
 	fi
 }
 
