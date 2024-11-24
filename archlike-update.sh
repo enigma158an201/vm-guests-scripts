@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # script by enigma158an201
-set -euo pipefail # set -euxo pipefail 
+#set -euo pipefail # set -euxo pipefail 
 
 update_arch() {
 	sudo pacman -Syyuu
