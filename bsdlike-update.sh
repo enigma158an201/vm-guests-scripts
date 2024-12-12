@@ -6,19 +6,19 @@ update_freebsd() {
     if ! command -v freebsd-update; then
         if command -v sudo; then
             sudo freebsd-update fetch && sudo freebsd-update install
-        elif test $UID -eq 0; then
+        elif test ${UID} -eq 0; then
             freebsd-update fetch && freebsd-update install
         fi
     fi 
 }
 update_bsd() {
     if command -v sudo; then    sudo pkg update -f && sudo pkg upgrade
-    elif test $UID -eq 0; then  pkg update -f && pkg upgrade
+    elif test ${UID} -eq 0; then  pkg update -f && pkg upgrade
     fi
 }
 clean_bsd() {
     if command -v sudo; then    sudo pkg autoremove && sudo pkg clean
-    elif test $UID -eq 0; then  pkg autoremove && pkg clean
+    elif test ${UID} -eq 0; then  pkg autoremove && pkg clean
     fi
 }
 main_bsdlike_update() {

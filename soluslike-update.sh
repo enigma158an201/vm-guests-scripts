@@ -7,14 +7,14 @@ update_solus() {
     if ! command -v freebsd-update; then
         if command -v sudo; then
             sudo eopkg update-repo && sudo eopkg upgrade
-        elif test $UID -eq 0; then
+        elif test ${UID} -eq 0; then
             eopkg update-repo && eopkg upgrade
         fi
     fi 
 }
 clean_solus() {
     if command -v sudo; then    sudo eopkg remove-orphans && sudo eopkg clean
-    elif test $UID -eq 0; then  eopkg remove-orphans && eopkg clean
+    elif test ${UID} -eq 0; then  eopkg remove-orphans && eopkg clean
     fi
 }
 main_soluslike_update() {
