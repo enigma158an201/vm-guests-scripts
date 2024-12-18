@@ -5,7 +5,7 @@ set -euo pipefail # set -euxo pipefail
 
 sBackupHost=gwen@192.168.0.53
 getBackupFilename() {
-	if command -v hostname &>dev/null; then sHostName=$(hostname); else exit 1; fi
+	if command -v hostname &>/dev/null; then sHostName=$(hostname); else exit 1; fi
 	sBackupFile="ssh_backup_${sHostName}_$(date +%Y-%m-%d).tar.gz"
 	echo "${sBackupFile}"
 }
