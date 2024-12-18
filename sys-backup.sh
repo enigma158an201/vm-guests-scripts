@@ -16,6 +16,7 @@ main_sys_bakcup() {
         echo -e "\t>>> tar or ssh not found, exit now !!!"
     fi
     cd / # THIS CD IS IMPORTANT THE FOLLOWING LONG COMMAND IS RUN FROM /
+	#shellcheck disable=SC2029
     tar -cvpz \
     --exclude=/proc \
     --exclude=/tmp \
@@ -29,7 +30,7 @@ main_sys_bakcup() {
 	--exclude=/usr/src/linux-headers* \
 	--exclude=/home/*/.gvfs \
 	--exclude=/home/*/.cache \
-	--exclude=/home/*/.local/share/Trash / | ssh "${sBackupHost}" "( cat > ssh_backup.tar.gz )"
+	--exclude=/home/*/.local/share/Trash / | ssh "${sBackupHost}" "( cat > \"${sBackupFile}\" )"
 }
 
 main_sys_bakcup
