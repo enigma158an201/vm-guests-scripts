@@ -37,6 +37,7 @@ main_sys_bakcup() {
 		--exclude=/sys \
 		--exclude=/run \
 		--exclude=/media \
+		--exclude=/net \
 		--exclude=/var/log \
 		--exclude=/var/cache \
 		--exclude=/usr/src/linux-headers* \

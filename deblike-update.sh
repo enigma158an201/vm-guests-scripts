@@ -14,8 +14,9 @@ clean_apt() {
 	fi
 }
 clean_dpkg() {
-	if command -v sudo; then 		sudo apt-get autoremove --purge "$(dpkg -l | grep ^rc | awk '{print $2}')"
-	else 							apt-get autoremove --purge "$(dpkg -l | grep ^rc | awk '{print $2}')"
+	#shellcheck disable=SC2046
+	if command -v sudo; then 		sudo apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')
+	else 							apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')
 	fi
 }
 updateScriptsViaGit(){
