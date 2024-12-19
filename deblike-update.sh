@@ -21,7 +21,7 @@ clean_dpkg() {
 }
 updateScriptsViaGit(){
 	set +euo pipefail #in case find cannot access some files or folders
-	sTargetScript="$(find ~ -type f -iname git-pull-refresh.sh 2>/dev/null)" # -exec {} \;
+	sTargetScript="$(find ~ -nowarn -type f -iname git-pull-refresh.sh 2>/dev/null)" # -exec {} \;
 	set -euo pipefail
 	if test -f "${sTargetScript}"; then 
 		sGitFolder="$(dirname "${sTargetScript}")"
