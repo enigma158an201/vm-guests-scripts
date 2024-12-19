@@ -14,6 +14,7 @@ checkRootPermissions() {
 getBackupFilename() {
 	if command -v hostname &>/dev/null; then 		sHostName=$(hostname)
 	elif command -v hostnamectl &>/dev/null; then 	sHostName=$(hostnamectl hostname)
+	elif test -f /etc/hostname; then 				sHostName=$(cat /etc/hostname)
 	else exit 1; fi
 	sBackupFile="ssh_backup_${sHostName}_$(date +%Y-%m-%d).tar.gz"
 	echo "${sBackupFile}"
@@ -26,7 +27,7 @@ main_sys_bakcup() {
 		exit 1
 	fi
 	if [[ "$(checkRootPermissions)" = "false" ]]; then
-		echo -e "\t>>> root privileges are required, try with su | sudo | doas, exit now !!!"
+		echo -e "\t>>> root privileges are required, try with either: su | sudo | doas\n\t>>> exit now !!!"
 		exit 1
 	fi
 	cd / # THIS CD IS IMPORTANT THE FOLLOWING LONG COMMAND IS RUN FROM /
