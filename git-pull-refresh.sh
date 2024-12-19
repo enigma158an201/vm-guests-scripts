@@ -4,7 +4,7 @@
 set -euo pipefail # set -euxo pipefail
 
 findScriptsGitFolder() {
-	find ~ -type d -iname vm-guests-script
+	find ~ -nowarn -type d -iname vm-guests-script
 }
 
 checkGitUpdates() {
