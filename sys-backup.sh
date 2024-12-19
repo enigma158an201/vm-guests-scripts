@@ -12,7 +12,9 @@ checkRootPermissions() {
 	fi
 }
 getBackupFilename() {
-	if command -v hostname &>/dev/null; then sHostName=$(hostname); else exit 1; fi
+	if command -v hostname &>/dev/null; then 		sHostName=$(hostname)
+	elif command -v hostnamectl &>/dev/null; then 	sHostName=$(hostnamectl hostname)
+	else exit 1; fi
 	sBackupFile="ssh_backup_${sHostName}_$(date +%Y-%m-%d).tar.gz"
 	echo "${sBackupFile}"
 }
