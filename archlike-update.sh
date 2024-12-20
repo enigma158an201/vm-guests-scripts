@@ -2,7 +2,9 @@
 
 # script by enigma158an201
 set -euo pipefail # set -euxo pipefail 
-
+checkRootPermissions() {
+	if [[ ${UID} = 0 ]] || [[ ${UID} = 0 ]]; then echo "true"; else echo "false"; fi
+}
 update_arch() {
 	if command -v sudo &>/dev/null; then 	sudo pacman -Syyuu
 	else 									pacman -Syyuu
@@ -23,15 +25,18 @@ clean_paru() {
 	if command -v paru &>/dev/null; then 
 		paru -Sccd --noconfirm
 	else
-		setup_paru
+		if [[ "$(checkRootPermissions)" = "false" ]]; then setup_paru; fi #else exit 1; 
 	fi
 }
 clean_trizen() {
 	if command -v trizen &>/dev/null; then trizen -Sccd --noconfirm; fi
 }
 setup_paru() {
+	#if [[ ${UID} = 0 ]] || [[ ${UID} = 0 ]]; then exit 1; fi
 	cd /tmp || exit
-	sudo pacman -S --needed base-devel
+	if command -v sudo &>/dev/null; then 	sudo pacman -S --needed base-devel
+	else 									pacman -S --needed base-devel
+	fi
 	if false; then 	git clone https://aur.archlinux.org/paru.git
 					cd paru || exit
 	else 			git clone https://aur.archlinux.org/paru-bin.git

@@ -30,7 +30,7 @@ updateScriptsViaGit(){
 	fi
 }
 main_deblike_update() {
-	if ! command -v apt-get || ! command -v apt; then 
+	if ! command -v apt-get &>/dev/null || ! command -v apt &>/dev/null; then 
 		echo -e "\t>>> apt not found, exit now !!!"
 		exit 1
 	else

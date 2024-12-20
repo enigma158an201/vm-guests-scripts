@@ -18,7 +18,7 @@ pullGitUpdates() {
 }
 
 main_git_process() {
-	if ! command -v git; then 
+	if ! command -v git &>/dev/null; then
 		echo -e "\t>>> git not found, exit now !!!"
 		exit 1
 	else

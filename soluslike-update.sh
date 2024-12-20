@@ -4,13 +4,11 @@
 set -euo pipefail # set -euxo pipefail
 
 update_solus() {
-	if ! command -v freebsd-update &>/dev/null; then
-		if command -v sudo &>/dev/null; then
-			sudo eopkg update-repo && sudo eopkg upgrade
-		elif test ${UID} -eq 0; then
-			eopkg update-repo && eopkg upgrade
-		fi
-	fi 
+	if command -v sudo &>/dev/null; then
+		sudo eopkg update-repo && sudo eopkg upgrade
+	elif test ${UID} -eq 0; then
+		eopkg update-repo && eopkg upgrade
+	fi
 }
 clean_solus() {
 	if command -v sudo &>/dev/null; then 	sudo eopkg remove-orphans && sudo eopkg clean

@@ -14,7 +14,7 @@ clean_dnf() {
 	fi
 }
 main_rockylinux_update() {
-	if ! command -v dnf; then 
+	if ! command -v dnf &>/dev/null; then 
 		echo -e "\t>>> dnf not found, exit now !!!"
 		exit 1
 	else
