@@ -4,6 +4,7 @@
 set -euo pipefail # set -euxo pipefail
 
 sBackupHost=gwen@192.168.0.53
+sBackupFolder=/media/VMs/vm-backup
 checkRootPermissions() {
 	if [[ ${UID} = 0 ]] || [[ ${EUID} = 0 ]]; then
 		echo "true"
@@ -53,7 +54,7 @@ main_sys_bakcup() {
 		--exclude=/timeshift \
 		--exclude=/home/*/.gvfs \
 		--exclude=/home/*/.cache \
-		--exclude=/home/*/.local/share/Trash / | ssh "${sBackupHost}" "( cat > \"${sBackupFile}\" )"
+		--exclude=/home/*/.local/share/Trash / | ssh "${sBackupHost}" "( cat > \"${sBackupFolder}${sBackupFile}\" )"
 }
 
 main_sys_bakcup
