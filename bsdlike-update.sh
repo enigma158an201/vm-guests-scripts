@@ -4,7 +4,7 @@
 set -euo pipefail # set -euxo pipefail 
 update_freebsd() {
     if ! command -v freebsd-update; then
-        if command -v sudo; then
+        if command -v sudo &>/dev/null; then
             sudo freebsd-update fetch && sudo freebsd-update install
         elif test ${UID} -eq 0; then
             freebsd-update fetch && freebsd-update install
@@ -12,12 +12,12 @@ update_freebsd() {
     fi 
 }
 update_bsd() {
-    if command -v sudo; then    sudo pkg update -f && sudo pkg upgrade
+    if command -v sudo &>/dev/null; then    sudo pkg update -f && sudo pkg upgrade
     elif test ${UID} -eq 0; then  pkg update -f && pkg upgrade
     fi
 }
 clean_bsd() {
-    if command -v sudo; then    sudo pkg autoremove && sudo pkg clean
+    if command -v sudo &>/dev/null; then    sudo pkg autoremove && sudo pkg clean
     elif test ${UID} -eq 0; then  pkg autoremove && pkg clean
     fi
 }

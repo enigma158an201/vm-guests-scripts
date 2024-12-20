@@ -4,19 +4,19 @@
 set -euo pipefail # set -euxo pipefail 
 
 update_apt() {
-	if command -v sudo; then 		sudo apt-get update && sudo apt-get full-upgrade
-	else 							apt-get update && apt-get full-upgrade
+	if command -v sudo &>/dev/null; then 	sudo apt-get update && sudo apt-get full-upgrade
+	else 									apt-get update && apt-get full-upgrade
 	fi
 }
 clean_apt() {
-	if command -v sudo; then 		sudo apt-get autoremove --purge && sudo apt-get clean
-	else 							apt-get autoremove --purge && apt-get clean
+	if command -v sudo &>/dev/null; then 	sudo apt-get autoremove --purge && sudo apt-get clean
+	else 									apt-get autoremove --purge && apt-get clean
 	fi
 }
 clean_dpkg() {
 	#shellcheck disable=SC2046
-	if command -v sudo; then 		sudo apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')	#removed ""
-	else 							apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')			#removed ""
+	if command -v sudo &>/dev/null; then 	sudo apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')	#removed ""
+	else 									apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')			#removed ""
 	fi
 }
 updateScriptsViaGit(){

@@ -4,13 +4,13 @@
 set -euo pipefail # set -euxo pipefail 
 
 update_apk() {
-	if command -v sudo; then 		sudo apk update && sudo apk upgrade
-	else 							apk update && apk upgrade
+	if command -v sudo &>/dev/null; then 	sudo apk update && sudo apk upgrade
+	else 									apk update && apk upgrade
 	fi
 }
 clean_apk() {
-	if command -v sudo; then 		sudo apk -v cache clean
-	else 							apk -v cache clean
+	if command -v sudo &>/dev/null; then 	sudo apk -v cache clean
+	else 									apk -v cache clean
 	fi
 }
 updateScriptsViaGit(){

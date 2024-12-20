@@ -4,10 +4,17 @@
 set -euo pipefail # set -euxo pipefail 
 
 update_arch() {
-	sudo pacman -Syyuu
+	if command -v sudo &>/dev/null; then 	sudo pacman -Syyuu
+	else 									pacman -Syyuu
+	fi
 }
 clean_arch() {
-	pacman -Qdtq | sudo pacman -Rs - 
+	if command -v sudo &>/dev/null; then 	pacman -Qdtq | sudo pacman -Rs -
+											sudo pacman -Scc --noconfirm 
+	else 									pacman -Qdtq | pacman -Rs - 
+											pacman -Scc --noconfirm
+	fi
+	
 	sudo pacman -Scc --noconfirm
 	clean_trizen
 	clean_paru
@@ -44,7 +51,7 @@ updateScriptsViaGit(){
 }
 
 main_archlike_update() {
-	if ! command -v pacman; then 
+	if ! command -v pacman &>/dev/null; then
 		echo -e "\t>>> pacman not found, exit now !!!"
 		exit 1
 	else
