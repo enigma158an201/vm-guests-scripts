@@ -9,8 +9,8 @@ update_apk() {
 	fi
 }
 clean_apk() {
-	if command -v sudo; then 		sudo apk cache clean
-	else 							apk cache clean
+	if command -v sudo; then 		sudo apk -v cache clean
+	else 							apk -v cache clean
 	fi
 }
 updateScriptsViaGit(){
