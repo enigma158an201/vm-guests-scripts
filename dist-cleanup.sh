@@ -2,9 +2,13 @@
 
 #https://easylinuxtipsproject.blogspot.com/p/clean-mint.html
 #https://easylinuxtipsproject.blogspot.com/p/speed-mint.html
-
-cachesRemove() {
-	rm -rfv ~/.cache/thumbnails
+checkPrivileges() {
+	if [[ ${UID} = 0 ]] || [[ ${EUID} = 0 ]]; then echo "true"; else echo "false"; fi
+}
+cachesRemove() { #find ~/.cache/ -type f -atime +365 -delete #rm -rfv ~/.cache/thumbnails
+	for truc in /home /root /var; do
+		find ${truc} -type f -iwholename "*cache/*" -mtime +365 -delete # use mtime if noatime enabled
+	done
 }
 aptRemoveUnused() {
 	apt-get autoremove --purge
@@ -17,6 +21,7 @@ aptRemoveForeignFonts() {
 	if command -v apt-get &>/dev/null; then 	dpkg-reconfigure fontconfig; fi
 }
 pacmanRemoveUnused() {
+	#shellcheck disable=SC2046
 	while pacman -Qdtq &>/dev/null; do
 		pacman -Rs $(pacman -Qdtq)
 		pacman -Scc
@@ -47,12 +52,14 @@ lessFirewallLogs() {
 }
 
 mainCleanUp() {
-	cachesRemove
-	if command -v apt-get &>/dev/null; then 	aptRemoveFontsUnused && aptRemoveUnused;		# apt clean
-	elif command -v pacman &>/dev/null; then 	pacmanRemoveUnused; fi
-	flatpakRemoveUnused																			# flatpak clean
-	lessSystemdLogs 																			# clean logs: 	systemd
-	lessSyslogLogs																				#				rsyslog
-	lessFirewallLogs																			#				ufw
+	if checkPrivileges; then
+		cachesRemove
+		if command -v apt-get &>/dev/null; then 	aptRemoveFontsUnused && aptRemoveUnused;	# apt clean
+		elif command -v pacman &>/dev/null; then 	pacmanRemoveUnused; fi
+		flatpakRemoveUnused																		# flatpak clean
+		lessSystemdLogs 																		# clean logs: 	systemd
+		lessSyslogLogs																			#				rsyslog
+		lessFirewallLogs																		#				ufw
+	fi
 }
 mainCleanUp
