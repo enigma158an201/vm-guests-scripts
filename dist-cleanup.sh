@@ -47,7 +47,7 @@ lessFirewallLogs() {
 mainCleanUp() {
 	cachesRemove
 	if command -v apt-get &>/dev/null; then 	aptRemoveFontsUnused && aptRemoveUnused;		# apt clean
-	elif command -v pacman &/dev/null; then 	pacmanRemoveUnused; fi
+	elif command -v pacman &>/dev/null; then 	pacmanRemoveUnused; fi
 	flatpakRemoveUnused																			# flatpak clean
 	lessSystemdLogs 																			# clean logs: 	systemd
 	lessSyslogLogs																				#				rsyslog
