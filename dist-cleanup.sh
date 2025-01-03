@@ -16,6 +16,10 @@ aptRemoveForeignFonts() {
 	fi
 	if command -v apt-get &>/dev/null; then 	dpkg-reconfigure fontconfig; fi
 }
+pacmanRemoveUnused() {
+	pacman -Rs $(pacman -Qdtq)
+	pacman -Scc 
+}
 flatpakRemoveUnused() {
 	flatpak uninstall --unused
 }
