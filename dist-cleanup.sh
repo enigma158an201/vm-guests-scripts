@@ -3,8 +3,9 @@
 #https://easylinuxtipsproject.blogspot.com/p/clean-mint.html
 #https://easylinuxtipsproject.blogspot.com/p/speed-mint.html
 
-rm -rfv ~/.cache/thumbnails
-flatpak uninstall --unused
+cachesRemove() {
+	rm -rfv ~/.cache/thumbnails
+}
 aptRemoveUnused() {
 	apt-get autoremove --purge
 	apt-get distclean
@@ -14,6 +15,9 @@ aptRemoveForeignFonts() {
 												apt-get install fonts-noto-mono fonts-noto-unhinted fonts-noto-color-emoji
 	fi
 	if command -v apt-get &>/dev/null; then 	dpkg-reconfigure fontconfig; fi
+}
+flatpakRemoveUnused() {
+	flatpak uninstall --unused
 }
 lessSystemdLogs() {
 	if command -v journalctl &>/dev/null; then
@@ -37,8 +41,9 @@ lessFirewallLogs() {
 }
 
 mainCleanUp() {
+	cachesRemove
 	if command -v apt-get &>/dev/null; then 	aptRemoveFontsUnused && aptRemoveUnused; fi 	# apt clean
-
+	flatpakRemoveUnused																			# flatpak clean
 	lessSystemdLogs 																			# clean logs: 	systemd
 	lessSyslogLogs																				#				rsyslog
 	lessFirewallLogs																			#				ufw
