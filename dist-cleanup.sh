@@ -2,12 +2,28 @@
 
 #https://easylinuxtipsproject.blogspot.com/p/clean-mint.html
 #https://easylinuxtipsproject.blogspot.com/p/speed-mint.html
+
+set -euo pipefail
+
 checkPrivileges() {
 	if [[ ${UID} = 0 ]] || [[ ${EUID} = 0 ]]; then echo "true"; else echo "false"; fi
 }
-cachesRemove() { #find ~/.cache/ -type f -atime +365 -delete #rm -rfv ~/.cache/thumbnails
-	for truc in /home /root /var; do
-		find ${truc} -type f -iwholename "*cache/*" -mtime +365 -delete # use mtime if noatime enabled
+cachesDirectoryClean() { #find ~/.cache/ -type f -atime +365 -delete #rm -rfv ~/.cache/thumbnails
+	#for sFolder in /home /root /var; do
+		#find ${sFolder} -type f -iwholename "*cache/*" -mtime +365 -delete # use mtime if noatime enabled, else atime
+	#done
+	#find / -type d \( -name "cache" -o -name ".cache" \) 2>/dev/null
+	for sFolder in /home/*/ /root; do #		for sSubFolder in .cache .cpan; do #${sSubFolder}
+		find "${sFolder}/.cache/" -type f -mtime +365 -delete # use mtime if noatime enabled, else atime
+	done #done
+	#shellcheck disable=SC2043
+	for sFolder in /var; do
+		find "${sFolder}/cache/" -type f -mtime +365 -delete # use mtime if noatime enabled, else atime
+	done
+}
+cpanDirectoryClean() {
+	for sFolder in /home/*/ /root; do
+		find "${sFolder}/.cpan/build/" -type d -mtime +365 -delete 
 	done
 }
 aptRemoveUnused() {
@@ -53,7 +69,8 @@ lessFirewallLogs() {
 
 mainCleanUp() {
 	if checkPrivileges; then
-		cachesRemove
+		cachesDirectoryClean
+		cpanDirectoryClean
 		if command -v apt-get &>/dev/null; then 	aptRemoveFontsUnused && aptRemoveUnused;	# apt clean
 		elif command -v pacman &>/dev/null; then 	pacmanRemoveUnused; fi
 		flatpakRemoveUnused																		# flatpak clean
