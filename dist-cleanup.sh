@@ -23,7 +23,7 @@ cachesDirectoryClean() { #find ~/.cache/ -type f -atime +365 -delete #rm -rfv ~/
 }
 cpanDirectoryClean() {
 	for sFolder in /home/* /root; do
-		if test -d "${sFolder}/.cpan/build/"; then find "${sFolder}/.cpan/build/" -type d -mtime +365 -maxdepth 1 -exec rm -r {} \;; fi #-delete 
+		if test -d "${sFolder}/.cpan/build/"; then find "${sFolder}/.cpan/build/" -maxdepth 1 -type d -mtime +365  -exec rm -r {} \;; fi #-delete 
 	done
 }
 aptRemoveUnused() {
