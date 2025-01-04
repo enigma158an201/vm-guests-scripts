@@ -14,16 +14,22 @@ cachesDirectoryClean() { #find ~/.cache/ -type f -atime +365 -delete #rm -rfv ~/
 	#done
 	#find / -type d \( -name "cache" -o -name ".cache" \) 2>/dev/null
 	for sFolder in /home/* /root; do #		for sSubFolder in .cache .cpan; do #${sSubFolder}
-		if test -d "${sFolder}/.cache/"; then find "${sFolder}/.cache/" -type f -mtime +365 -delete; fi # use mtime if noatime enabled, else atime
+		if test -d "${sFolder}/.cache/"; then 		find "${sFolder}/.cache/" -type f -mtime +365 -delete	# use mtime if noatime enabled, else atime
+													find "${sFolder}/.cache/" -type d -empty -delete
+		fi 
 	done #done
 	#shellcheck disable=SC2043
 	for sFolder in /var; do
-		if test -d "${sFolder}/cache/"; then find "${sFolder}/cache/" -type f -mtime +365 -delete; fi # use mtime if noatime enabled, else atime
+		if test -d "${sFolder}/cache/"; then 		find "${sFolder}/cache/" -type f -mtime +365 -delete 	# use mtime if noatime enabled, else atime
+													find "${sFolder}/cache/" -type d -empty -delete
+		fi 
 	done
 }
 cpanDirectoryClean() {
 	for sFolder in /home/* /root; do
-		if test -d "${sFolder}/.cpan/build/"; then find "${sFolder}/.cpan/build/" -maxdepth 1 -type d -mtime +365  -exec rm -r {} \;; fi #-delete 
+		if test -d "${sFolder}/.cpan/build/"; then 	find "${sFolder}/.cpan/build/" -maxdepth 1 -type d -mtime +365  -exec rm -r {} \; #-delete
+													find "${sFolder}/.cpan/build/" -type d -empty -delete
+		fi 
 	done
 }
 aptRemoveUnused() {
@@ -44,7 +50,7 @@ pacmanRemoveUnused() {
 	done
 }
 flatpakRemoveUnused() {
-	flatpak uninstall --unused
+	if command -v flatpak &>/dev/null; then 	flatpak uninstall --unused; fi
 }
 lessSystemdLogs() {
 	if command -v journalctl &>/dev/null; then
