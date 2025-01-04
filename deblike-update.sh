@@ -7,7 +7,7 @@ checkVirtEnv() {
 	bFoundString="false"
 	if command -v sudo &>/dev/null; then 			sResult="$(sudo dmesg --notime)"
 	else 											sResult="$(dmesg --notime)"; fi
-	for sVirtEnv in virtualbox vmware; do
+	for sVirtEnv in virtualbox vboxservice vmware; do
 		if [[ ${sResult,,} =~ ${sVirtEnv} ]]; then 	bFoundString="$(${bFoundString} || true)" #="$(echo  | grep -i )"
 		else 										bFoundString="$(${bFoundString} || false)"
 		fi
