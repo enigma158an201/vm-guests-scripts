@@ -5,9 +5,10 @@
 
 set -euo pipefail
 
-checkPrivileges() {
-	if [[ ${UID} = 0 ]] || [[ ${EUID} = 0 ]]; then echo "true"; else echo "false"; fi
-}
+sLaunchDir="$(readlink -f "$(dirname "$0")")"
+source "${sLaunchDir}/include/check-user-privileges"
+source "${sLaunchDir}/include/check-virtual-env"
+
 cachesDirectoryClean() { #find ~/.cache/ -type f -atime +365 -delete #rm -rfv ~/.cache/thumbnails
 	#for sFolder in /home /root /var; do
 		#find ${sFolder} -type f -iwholename "*cache/*" -mtime +365 -delete # use mtime if noatime enabled, else atime
