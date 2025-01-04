@@ -4,7 +4,8 @@
 set -euo pipefail # set -euxo pipefail 
 
 checkRootPermissions() {
-	if [[ ${UID} = 0 ]] || [[ ${UID} = 0 ]]; then echo "true"; else echo "false"; fi
+	if [[ ${UID} = 0 ]] || [[ ${UID} = 0 ]]; then 	echo "true"
+	else 											echo "false"; fi
 }
 checkVirtEnv() {
 	bFoundString=1 #false
