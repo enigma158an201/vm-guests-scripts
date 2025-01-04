@@ -49,7 +49,7 @@ main_deblike_update() {
 	updateScriptsViaGit
 	update_apt && clean_apt && clean_dpkg
 	bVirtualized="$(checkVirtEnv)"
-	if ${bVirtualized}; then shutdown 0; fi
+	echo "${bVirtualized}" #if ${bVirtualized}; then shutdown 0; fi
 }
 
 main_deblike_update
