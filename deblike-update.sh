@@ -3,21 +3,10 @@
 # script by enigma158an201
 set -euo pipefail # set -euxo pipefail
 
-checkRootPermissions() {
-	if [[ ${UID} = 0 ]] || [[ ${UID} = 0 ]]; then 	echo "true"
-	else 											echo "false"; fi
-}
-checkVirtEnv() {
-	bFoundString=1 #false
-	if command -v sudo &>/dev/null; then 			sResult="$(sudo dmesg --notime)"
-	else 											sResult="$(dmesg --notime)"; fi
-	for sVirtEnv in virtualbox vboxservice vmware; do
-		if [[ ${sResult,,} =~ ${sVirtEnv} ]]; then 	bFoundString=0 #${bFoundString} || echo "true")" #="$(echo  | grep -i )"
-		#else 										bFoundString="$(${bFoundString} || echo "false")"
-		fi
-	done
-	echo "${bFoundString}"
-}
+sLaunchDir="$(readlink -f "$(dirname "$0")")"
+source "${sLaunchDir}/include/check-user-privileges"
+source "${sLaunchDir}/include/check-virtual-env"
+
 update_apt() {
 	if command -v sudo &>/dev/null; then 			sudo apt-get update && sudo apt-get full-upgrade
 	else 											apt-get update && apt-get full-upgrade
