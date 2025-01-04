@@ -5,6 +5,17 @@ set -euo pipefail # set -euxo pipefail
 checkRootPermissions() {
 	if [[ ${UID} = 0 ]] || [[ ${UID} = 0 ]]; then echo "true"; else echo "false"; fi
 }
+checkVirtEnv() {
+	bFoundString=1 #false
+	if command -v sudo &>/dev/null; then 			sResult="$(sudo dmesg --notime)"
+	else 											sResult="$(dmesg --notime)"; fi
+	for sVirtEnv in virtualbox vboxservice vmware; do
+		if [[ ${sResult,,} =~ ${sVirtEnv} ]]; then 	bFoundString=0 #${bFoundString} || echo "true")" #="$(echo  | grep -i )"
+		#else 										bFoundString="$(${bFoundString} || echo "false")"
+		fi
+	done
+	echo "${bFoundString}"
+}
 update_arch() {
 	if command -v sudo &>/dev/null; then 	sudo pacman -Syyuu
 	else 									pacman -Syyuu
@@ -63,7 +74,9 @@ main_archlike_update() {
 		echo -e "\t>>> pacman found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4.shutdown vm"
 	fi
 	updateScriptsViaGit
-	update_arch && clean_arch && sudo shutdown 0
+	update_arch && clean_arch #&& sudo shutdown 0
+	bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
+	if [[ ${bVirtualized} -eq 0 ]]; then sudo shutdown 0; fi
 }
 
 main_archlike_update
