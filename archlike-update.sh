@@ -29,8 +29,10 @@ clean_arch() {
 	else 											pacman -Qdtq | pacman -Rs - 
 													pacman -Scc --noconfirm
 	fi
-	clean_trizen
-	clean_paru
+	if [[ "$(checkRootPermissions)" = "false" ]]; then 
+													clean_trizen
+													clean_paru
+	fi
 }
 clean_paru() {
 	if command -v paru &>/dev/null; then 
