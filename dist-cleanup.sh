@@ -78,7 +78,7 @@ mainCleanUp() {
 	if checkPrivileges; then
 		cachesDirectoryClean
 		cpanDirectoryClean
-		if command -v apt-get &>/dev/null; then 	aptRemoveFontsUnused && aptRemoveUnused;	# apt clean
+		if command -v apt-get &>/dev/null; then 	aptRemoveForeignFonts && aptRemoveUnused;	# apt clean
 		elif command -v pacman &>/dev/null; then 	pacmanRemoveUnused; fi
 		flatpakRemoveUnused																		# flatpak clean
 		lessSystemdLogs 																		# clean logs: 	systemd
