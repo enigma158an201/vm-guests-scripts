@@ -3,6 +3,9 @@
 # script by enigma158an201
 set -euo pipefail # set -euxo pipefail
 
+checkRootPermissions() {
+	if [[ ${UID} = 0 ]] || [[ ${UID} = 0 ]]; then echo "true"; else echo "false"; fi
+}
 checkVirtEnv() {
 	bFoundString=1 #false
 	if command -v sudo &>/dev/null; then 			sResult="$(sudo dmesg --notime)"
@@ -40,16 +43,18 @@ updateScriptsViaGit(){
 	fi
 }
 main_deblike_update() {
-	if ! command -v apt-get &>/dev/null || ! command -v apt &>/dev/null; then 
-		echo -e "\t>>> apt not found, exit now !!!"
-		exit 1
-	else
-		echo -e "\t>>> apt found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4.shutdown vm"
+	if [[ "$(checkRootPermissions)" = "true" ]]; then
+		if ! command -v apt-get &>/dev/null || ! command -v apt &>/dev/null; then 
+			echo -e "\t>>> apt not found, exit now !!!"
+			exit 1
+		else
+			echo -e "\t>>> apt found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4.shutdown vm"
+		fi
+		updateScriptsViaGit
+		update_apt && clean_apt && clean_dpkg
+		bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
+		if [[ ${bVirtualized} -eq 0 ]]; then shutdown 0; fi
 	fi
-	updateScriptsViaGit
-	update_apt && clean_apt && clean_dpkg
-	bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
-	if [[ ${bVirtualized} -eq 0 ]]; then shutdown 0; fi
 }
 
 main_deblike_update
