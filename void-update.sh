@@ -4,12 +4,9 @@
 set -euo pipefail # set -euxo pipefail
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
-
-checkRootPermissions() {
-	if [[ ${UID} = 0 ]] || [[ ${UID} = 0 ]]; then 	echo "true"
-	else 											echo "false"; fi
-}
+source "${sLaunchDir}/include/check-user-privileges"
 source "${sLaunchDir}/include/check-virtual-env"
+
 update_void() {
 	sudo xbps-install -Su
 }
