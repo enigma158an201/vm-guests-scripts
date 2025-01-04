@@ -7,22 +7,23 @@ checkRootPermissions() {
 	if [[ ${UID} = 0 ]] || [[ ${UID} = 0 ]]; then 	echo "true"
 	else 											echo "false"; fi
 }
-checkVirtEnv() {
-	bFoundString=1 #false
-	if command -v sudo &>/dev/null; then 			sResult="$(sudo dmesg --notime)"
-	else 											sResult="$(dmesg --notime)"; fi
-	sHypervisor=$(grep -i hypervisor <<< "${sResult}" | cut -d ':' -f2 | tr -d " \t\n\r")
-	if [[ -n ${sHypervisor} ]]; then 				bFoundString=0
-	else 
-													for sVirtEnv in virtualbox vboxservice vmware; do
-														if [[ ${sResult,,} =~ ${sVirtEnv} ]]; then
-																bFoundString=0 #${bFoundString} || echo "true")" #="$(echo  | grep -i )"
-														#else 	bFoundString="$(${bFoundString} || echo "false")"
-														fi
-													done
-	fi
-	echo "${bFoundString}"
-}
+source ./include/check-vitual-env
+#checkVirtEnv() {
+#	bFoundString=1 #false
+#	if command -v sudo &>/dev/null; then 			sResult="$(sudo dmesg --notime)"
+#	else 											sResult="$(dmesg --notime)"; fi
+#	sHypervisor=$(grep -i hypervisor <<< "${sResult}" | cut -d ':' -f2 | tr -d " \t\n\r")
+#	if [[ -n ${sHypervisor} ]]; then 				bFoundString=0
+#	else 
+#													for sVirtEnv in virtualbox vboxservice vmware; do
+#														if [[ ${sResult,,} =~ ${sVirtEnv} ]]; then
+#																bFoundString=0 #${bFoundString} || echo "true")" #="$(echo  | grep -i )"
+#														#else 	bFoundString="$(${bFoundString} || echo "false")"
+#														fi
+#													done
+#	fi
+#	echo "${bFoundString}"
+#}
 update_void() {
 	sudo xbps-install -Su
 }
