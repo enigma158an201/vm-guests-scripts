@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 
 # script by enigma158an201
-set -euo pipefail # set -euxo pipefail 
+set -euo pipefail # set -euxo pipefail
+
+sLaunchDir=$(dirname "$0")
 
 checkRootPermissions() {
 	if [[ ${UID} = 0 ]] || [[ ${UID} = 0 ]]; then 	echo "true"
 	else 											echo "false"; fi
 }
-source ./include/check-vitual-env
+source "${sLaunchDir}/include/check-vitual-env"
 #checkVirtEnv() {
 #	bFoundString=1 #false
 #	if command -v sudo &>/dev/null; then 			sResult="$(sudo dmesg --notime)"
