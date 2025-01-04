@@ -13,17 +13,17 @@ cachesDirectoryClean() { #find ~/.cache/ -type f -atime +365 -delete #rm -rfv ~/
 		#find ${sFolder} -type f -iwholename "*cache/*" -mtime +365 -delete # use mtime if noatime enabled, else atime
 	#done
 	#find / -type d \( -name "cache" -o -name ".cache" \) 2>/dev/null
-	for sFolder in /home/*/ /root; do #		for sSubFolder in .cache .cpan; do #${sSubFolder}
-		find "${sFolder}/.cache/" -type f -mtime +365 -delete # use mtime if noatime enabled, else atime
+	for sFolder in /home/* /root; do #		for sSubFolder in .cache .cpan; do #${sSubFolder}
+		if test -d "${sFolder}/.cache/"; then find "${sFolder}/.cache/" -type f -mtime +365 -delete; fi # use mtime if noatime enabled, else atime
 	done #done
 	#shellcheck disable=SC2043
 	for sFolder in /var; do
-		find "${sFolder}/cache/" -type f -mtime +365 -delete # use mtime if noatime enabled, else atime
+		if test -d "${sFolder}/cache/"; then find "${sFolder}/cache/" -type f -mtime +365 -delete; fi # use mtime if noatime enabled, else atime
 	done
 }
 cpanDirectoryClean() {
-	for sFolder in /home/*/ /root; do
-		find "${sFolder}/.cpan/build/" -type d -mtime +365 -delete 
+	for sFolder in /home/* /root; do
+		if test -d "${sFolder}/.cpan/build/"; then find "${sFolder}/.cpan/build/" -type d -mtime +365 -maxdepth 1 -exec rm -r {} \;; fi #-delete 
 	done
 }
 aptRemoveUnused() {
