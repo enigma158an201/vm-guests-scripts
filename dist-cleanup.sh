@@ -35,7 +35,7 @@ cpanDirectoryClean() {
 aptRemoveUnused() {
 	apt-get autoremove --purge
 	apt-get purge ~c
-	if apt-get distclean; then echo ""; fi
+	if apt-get distclean; then echo ""; else apt-get autoclean; fi
 }
 aptRemoveForeignFonts() {
 	if command -v apt-get &>/dev/null; then 	apt-get remove "fonts-noto*"
