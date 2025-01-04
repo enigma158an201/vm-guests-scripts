@@ -9,7 +9,7 @@ checkRootPermissions() {
 	if [[ ${UID} = 0 ]] || [[ ${UID} = 0 ]]; then 	echo "true"
 	else 											echo "false"; fi
 }
-source "${sLaunchDir}/include/check-vitual-env"
+source "${sLaunchDir}/include/check-virtual-env"
 #checkVirtEnv() {
 #	bFoundString=1 #false
 #	if command -v sudo &>/dev/null; then 			sResult="$(sudo dmesg --notime)"
