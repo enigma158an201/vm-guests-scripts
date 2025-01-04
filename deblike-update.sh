@@ -4,12 +4,12 @@
 set -euo pipefail # set -euxo pipefail
 
 checkVirtEnv() {
-	bFoundString="false"
+	bFoundString=1 #false
 	if command -v sudo &>/dev/null; then 			sResult="$(sudo dmesg --notime)"
 	else 											sResult="$(dmesg --notime)"; fi
 	for sVirtEnv in virtualbox vboxservice vmware; do
-		if [[ ${sResult,,} =~ ${sVirtEnv} ]]; then 	bFoundString="$(${bFoundString} || true)" #="$(echo  | grep -i )"
-		else 										bFoundString="$(${bFoundString} || false)"
+		if [[ ${sResult,,} =~ ${sVirtEnv} ]]; then 	bFoundString=0 #${bFoundString} || echo "true")" #="$(echo  | grep -i )"
+		#else 										bFoundString="$(${bFoundString} || echo "false")"
 		fi
 	done
 	echo "${bFoundString}"
