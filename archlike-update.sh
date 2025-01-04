@@ -24,9 +24,10 @@ update_arch() {
 	fi
 }
 clean_arch() {
-	if command -v sudo &>/dev/null; then 			pacman -Qdtq | sudo pacman -Rs -
+	if command -v sudo &>/dev/null; then 			if pacman -Qdtq; then pacman -Qdtq | sudo pacman -Rs -; fi
 													sudo pacman -Scc --noconfirm 
-	else 											pacman -Qdtq | pacman -Rs - 
+	else
+		 											if pacman -Qdtq; then pacman -Qdtq | pacman -Rs -; fi 
 													pacman -Scc --noconfirm
 	fi
 	if [[ "$(checkRootPermissions)" = "false" ]]; then 
