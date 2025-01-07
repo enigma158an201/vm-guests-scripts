@@ -6,6 +6,7 @@ set -euo pipefail # set -euxo pipefail
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 source "${sLaunchDir}/include/check-user-privileges"
 source "${sLaunchDir}/include/check-virtual-env"
+source "${sLaunchDir}/include/git-self-update"
 
 update_apt() {
 	if command -v sudo &>/dev/null; then 			sudo apt-get update && sudo apt-get full-upgrade
@@ -21,15 +22,6 @@ clean_dpkg() {
 	#shellcheck disable=SC2046
 	if command -v sudo &>/dev/null; then 			sudo apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')	#removed ""
 	else 											apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')			#removed ""
-	fi
-}
-updateScriptsViaGit(){
-	set +euo pipefail #in case find cannot access some files or folders
-	sTargetScript="$(find ~ -nowarn -type f -iname git-pull-refresh.sh 2>/dev/null)" # -exec {} \;
-	set -euo pipefail
-	if test -f "${sTargetScript}"; then 			sGitFolder="$(dirname "${sTargetScript}")"
-													cd "${sGitFolder}" || exit 1
-													bash -x "${sTargetScript}"
 	fi
 }
 main_deblike_update() {

@@ -5,13 +5,12 @@ set -euo pipefail # set -euxo pipefail
 
 sBackupHost=gwen@192.168.0.53
 sBackupFolder=/media/VMs/vm-backup
-checkRootPermissions() {
-	if [[ ${UID} = 0 ]] || [[ ${EUID} = 0 ]]; then
-		echo "true"
-	else
-		echo "false"
-	fi
-}
+
+sLaunchDir="$(readlink -f "$(dirname "$0")")"
+source "${sLaunchDir}/include/check-user-privileges"
+#source "${sLaunchDir}/include/check-virtual-env"
+#source "${sLaunchDir}/include/git-self-update"
+
 getBackupFilename() {
 	if command -v hostname &>/dev/null; then 		sHostName=$(hostname)
 	elif command -v hostnamectl &>/dev/null; then 	sHostName=$(hostnamectl hostname)

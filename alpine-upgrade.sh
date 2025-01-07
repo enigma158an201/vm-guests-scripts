@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 
 # script by enigma158an201
-set -euo pipefail # set -euxo pipefail 
+set -euo pipefail # set -euxo pipefail
+
+sLaunchDir="$(readlink -f "$(dirname "$0")")"
+source "${sLaunchDir}/include/check-user-privileges"
+source "${sLaunchDir}/include/check-virtual-env"
+source "${sLaunchDir}/include/git-self-update"
 
 update_apk() {
 	if command -v sudo &>/dev/null; then 	sudo apk update && sudo apk upgrade
@@ -11,16 +16,6 @@ update_apk() {
 clean_apk() {
 	if command -v sudo &>/dev/null; then 	sudo apk -v cache clean
 	else 									apk -v cache clean
-	fi
-}
-updateScriptsViaGit(){
-	set +euo pipefail #in case find cannot access some files or folders
-	sTargetScript="$(find ~ -nowarn -type f -iname git-pull-refresh.sh 2>/dev/null)" # -exec {} \;
-	set -euo pipefail
-	if test -f "${sTargetScript}"; then 
-		sGitFolder="$(dirname "${sTargetScript}")"
-		cd "${sGitFolder}" || exit 1
-		bash -x "${sTargetScript}"
 	fi
 }
 main_alpine_update() {

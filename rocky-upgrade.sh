@@ -8,6 +8,11 @@ set -euxo pipefail # set -euxo pipefail
 sMajorCurrentVersion=9
 sCurrentVersion="$(rpm -E "%{rhel}")"
 
+sLaunchDir="$(readlink -f "$(dirname "$0")")"
+source "${sLaunchDir}/include/check-user-privileges"
+source "${sLaunchDir}/include/check-virtual-env"
+source "${sLaunchDir}/include/git-self-update"
+
 majorReleaseUpgrade() {
 	if [[ "${sCurrentVersion}" -lt "9" ]]; then
 		ROCKY_VERSION=9.4-1.7
@@ -22,7 +27,6 @@ majorReleaseUpgrade() {
 		#rpmdb --rebuilddb
 	fi
 }
-
 update_dnf() {
 	if command -v sudo &>/dev/null; then 	sudo dnf update && sudo dnf upgrade
 	else 									dnf update && sudo dnf upgrade
@@ -33,16 +37,7 @@ clean_dnf() {
 	else 									dnf autoremove && sudo dnf clean all
 	fi
 }
-updateScriptsViaGit(){
-	set +euo pipefail #in case find cannot access some files or folders
-	sTargetScript="$(find ~ -nowarn -type f -iname git-pull-refresh.sh 2>/dev/null)" # -exec {} \;
-	set -euo pipefail
-	if test -f "${sTargetScript}"; then 
-		sGitFolder="$(dirname "${sTargetScript}")"
-		cd "${sGitFolder}" || exit 1
-		bash -x "${sTargetScript}"
-	fi
-}
+
 main_rockylinux_upgrade() {
 	if ! command -v dnf; then 
 		echo -e "\t>>> dnf not found, exit now !!!"
