@@ -38,7 +38,8 @@ select_option() {
 	#OPTIONS=(1 "Option 1"
 	#	 2 "Option 2"
 	#	 3 "Option 3")
-	OPTIONS=( "$@" )	
+	OPTIONS=( "$@" )
+	echo "${OPTIONS[@]}"
 	CHOICE=$(dialog --clear \
 				--backtitle "${BACKTITLE}" \
 				--title "${TITLE}" \
@@ -63,7 +64,7 @@ input_setup() {
 }
 sound_setup() {
 	if command -v sudo &>/dev/null; then 	sudo apk add pulseaudio pavucontrol alsa-utils xfce4-pulseaudio-plugin && sudo rc-update add alsa
-	else 									_setup add pulseaudio pavucontrol alsa-utils xfce4-pulseaudio-plugin && rc-update add alsa
+	else 									setup add pulseaudio pavucontrol alsa-utils xfce4-pulseaudio-plugin && rc-update add alsa
 	fi
 }
 lang_setup() {
@@ -88,8 +89,6 @@ EndSection"
 											echo "${sKeyboardFrX}" | tee /etc/X11/xorg.conf.d/30-keyboard.conf
 	fi
 }
-
-
 main_setup_de() {
 	if ! command -v apk &>/dev/null; then 
 		echo -e "\t>>> apk not found, exit now !!!"
