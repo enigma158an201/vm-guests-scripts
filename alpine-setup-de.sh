@@ -8,17 +8,17 @@ source "${sLaunchDir}/include/check-user-privileges"
 #source "${sLaunchDir}/include/check-virtual-env"
 #source "${sLaunchDir}/include/git-self-update"
 
-update_apk() {
+update_setup() {
 	if command -v sudo &>/dev/null; then 		sudo apk update && sudo apk upgrade
 	else 										apk update && apk upgrade
 	fi
 }
-clean_apk() {
+clean_setup() {
 	if command -v sudo &>/dev/null; then 		sudo apk -v cache clean
 	else 										apk -v cache clean
 	fi
 }
-gvfs_apk() {
+gvfs_setup() {
 	if command -v sudo &>/dev/null; then 		sudo apk add gvfs-fuse gvfs-mtp gvfs-nfs gvfs-smb
 	else 										apk add gvfs-fuse gvfs-mtp gvfs-nfs gvfs-smb
 	fi
@@ -49,24 +49,24 @@ select_option() {
 	clear
 	echo "${CHOICE}"
 }
-gpu_apk() {
+gpu_setup() {
 	sChoiceGpu=$(select_option xf86-video-amdgpu xf86-video-ati xf86-video-intel xf86-video-nouveau xf86-video-qxl xf86-video-vesa xf86-video-vmware)
 	if command -v sudo &>/dev/null; then 	sudo apk add "${sChoiceGpu}"
 	else 									apk add "${sChoiceGpu}"
 	fi
 }
-input_apk() {
+input_setup() {
 	sChoiceInput=$(select_option xf86-input-evdev xf86-input-libinput xf86-input-synaptics xf86-input-vmmouse xf86-input-wacom)
 	if command -v sudo &>/dev/null; then 	sudo apk add "${sChoiceInput}"
 	else 									apk add "${sChoiceInput}"
 	fi
 }
-sound_apk() {
+sound_setup() {
 	if command -v sudo &>/dev/null; then 	sudo apk add pulseaudio pavucontrol alsa-utils xfce4-pulseaudio-plugin && sudo rc-update add alsa
-	else 									apk apk add pulseaudio pavucontrol alsa-utils xfce4-pulseaudio-plugin && rc-update add alsa
+	else 									_setup add pulseaudio pavucontrol alsa-utils xfce4-pulseaudio-plugin && rc-update add alsa
 	fi
 }
-lang_apk() {
+lang_setup() {
 	sProfileFr="LANG=fr_FR.UTF-8
 LC_CTYPE=fr_FR.UTF-8
 LC_NUMERIC=fr_FR.UTF-8
@@ -83,7 +83,7 @@ EndSection"
 	if command -v sudo &>/dev/null; then 	sudo apk add lang
 											echo "${sProfileFr}" | sudo tee /etc/profile.d/99-fr.sh
 											echo "${sKeyboardFrX}" | sudo tee /etc/X11/xorg.conf.d/30-keyboard.conf
-	else 									apk apk add lang
+	else 									apk add lang
 											echo "${sProfileFr}" | tee /etc/profile.d/99-fr.sh 
 											echo "${sKeyboardFrX}" | tee /etc/X11/xorg.conf.d/30-keyboard.conf
 	fi
@@ -97,7 +97,7 @@ main_setup_de() {
 	else
 		echo -e "\t>>> apk found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. setup DE \n 5. "
 	fi
-	update_apk && clean_apk && poweroff
+	update_setup && clean_setup && poweroff
 	if command -v sudo &>/dev/null; then 	sudo apk add musl-locales
 											setup-desktop
 											apk add adw-gtk3 adwaita-icon-theme adwaita-xfce-icon-theme
@@ -105,11 +105,11 @@ main_setup_de() {
 											sudo setup-desktop
 											sudo apk add adw-gtk3 adwaita-icon-theme adwaita-xfce-icon-theme
 	fi
-	gvfs_apk
-	# gpu_apk && input_apk
-	sound_apk
-	lang_apk
+	gvfs_setup
+	# gpu_setup && input_setup
+	sound_setup
+	lang_setup
 	apk add openrc-settingsd && rc-update add openrc-settingsd boot
 }
-gpu_apk && input_apk
+gpu_setup && input_setup
 #main_alpine_update
