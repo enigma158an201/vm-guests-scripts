@@ -48,7 +48,7 @@ select_option() {
 				2>&1) # >/dev/tty)
 
 	#clear
-	echo "${CHOICE}"
+	#echo "${CHOICE}"
 }
 gpu_setup() {
 	sChoiceGpu=$(select_option xf86-video-amdgpu xf86-video-ati xf86-video-intel xf86-video-nouveau xf86-video-qxl xf86-video-vesa xf86-video-vmware)
