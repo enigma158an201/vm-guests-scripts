@@ -51,13 +51,13 @@ select_option() {
 }
 gpu_apk() {
 	sChoiceGpu=$(select_option xf86-video-amdgpu xf86-video-ati xf86-video-intel xf86-video-nouveau xf86-video-qxl xf86-video-vesa xf86-video-vmware)
-	if command -v sudo &>/dev/null; then 	sudo apk "${sChoiceGpu}"
+	if command -v sudo &>/dev/null; then 	sudo apk add "${sChoiceGpu}"
 	else 									apk add "${sChoiceGpu}"
 	fi
 }
 input_apk() {
 	sChoiceInput=$(select_option xf86-input-evdev xf86-input-libinput xf86-input-synaptics xf86-input-vmmouse xf86-input-wacom)
-	if command -v sudo &>/dev/null; then 	sudo apk "${sChoiceInput}"
+	if command -v sudo &>/dev/null; then 	sudo apk add "${sChoiceInput}"
 	else 									apk add "${sChoiceInput}"
 	fi
 }
