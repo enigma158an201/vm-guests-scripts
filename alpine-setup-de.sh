@@ -62,8 +62,8 @@ input_apk() {
 	fi
 }
 sound_apk() {
-	if command -v sudo &>/dev/null; then 	sudo apk add pulseaudio pavucontrol alsa-utils apk add xfce4-pulseaudio-plugin && sudo rc-update add alsa
-	else 									apk apk add pulseaudio pavucontrol alsa-utils apk add xfce4-pulseaudio-plugin && rc-update add alsa
+	if command -v sudo &>/dev/null; then 	sudo apk add pulseaudio pavucontrol alsa-utils xfce4-pulseaudio-plugin && sudo rc-update add alsa
+	else 									apk apk add pulseaudio pavucontrol alsa-utils xfce4-pulseaudio-plugin && rc-update add alsa
 	fi
 }
 lang_apk() {
