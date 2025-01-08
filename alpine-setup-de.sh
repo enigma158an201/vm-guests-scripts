@@ -47,7 +47,7 @@ select_option() {
 				"${OPTIONS[@]}" \
 				2>&1 >/dev/tty)
 
-	clear
+	#clear
 	echo "${CHOICE}"
 }
 gpu_setup() {
