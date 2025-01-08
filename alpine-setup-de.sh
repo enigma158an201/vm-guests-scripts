@@ -45,7 +45,7 @@ select_option() {
 				--title "${TITLE}" \
 				--menu "${MENU}" ${HEIGHT} ${WIDTH} ${CHOICE_HEIGHT} \
 				"${OPTIONS[@]}" \
-				2>&1 >/dev/tty)
+				2>&1) # >/dev/tty)
 
 	#clear
 	echo "${CHOICE}"
