@@ -29,28 +29,30 @@ select_option() {
 		else 									apk add dialog
 		fi
 	fi
-	HEIGHT=25
-	WIDTH=80
-	CHOICE_HEIGHT=4
-	BACKTITLE="Backtitle here"
+	#HEIGHT=25
+	#WIDTH=80
+	#CHOICE_HEIGHT=4
+	#BACKTITLE="Backtitle here"
 	TITLE="Title here"
-	MENU="Choose one of the following options:"
+	#MENU="Choose one of the following options:"
 	#OPTIONS=(1 "Option 1"
 	#	 2 "Option 2"
 	#	 3 "Option 3")
-	i=0;OPTIONS=""
+	OPTIONS="" #i=0;
 	for sOpt in "$@"; do
-		i=$((i + 1))
-		OPTIONS+=" ${sOpt} ${sOpt} " #\n"
+		#i=$((i + 1))
+		OPTIONS+=" ${sOpt} ${sOpt} off " #OPTIONS+=" ${sOpt} ${sOpt} " #\n"
 	done
 	aOPTIONS=( ${OPTIONS} ) #( "${OPTIONS[@]}" )
+	#CHOICE=$(dialog --clear \
+	#			--backtitle "${BACKTITLE}" \
+	#			--title "${TITLE}" \
+	#			--menu "${MENU}" ${HEIGHT} ${WIDTH} ${CHOICE_HEIGHT} \
+	#			"${aOPTIONS[@]}" \
+	#			2>&1 >/dev/tty)
 	CHOICE=$(dialog --clear \
-				--backtitle "${BACKTITLE}" \
-				--title "${TITLE}" \
-				--menu "${MENU}" ${HEIGHT} ${WIDTH} ${CHOICE_HEIGHT} \
-				"${aOPTIONS[@]}" \
-				2>&1 >/dev/tty)
-
+				--checklist "${TITLE}" \
+				"${aOPTIONS[@]}")
 	#clear
 	echo "${CHOICE}"
 }
