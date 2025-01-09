@@ -30,7 +30,7 @@ select_option() {
 		fi
 	fi
 	HEIGHT=15
-	WIDTH=40
+	WIDTH=80
 	CHOICE_HEIGHT=4
 	BACKTITLE="Backtitle here"
 	TITLE="Title here"
