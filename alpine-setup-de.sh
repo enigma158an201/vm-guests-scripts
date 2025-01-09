@@ -38,17 +38,20 @@ select_option() {
 	#OPTIONS=(1 "Option 1"
 	#	 2 "Option 2"
 	#	 3 "Option 3")
-	OPTIONS=( "$@" )
-	echo "${OPTIONS[@]}"
+	for sOpt in "$@"; do
+		i=$((i + 1))
+		OPTIONS+="${i} ${sOpt}\n"
+	done
+	aOPTIONS=( "${OPTIONS[@]}" )
 	CHOICE=$(dialog --clear \
 				--backtitle "${BACKTITLE}" \
 				--title "${TITLE}" \
 				--menu "${MENU}" ${HEIGHT} ${WIDTH} ${CHOICE_HEIGHT} \
-				"${OPTIONS[@]}" \
+				"${aOPTIONS[@]}" \
 				2>&1) # >/dev/tty)
 
 	#clear
-	#echo "${CHOICE}"
+	echo "${CHOICE}"
 }
 gpu_setup() {
 	sChoiceGpu=$(select_option xf86-video-amdgpu xf86-video-ati xf86-video-intel xf86-video-nouveau xf86-video-qxl xf86-video-vesa xf86-video-vmware)
