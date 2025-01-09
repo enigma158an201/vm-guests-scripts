@@ -43,7 +43,7 @@ select_option() {
 		i=$((i + 1))
 		OPTIONS+="${i} ${sOpt}\n"
 	done
-	aOPTIONS=( "${OPTIONS[@]}" )
+	aOPTIONS=( ${OPTIONS} ) #( "${OPTIONS[@]}" )
 	CHOICE=$(dialog --clear \
 				--backtitle "${BACKTITLE}" \
 				--title "${TITLE}" \
