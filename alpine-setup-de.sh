@@ -108,11 +108,11 @@ main_setup_de() {
 	fi
 	update_setup && clean_setup && poweroff
 	if command -v sudo &>/dev/null; then 	sudo apk add musl-locales
-											setup-desktop
-											apk add adw-gtk3 adwaita-icon-theme adwaita-xfce-icon-theme
-	else 									apk add musl-locales
 											sudo setup-desktop
 											sudo apk add adw-gtk3 adwaita-icon-theme adwaita-xfce-icon-theme
+	else 									apk add musl-locales
+											setup-desktop
+											apk add adw-gtk3 adwaita-icon-theme adwaita-xfce-icon-theme
 	fi
 	gvfs_setup
 	gpu_setup
