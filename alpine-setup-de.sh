@@ -41,7 +41,7 @@ select_option() {
 	i=0;OPTIONS=""
 	for sOpt in "$@"; do
 		i=$((i + 1))
-		OPTIONS+="${sOpt} ${sOpt}" #\n"
+		OPTIONS+="${i} ${sOpt}" #\n"
 	done
 	aOPTIONS=( ${OPTIONS} ) #( "${OPTIONS[@]}" )
 	CHOICE=$(dialog --clear \
