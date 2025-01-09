@@ -65,8 +65,8 @@ gpu_setup() {
 }
 input_setup() {
 	sChoiceInput=$(select_option xf86-input-evdev xf86-input-libinput xf86-input-synaptics xf86-input-vmmouse xf86-input-wacom)
-	if command -v sudo &>/dev/null; then 	sudo apk add "${sChoiceInput}"
-	else 									apk add "${sChoiceInput}"
+	if command -v sudo &>/dev/null; then 	sudo apk add ${sChoiceInput}
+	else 									apk add ${sChoiceInput}
 	fi
 }
 sound_setup() {
