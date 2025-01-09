@@ -52,7 +52,8 @@ select_option() {
 	#			2>&1 >/dev/tty)
 	CHOICE=$(dialog --clear \
 				--checklist "${TITLE}" ${HEIGHT} ${WIDTH} ${CHOICE_HEIGHT} \
-				"${aOPTIONS[@]}")
+				"${aOPTIONS[@]}" \
+				2>&1 >/dev/tty)
 	#clear
 	echo "${CHOICE}"
 }
