@@ -121,4 +121,4 @@ main_setup_de() {
 	lang_setup
 	apk add openrc-settingsd && rc-update add openrc-settingsd boot
 }
-main_alpine_update
+main_setup_de
