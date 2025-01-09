@@ -43,6 +43,7 @@ select_option() {
 		#i=$((i + 1))
 		OPTIONS+=" ${sOpt} ${sOpt} off " #OPTIONS+=" ${sOpt} ${sOpt} " #\n"
 	done
+	#shellcheck disable=SC2206
 	aOPTIONS=( ${OPTIONS} ) #( "${OPTIONS[@]}" )
 	#CHOICE=$(dialog --clear \
 	#			--backtitle "${BACKTITLE}" \
@@ -114,10 +115,10 @@ main_setup_de() {
 											sudo apk add adw-gtk3 adwaita-icon-theme adwaita-xfce-icon-theme
 	fi
 	gvfs_setup
-	# gpu_setup && input_setup
+	gpu_setup
+	input_setup
 	sound_setup
 	lang_setup
 	apk add openrc-settingsd && rc-update add openrc-settingsd boot
 }
-gpu_setup && input_setup
-#main_alpine_update
+main_alpine_update
