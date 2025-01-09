@@ -38,6 +38,7 @@ select_option() {
 	#OPTIONS=(1 "Option 1"
 	#	 2 "Option 2"
 	#	 3 "Option 3")
+	i=0
 	for sOpt in "$@"; do
 		i=$((i + 1))
 		OPTIONS+="${i} ${sOpt}\n"
