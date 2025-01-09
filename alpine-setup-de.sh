@@ -29,9 +29,9 @@ select_option() {
 		else 									apk add dialog
 		fi
 	fi
-	#HEIGHT=25
-	#WIDTH=80
-	#CHOICE_HEIGHT=4
+	HEIGHT=25
+	WIDTH=80
+	CHOICE_HEIGHT=10
 	#BACKTITLE="Backtitle here"
 	TITLE="Title here"
 	#MENU="Choose one of the following options:"
@@ -51,7 +51,7 @@ select_option() {
 	#			"${aOPTIONS[@]}" \
 	#			2>&1 >/dev/tty)
 	CHOICE=$(dialog --clear \
-				--checklist "${TITLE}" \
+				--checklist "${TITLE}" ${HEIGHT} ${WIDTH} ${CHOICE_HEIGHT} \
 				"${aOPTIONS[@]}")
 	#clear
 	echo "${CHOICE}"
