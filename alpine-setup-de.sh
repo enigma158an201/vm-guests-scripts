@@ -29,7 +29,7 @@ select_option() {
 		else 									apk add dialog
 		fi
 	fi
-	HEIGHT=15
+	HEIGHT=25
 	WIDTH=80
 	CHOICE_HEIGHT=4
 	BACKTITLE="Backtitle here"
