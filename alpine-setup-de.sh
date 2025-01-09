@@ -106,7 +106,7 @@ main_setup_de() {
 	else
 		echo -e "\t>>> apk found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. setup DE \n 5. "
 	fi
-	update_setup && clean_setup && poweroff
+	update_setup && clean_setup
 	if command -v sudo &>/dev/null; then 	sudo apk add musl-locales
 											sudo setup-desktop
 											sudo apk add adw-gtk3 adwaita-icon-theme adwaita-xfce-icon-theme
