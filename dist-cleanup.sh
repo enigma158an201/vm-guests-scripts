@@ -82,7 +82,7 @@ lessFirewallLogs() {
 }
 
 mainCleanUp() {
-	if checkPrivileges; then
+	if checkRootPermissions; then
 		cachesDirectoryClean
 		cpanDirectoryClean
 		if command -v apt-get &>/dev/null; then 	aptRemoveForeignFonts && aptRemoveUnused;	# apt clean
