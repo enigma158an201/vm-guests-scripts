@@ -12,7 +12,7 @@
 targetGrubLegacy="i386-pc"
 targetGrubEfi="x86_64-efi"
 
-myBiosBootSize=+2MiB
+sBiosBootSize=+2MiB
 biosBootType=ef02
 efiPartType=ef00
 bootPartType=8300
@@ -20,12 +20,12 @@ rootPartType=8300
 homePartType=8302
 swapPartType=8200
 
-myRootTarget="/"
+sRootTarget="/"
 mntChrootTarget="/mnt"
-myBootTarget="/boot"
-myHomeTarget="/home"
-myHomeRootTarget="/root"
-myEfiTarget="${myBootTarget}/efi"
+sBootTarget="/boot"
+sHomeTarget="/home"
+sHomeRootTarget="/root"
+sEfiTarget="${sBootTarget}/efi"
 
 sDebugPrompt="Appuyer sur Entrée ou Enter pour continuer, CTRL + C pour quitter"
 bDebugParts=false
@@ -56,78 +56,75 @@ uncomment() {
 
 fdisk -l													# pour identifier le disque
 # voir pour obtenir une double confirmation de l'user avant de continuer confirmUser1 et confirmUser2
-# myChrootVarFile=/root/chrootVars
+# sChrootVarFile=/root/chrootVars
 if false; then less install.txt; elinks wiki.archlinux.fr/Installation; fi
 
 # choix du disque cible ou affectation /dev/sda par default
 echo -e "indiquer le disque cible:\n!Attention le disque sera intégralement effacé!\n"
-read -rp "exemple /dev/sda (valeur par defaut si rien n'est saisi)" mydisk
-mydisk=$(echo "${mydisk}" | grep -i -e "/dev/")
-if [[ "${mydisk}" = "" ]]; then
+read -rp "exemple /dev/sda (valeur par defaut si rien n'est saisi)" sDiskDev
+sDiskDev=$(echo "${sDiskDev}" | grep -i -e "/dev/")
+if [[ "${sDiskDev}" = "" ]]; then
 	if [[ -e "/dev/sda" ]]; then targetDisk="/dev/sda"; fi
 else
-	if [[ -e "${mydisk}" ]]; then targetDisk="${mydisk}"; fi										# A voir pour verifier que la valeur saisie est cohérente	
+	if [[ -e "${sDiskDev}" ]]; then targetDisk="${sDiskDev}"; fi										# A voir pour verifier que la valeur saisie est cohérente	
 fi
-targetChrootDisk="${targetDisk}"								# echo "targetChrootDisk=\"/dev/sda\"" >> $myChrootVarFile
+targetChrootDisk="${targetDisk}"								# echo "targetChrootDisk=\"/dev/sda\"" >> $sChrootVarFile
 echo "installation sur ${targetDisk}"
 if [[ ${bDebugParts} = true ]]; then read -rp "${sDebugPrompt}"; fi
 
-# touch $myChrootVarFile
-# echo "#!/usr/bin/env bash" > $myChrootVarFile
+# touch $sChrootVarFile
+# echo "#!/usr/bin/env bash" > $sChrootVarFile
 
 # vérification si BIOS ou UEFI
 if [[ -d /sys/firmware/efi ]]; then							# automatisation pour les variables isBios & isUefi
 	isUefi=true
 	read -rp "Installer malgré tout une partition bios boot dans le schéma de partionnement GPT (o/N)" -n 1 biosBootGpt
-	if [[ "${biosBootGpt^^}" = "O" ]]; then
-		isBios=true
-		myBiosBootNr=1
-		targetGrubType=${targetGrubLegacy}
-	else
-		isBios=false
-		myBiosBootNr=0
-		targetGrubType=${targetGrubEfi}
+	if [[ "${biosBootGpt^^}" = "O" ]]; then 	isBios=true
+												iBiosBootNr=1
+												targetGrubType=${targetGrubLegacy}
+	else 										isBios=false
+												iBiosBootNr=0
+												targetGrubType=${targetGrubEfi}
 	fi
-	myEfiBootNr=$((myBiosBootNr + 1))						# 1 ou 2
-	myBootNr=$((myEfiBootNr + 1))							# 2 ou 3 
-else
-	isUefi=false
-	isBios=true
-	myBiosBootNr=1
-	myEfiBootNr=0
-	myBootNr=$((myBiosBootNr + 1))							# 2
-	targetGrubType=${targetGrubLegacy}
+	iEfiBootNr=$((iBiosBootNr + 1))						# 1 ou 2
+	iBootNr=$((iEfiBootNr + 1))							# 2 ou 3 
+else 											isUefi=false
+												isBios=true
+												iBiosBootNr=1
+												iEfiBootNr=0
+												iBootNr=$((iBiosBootNr + 1))							# 2
+												targetGrubType=${targetGrubLegacy}
 fi
  
-if [[ ! "${myBootNr}" = "0" ]] && [[ ! "${myBootNr}" = "" ]]; then myRootNr=$((myBootNr + 1)); fi # 3 ou 4
-if [[ ! "${myRootNr}" = "0" ]] && [[ ! "${myRootNr}" = "" ]]; then myHomeNr=$((myRootNr + 1)); fi	# 4 ou 5
-if [[ ! "${myHomeNr}" = "0" ]] && [[ ! "${myHomeNr}" = "" ]]; then mySwapNr=$((myHomeNr + 1)); fi	# 5 ou 6 # read -rp "${myBiosBootNr} ${myEfiBootNr} ${myBootNr} ${myRootNr} ${myHomeNr} ${mySwapNr} "
+if [[ ! "${iBootNr}" = "0" ]] && [[ ! "${iBootNr}" = "" ]]; then iRootNr=$((iBootNr + 1)); fi # 3 ou 4
+if [[ ! "${iRootNr}" = "0" ]] && [[ ! "${iRootNr}" = "" ]]; then iHomeNr=$((iRootNr + 1)); fi	# 4 ou 5
+if [[ ! "${iHomeNr}" = "0" ]] && [[ ! "${iHomeNr}" = "" ]]; then iSwapNr=$((iHomeNr + 1)); fi	# 5 ou 6 # read -rp "${iBiosBootNr} ${iEfiBootNr} ${iBootNr} ${iRootNr} ${iHomeNr} ${iSwapNr} "
 
 # ***** début de la partie personnalisable *****
-# echo nomInterface="" >> $myChrootVarFile
-# myBiosBootSize=+2MiB										# ne pas modifier cette variable
-myEfiSize=+512MiB											# voir si possible de calculer ces valeurs en fonction de l'espace disque dispo
-myBootSize=+512MiB	# +2048MiB								# pour quelques fichiers ISO
-myRootSize=+8GiB	# +25GiB								# voir pour calculer l'espace ${targetDisk}
-myHomeSize=+6GiB	# +20GiB
-mySwapSize=+512MiB	# +4096MiB
+# echo nomInterface="" >> $sChrootVarFile
+# sBiosBootSize=+2MiB										# ne pas modifier cette variable
+sEfiSize=+512MiB											# voir si possible de calculer ces valeurs en fonction de l'espace disque dispo
+sBootSize=+512MiB	# +2048MiB								# pour quelques fichiers ISO
+sRootSize=+8GiB	# +25GiB								# voir pour calculer l'espace ${targetDisk}
+sHomeSize=+6GiB	# +20GiB
+sSwapSize=+512MiB	# +4096MiB
 
 # utilisateurs à ajouter en sudo
 noms_utilisateur='paul gwen malala'								# séparer les noms par des espaces
-groupesAccesSysteme=root,users,sys							# optionnels log, systemd-journal, wheel
-groupesAccesMateriels=audio,lp,scanner,storage,video		# optionnels video, floppy, optical # ne pas utiliser disk
-chrootNomsUsers="${noms_utilisateur}"				 			# echo chrootNomsUsers=\"${noms_utilisateur}\" >> $myChrootVarFile
-chrootSysGroup=${groupesAccesSysteme}							# echo chrootSysGroup=${groupesAccesSysteme} >> $myChrootVarFile
-chrootHardGroup=${groupesAccesMateriels}					 	# echo chrootHardGroup=${groupesAccesMateriels} >> $myChrootVarFile
+groupesAccesSysteme=root,users,sys								# optionnels log, systemd-journal, wheel
+groupesAccesMateriels=audio,lp,scanner,storage,video			# optionnels video, floppy, optical # ne pas utiliser disk
+chrootNomsUsers="${noms_utilisateur}"				 			# echo chrootNomsUsers=\"${noms_utilisateur}\" >> $sChrootVarFile
+chrootSysGroup=${groupesAccesSysteme}							# echo chrootSysGroup=${groupesAccesSysteme} >> $sChrootVarFile
+chrootHardGroup=${groupesAccesMateriels}					 	# echo chrootHardGroup=${groupesAccesMateriels} >> $sChrootVarFile
 
 # ****** fin de la partie personnalisable ******
 
 # targetDiskSize=$(blockdev --getsize64 "${targetDisk}")			# blockdev --getsz /dev/sda # 500118192
 
 echo -e "exemple "
-# myTable=$(parted -s "${targetDisk}") # cfdisk
-# foundGPT=$(grep -i gpt "$myTable")
-# foundMsDos=$(grep -i msdos "$myTable")
+# sTable=$(parted -s "${targetDisk}") # cfdisk
+# foundGPT=$(grep -i gpt "$sTable")
+# foundMsDos=$(grep -i msdos "$sTable")
 # if [[ ! "$foundGPT" = "" ]]; then								# privilégier GPT à MBR
 	# isGPT=true
 	# isMBR=false
@@ -139,53 +136,53 @@ echo -e "exemple "
 	# isMBR=false
 # fi
 
-echo -e "exemple cfdisk ${targetDisk} \n ou \n gfdisk ${targetDisk} \n pour installer sur:\n${myBiosBootNr}	(biosboot) \n${myEfiBootNr}	/boot/efi \n${myBootNr}	${myBootTarget}\n${myRootNr}	${myRootTarget}\n${myHomeNr}	${myHomeTarget}\n${mySwapNr}	swap\n"
+echo -e "exemple cfdisk ${targetDisk} \n ou \n gfdisk ${targetDisk} \n pour installer sur:\n${iBiosBootNr}	(biosboot) \n${iEfiBootNr}	/boot/efi \n${iBootNr}	${sBootTarget}\n${iRootNr}	${sRootTarget}\n${iHomeNr}	${sHomeTarget}\n${iSwapNr}	swap\n"
 read -rp "appuyer sur entree pour continuer la création des FileSystem indiqués ou CTRL + C pour annuler avant réécriture de la table des partitions"
 
-if [[ ! "${myBiosBootNr}" = "0" ]]; then
+if [[ ! "${iBiosBootNr}" = "0" ]]; then
 	# parted ${targetDisk} unit s print free
 	# sgdisk --new=0:34:2047 ${targetDisk}
-	sgdisk -o --new "${myBiosBootNr}::${myBiosBootSize}" --typecode="${myBiosBootNr}:${biosBootType}" --change-name="${myBiosBootNr}:'BIOS_boot'" "${targetDisk}"
-	if [[ ${isBios} = true ]]; then parted "${targetDisk}" set "${myBiosBootNr}" bios_grub on; fi # a remettre plus tard
-	myBiosBootPart="${targetDisk}${myBiosBootNr}"						# 1 myBiosOrEfiNr
-	echo "creation du secteur pour bios boot (non activé) sur ${targetDisk}${myBiosBootNr}"
+	sgdisk -o --new "${iBiosBootNr}::${sBiosBootSize}" --typecode="${iBiosBootNr}:${biosBootType}" --change-name="${iBiosBootNr}:'BIOS_boot'" "${targetDisk}"
+	if [[ ${isBios} = true ]]; then parted "${targetDisk}" set "${iBiosBootNr}" bios_grub on; fi # a remettre plus tard
+	sBiosBootPart="${targetDisk}${iBiosBootNr}"						# 1 iBiosOrEfiNr
+	echo "creation du secteur pour bios boot (non activé) sur ${targetDisk}${iBiosBootNr}"
 fi
 if [[ ${bDebugParts} = true ]]; then read -rp "${sDebugPrompt}"; fi
-if [[ ! "${myEfiBootNr}" = "0" ]]; then
-	sgdisk "${targetDisk}" -n "${myEfiBootNr}::${myEfiSize}" -t "${myEfiBootNr}":${efiPartType} -c ${myEfiBootNr}:'EFI_boot' "${targetDisk}"
-	myEfiBootPart="${targetDisk}${myEfiBootNr}"						# 2 ou 0
-	mkfs.fat -F 32 "${myEfiBootPart}"
-	echo "creation de la partition /boot/efi terminée sur ${targetDisk}${myEfiBootPart}"
+if [[ ! "${iEfiBootNr}" = "0" ]]; then
+	sgdisk "${targetDisk}" -n "${iEfiBootNr}::${sEfiSize}" -t "${iEfiBootNr}":${efiPartType} -c ${iEfiBootNr}:'EFI_boot' "${targetDisk}"
+	sEfiBootPart="${targetDisk}${iEfiBootNr}"						# 2 ou 0
+	mkfs.fat -F 32 "${sEfiBootPart}"
+	echo "creation de la partition /boot/efi terminée sur ${targetDisk}${sEfiBootPart}"
 fi
 if [[ ${bDebugParts} = true ]]; then read -rp "${sDebugPrompt}"; fi
-# sgdisk -n "${myEfiBootNr}::${myEfiSize}" -t "${myEfiBootNr}:${efiPartType}" -c "${myEfiBootNr}":'efi' ${targetDisk}
-if [[ ! "${myBootNr}" = "0" ]]; then
-	sgdisk -n "${myBootNr}::${myBootSize}" -t "${myBootNr}:${bootPartType}" -c "${myBootNr}":'boot' "${targetDisk}"
-	myBootPart="${targetDisk}${myBootNr}"							# 3 ou 2
-	mkfs.ext4 "${myBootPart}"
-	echo "creation de la partition /boot terminée sur ${targetDisk} sur partition ${myBootPart}"
+# sgdisk -n "${iEfiBootNr}::${sEfiSize}" -t "${iEfiBootNr}:${efiPartType}" -c "${iEfiBootNr}":'efi' ${targetDisk}
+if [[ ! "${iBootNr}" = "0" ]]; then
+	sgdisk -n "${iBootNr}::${sBootSize}" -t "${iBootNr}:${bootPartType}" -c "${iBootNr}":'boot' "${targetDisk}"
+	sBootPart="${targetDisk}${iBootNr}"							# 3 ou 2
+	mkfs.ext4 "${sBootPart}"
+	echo "creation de la partition /boot terminée sur ${targetDisk} sur partition ${sBootPart}"
 fi
 if [[ ${bDebugParts} = true ]]; then read -rp "${sDebugPrompt}"; fi
-if [[ ! "${myRootNr}" = "0" ]]; then
-	sgdisk -n "${myRootNr}::${myRootSize}" -t "${myRootNr}:${rootPartType}" -c "${myRootNr}":'root' "${targetDisk}"
-	myRootPart="${targetDisk}${myRootNr}"							# 4 ou 3
-	mkfs.ext4 "${myRootPart}"
-	echo "creation de la partition root / terminée sur ${targetDisk} sur partition ${myRootPart}"
+if [[ ! "${iRootNr}" = "0" ]]; then
+	sgdisk -n "${iRootNr}::${sRootSize}" -t "${iRootNr}:${rootPartType}" -c "${iRootNr}":'root' "${targetDisk}"
+	sRootPart="${targetDisk}${iRootNr}"							# 4 ou 3
+	mkfs.ext4 "${sRootPart}"
+	echo "creation de la partition root / terminée sur ${targetDisk} sur partition ${sRootPart}"
 fi
 if [[ ${bDebugParts} = true ]]; then read -rp "${sDebugPrompt}"; fi
-if [[ ! "${myHomeNr}" = "0" ]]; then
-	sgdisk -n "${myHomeNr}::${myHomeSize}" -t "${myHomeNr}:${homePartType}" -c "${myHomeNr}":'home' "${targetDisk}"
-	myHomePart="${targetDisk}${myHomeNr}"							# 5 ou 4
-	mkfs.ext4 "${myHomePart}"
-	echo "creation de la partition /home terminée sur ${targetDisk} sur partition ${myHomePart}"
+if [[ ! "${iHomeNr}" = "0" ]]; then
+	sgdisk -n "${iHomeNr}::${sHomeSize}" -t "${iHomeNr}:${homePartType}" -c "${iHomeNr}":'home' "${targetDisk}"
+	sHomePart="${targetDisk}${iHomeNr}"							# 5 ou 4
+	mkfs.ext4 "${sHomePart}"
+	echo "creation de la partition /home terminée sur ${targetDisk} sur partition ${sHomePart}"
 fi
 if [[ ${bDebugParts} = true ]]; then read -rp "${sDebugPrompt}"; fi
-if [[ ! "${mySwapNr}" = "0" ]]; then
-	sgdisk -n "${mySwapNr}::${mySwapSize}" -t "${mySwapNr}:${swapPartType}" -c "${mySwapNr}":'swap' "${targetDisk}"
-	mySwapPart="${targetDisk}${mySwapNr}"							# 6 ou 5
-	mkswap "${mySwapPart}"
-	swapon "${mySwapPart}"
-	echo "creation de la partition swap terminée sur ${targetDisk} sur partition ${mySwapPart}"
+if [[ ! "${iSwapNr}" = "0" ]]; then
+	sgdisk -n "${iSwapNr}::${sSwapSize}" -t "${iSwapNr}:${swapPartType}" -c "${iSwapNr}":'swap' "${targetDisk}"
+	sSwapPart="${targetDisk}${iSwapNr}"							# 6 ou 5
+	mkswap "${sSwapPart}"
+	swapon "${sSwapPart}"
+	echo "creation de la partition swap terminée sur ${targetDisk} sur partition ${sSwapPart}"
 fi
 fdisk -l
 read -rp "Continuer l'installation (CTRL + C pour quitter)" 
@@ -199,26 +196,26 @@ timedatectl set-ntp true								# pour régler l'heure
 
 # montage des partitions voulues et création des dossiers grub 
 if [[ ${bDebugMount} = true ]]; then read -rp "${sDebugPrompt}"; fi
-mount "${myRootPart}" "${mntChrootTarget}"
+mount "${sRootPart}" "${mntChrootTarget}"
 cd "${mntChrootTarget}" || exit
-if [[ ! "${myBootPart}" = "" ]]; then
-	mkdir -p "${mntChrootTarget}${myBootTarget}" && mount "${myBootPart}" "${mntChrootTarget}${myBootTarget}"
+if [[ ! "${sBootPart}" = "" ]]; then
+	mkdir -p "${mntChrootTarget}${sBootTarget}" && mount "${sBootPart}" "${mntChrootTarget}${sBootTarget}"
 fi
 if [[ ${bDebugMount} = true ]]; then read -rp "${sDebugPrompt}"; fi
-if [[ ! "${myEfiBootPart}" = "" ]]; then
-	mkdir -p "${mntChrootTarget}${myEfiTarget}" && mount "${myEfiBootPart}" "${mntChrootTarget}${myEfiTarget}"
+if [[ ! "${sEfiBootPart}" = "" ]]; then
+	mkdir -p "${mntChrootTarget}${sEfiTarget}" && mount "${sEfiBootPart}" "${mntChrootTarget}${sEfiTarget}"
 fi
 if [[ ${bDebugMount} = true ]]; then read -rp "${sDebugPrompt}"; fi
-if [[ ! "${myHomePart}" = "" ]]; then
-	mkdir -p "${mntChrootTarget}${myHomeTarget}" && mount "${myHomePart}" "${mntChrootTarget}${myHomeTarget}"
+if [[ ! "${sHomePart}" = "" ]]; then
+	mkdir -p "${mntChrootTarget}${sHomeTarget}" && mount "${sHomePart}" "${mntChrootTarget}${sHomeTarget}"
 fi
 
 mkdir -p "${mntChrootTarget}/grub.d"
 echo "# Clavier fr
 insmod keylayouts
 keymap fr" > "${mntChrootTarget}/grub.d/40_custom"
-mkdir -p "${mntChrootTarget}${myBootTarget}/grub/layouts"
-mkdir -p "${mntChrootTarget}${myHomeRootTarget}"
+mkdir -p "${mntChrootTarget}${sBootTarget}/grub/layouts"
+mkdir -p "${mntChrootTarget}${sHomeRootTarget}"
 
 # connexion au réseau et recherches des mirroirs
 if [[ "${bDebugBaseSetup}" = "true" ]]; then read -rp "${sDebugPrompt}"; fi
@@ -266,14 +263,14 @@ if [[ "${isUefi}" = "true" ]]; then
 	pacstrap "${mntChrootTarget}" efibootmgr
 fi
 if [[ ${bDebugBootSetup} = true ]]; then read -rp "${sDebugPrompt}"; fi
-if [[ ! "${myBiosBootNr}" = "0" ]]; then
+if [[ ! "${iBiosBootNr}" = "0" ]]; then
 	pacstrap "${mntChrootTarget}" parted
 	parted "${targetDisk}" unit s print free
 	# sgdisk --new=0:34:2047 ${targetDisk}
-	parted "${targetDisk}" set ${myBiosBootNr} bios_grub on
+	parted "${targetDisk}" set ${iBiosBootNr} bios_grub on
 fi
 echo "fin de la preinstallation des paquets essentiels, et debut de la sequence chroot sur le dossier ${mntChrootTarget}, appuyer sur entree pour continuer"
-# cp $myChrootVarFile ${mntChrootTarget}$myChrootVarFile
+# cp $sChrootVarFile ${mntChrootTarget}$sChrootVarFile
 # if [[ -d "${mntChrootTarget}" ]]; then 
 # 	echo "dossier "${mntChrootTarget}" trouvé"
 # else
@@ -395,21 +392,21 @@ LC_MESSAGES=${LangFr}" > ${mntChrootTarget}/etc/locale.conf
 	# 3. environnement de bureau
 	echo "config des pilotes graphiques"												# pour le matériel graphique
 	arch-chroot "${mntChrootTarget}" pacman -sS --needed xf86-video 									# affiche liste pilotes libres disponibles
-	retourGPU=$(lspci | grep -i -e vga -e 3d)
+	sGpu=$(lspci | grep -i -e vga -e 3d)
 
-	isNVidia=$(echo "${retourGPU}" | grep -i -e nvidia)
+	isNVidia=$(echo "${sGpu}" | grep -i -e nvidia)
 	if [[ ! "${isNVidia}" = "" ]]; then
 		arch-chroot "${mntChrootTarget}" pacman -S --noconfirm --needed xf86-video-nouveau 		# pilote libre NVvidia
 	fi
-	isIntel=$(echo "${retourGPU}" | grep -i -e intel)
+	isIntel=$(echo "${sGpu}" | grep -i -e intel)
 	if [[ ! "${isIntel}" = "" ]]; then
 		arch-chroot "${mntChrootTarget}" pacman -S --noconfirm --needed extra/xf86-video-intel 	# pilote libre Intel
 	fi
-	isVesa=$(echo "${retourGPU}" | grep -i -e vesa)
+	isVesa=$(echo "${sGpu}" | grep -i -e vesa)
 	if [[ ! "${isVesa}" = "" ]]; then
 		arch-chroot "${mntChrootTarget}" pacman -S --noconfirm --needed extra/xf86-video-vesa 	# pilote libre Vesa
 	fi
-	isAMD=$(echo "${retourGPU}" | grep -i -e amd)
+	isAMD=$(echo "${sGpu}" | grep -i -e amd)
 	if [[ ! "${isAMD}" = "" ]]; then
 		arch-chroot "${mntChrootTarget}" pacman -S --noconfirm --needed extra/xf86-video-amdgpu 	# pilote libre AMD
 	fi
@@ -419,62 +416,62 @@ LC_MESSAGES=${LangFr}" > ${mntChrootTarget}/etc/locale.conf
 	for de in ${deToInstall}
 	do
 		if [[ "${de}" = "0" ]]; then 		# 3.0. xfce
-			myDePkgNames=xfce4 xfce4-goodies
-			myLmSvcName=lightdm; myLmPkgName=lightdm lightdm-gtk-greeter;
+			sDePkgs=xfce4 xfce4-goodies
+			sLmSvcs=lightdm; sLmPkgs=lightdm lightdm-gtk-greeter;
 		elif [[ "${de}" = "1" ]]; then		# 3.1. cinnamon
-			myDePkgNames=cinnamon nemo-fileroller
-			myLmSvcName=gdm; myLmPkgName=gdm;
+			sDePkgs=cinnamon nemo-fileroller
+			sLmSvcs=gdm; sLmPkgs=gdm;
 		elif [[ "${de}" = "2" ]]; then		# 3.2. gnome
-			myDePkgNames=gnome gnome-chrome-shell # gnome-extra
-			myLmSvcName=gdm; myLmPkgName=gdm;
+			sDePkgs=gnome gnome-chrome-shell # gnome-extra
+			sLmSvcs=gdm; sLmPkgs=gdm;
 		elif [[ "${de}" = "3" ]]; then		# 3.3. deepin
-			myDePkgNames=deepin # deepin-extra
-			myLmSvcName=lightdm; myLmPkgName=lightdm lightdm-gtk-greeter;
+			sDePkgs=deepin # deepin-extra
+			sLmSvcs=lightdm; sLmPkgs=lightdm lightdm-gtk-greeter;
 		elif [[ "${de}" = "4" ]]; then		# 3.4. budgie
-			myDePkgNames=budgie-desktop gnome-chrome-shell # gnome-like
-			myLmSvcName=gdm; myLmPkgName=gdm;
+			sDePkgs=budgie-desktop gnome-chrome-shell # gnome-like
+			sLmSvcs=gdm; sLmPkgs=gdm;
 		elif [[ "${de}" = "5" ]]; then		# 3.5. enlightenment
-			myDePkgNames=enlightenment
-			myLmSvcName=entrance; myLmPkgName=entrance;
+			sDePkgs=enlightenment
+			sLmSvcs=entrance; sLmPkgs=entrance;
 		elif [[ "${de}" = "6" ]]; then		# 3.6. mate
-			myDePkgNames=mate # mate-extra
-			myLmSvcName=gdm; myLmPkgName=gdm;
+			sDePkgs=mate # mate-extra
+			sLmSvcs=gdm; sLmPkgs=gdm;
 		elif [[ "${de}" = "7" ]]; then		# 3.7. kde
-			myDePkgNames=plasma-desktop plasma-wayland-session egl-wayland # plasma-meta kde-applications-meta
-			myLmSvcName=sddm; myLmPkgName=sddm;
+			sDePkgs=plasma-desktop plasma-wayland-session egl-wayland # plasma-meta kde-applications-meta
+			sLmSvcs=sddm; sLmPkgs=sddm;
 		elif [[ "${de}" = "8" ]]; then		# 3.8. lxde
-			myDePkgNames=lxde # lxde-common lxsession openbox lxpanel pcmanfm adobe-source-code-pro-fonts # lxde-gtk3 # version 2 lxde
-			myLmSvcName=lxdm; myLmPkgName=lxdm # lxdm-gtk3 # lxdm
+			sDePkgs=lxde # lxde-common lxsession openbox lxpanel pcmanfm adobe-source-code-pro-fonts # lxde-gtk3 # version 2 lxde
+			sLmSvcs=lxdm; sLmPkgs=lxdm # lxdm-gtk3 # lxdm
 		elif [[ "${de}" = "9" ]]; then		# 3.9. lxqt
-			myDePkgNames=lxqt #lxqt-session lxqt-runner lxqt-panel
-			myLmSvcName=sddm; myLmPkgName=sddm; 
+			sDePkgs=lxqt #lxqt-session lxqt-runner lxqt-panel
+			sLmSvcs=sddm; sLmPkgs=sddm; 
 		elif [[ "${de}" = "10" ]]; then		# 3.10. sugar
-			myDePkgNames=sugar sugar-fructose
-			myLmSvcName=gdm; myLmPkgName=gdm # à confirmer
+			sDePkgs=sugar sugar-fructose
+			sLmSvcs=gdm; sLmPkgs=gdm # à confirmer
 		 elif [[ "${de}" = "11" ]]; then		# 3.11. openbox
-			myDePkgNames=openbox feh obconf lxappearance-obconf lxinput lxrandr ttf-dejavu xterm pcmanfm tint2 # AUR: obkey 
-			myLmSvcName=sddm; myLmPkgName=sddm # à confirmer
+			sDePkgs=openbox feh obconf lxappearance-obconf lxinput lxrandr ttf-dejavu xterm pcmanfm tint2 # AUR: obkey 
+			sLmSvcs=sddm; sLmPkgs=sddm # à confirmer
 		# elif [[ "${de}" = "12" ]]; then		# 3.12. fluxbox
-			# myDePkgNames=fluxbox xorg-xinit feh
-			# myLmSvcName=sddm; myLmPkgName=sddm # à confirmer
+			# sDePkgs=fluxbox xorg-xinit feh
+			# sLmSvcs=sddm; sLmPkgs=sddm # à confirmer
 		elif [[ "${de}" = "13" ]]; then		# 3.13. i3wm
-			myDePkgNames=i3-wm xorg-xinit xterm
-			myLmSvcName=sddm; myLmPkgName=sddm # à confirmer
+			sDePkgs=i3-wm xorg-xinit xterm
+			sLmSvcs=sddm; sLmPkgs=sddm # à confirmer
 		elif [[ "${de}" = "14" ]]; then		# 3.14. bspwm
-			myDePkgNames=sway xorg-xinit xterm
-			myLmSvcName=sddm; myLmPkgName=sddm # à confirmer
+			sDePkgs=sway xorg-xinit xterm
+			sLmSvcs=sddm; sLmPkgs=sddm # à confirmer
 		elif [[ "${de}" = "15" ]]; then		# 3.14. bspwm
-			myDePkgNames=bspwm xorg-xinit xterm
-			myLmSvcName=sddm; myLmPkgName=sddm # à confirmer
+			sDePkgs=bspwm xorg-xinit xterm
+			sLmSvcs=sddm; sLmPkgs=sddm # à confirmer
 		fi
-		arch-chroot "${mntChrootTarget}" pacman -S --noconfirm --needed "${myDePkgNames}"
-		arch-chroot "${mntChrootTarget}" pacman -S --noconfirm --needed "${myLmPkgName}"
-		arch-chroot "${mntChrootTarget}" systemctl enable "${myLmSvcName}.service"
+		arch-chroot "${mntChrootTarget}" pacman -S --noconfirm --needed "${sDePkgs}"
+		arch-chroot "${mntChrootTarget}" pacman -S --noconfirm --needed "${sLmPkgs}"
+		arch-chroot "${mntChrootTarget}" systemctl enable "${sLmSvcs}.service"
 	done
 
 	echo "config clavier fr" 			# pour le clavier fr normalement tous les users
 	# arch-chroot "${mntChrootTarget}" setxkbmap fr # non permanent
-	# arch-chroot "${mntChrootTarget}" grub-kbdcomp -o "${myBootTarget}/grub/layouts/fr.gkb" fr
+	# arch-chroot "${mntChrootTarget}" grub-kbdcomp -o "${sBootTarget}/grub/layouts/fr.gkb" fr
 	arch-chroot "${mntChrootTarget}" localectl set-keymap fr
 	# arch-chroot "${mntChrootTarget}" localectl set-x11-keymap fr nécessite que systemd soit lancé ce qui n'est pas le cas au moment du setup
 	echo "Section \"InputClass\"
@@ -497,11 +494,11 @@ EndSection" > "${mntChrootTarget}/etc/X11/xorg.conf.d/30-keyboard.conf"
 	# cd pamac-aur
 	# makepkg -si
 	# trizen inxi
-	umount -R "${myBiosBootPart}"
-	umount -R "${myEfiBootPart}"
-	umount -R "${myBootPart}"
-	umount -R "${myHomePart}"
-	umount -R "${myRootPart}"
+	umount -R "${sBiosBootPart}"
+	umount -R "${sEfiBootPart}"
+	umount -R "${sBootPart}"
+	umount -R "${sHomePart}"
+	umount -R "${sRootPart}"
 	umount -R "${mntChrootTarget}"														# fin du chroot et redémarrage
 fi
 # reboot
