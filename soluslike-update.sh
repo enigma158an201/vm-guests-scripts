@@ -3,6 +3,11 @@
 # script by enigma158an201
 set -euo pipefail # set -euxo pipefail
 
+sLaunchDir="$(readlink -f "$(dirname "$0")")"
+source "${sLaunchDir}/include/check-user-privileges"
+source "${sLaunchDir}/include/check-virtual-env"
+source "${sLaunchDir}/include/git-self-update"
+
 update_solus() {
 	if command -v sudo &>/dev/null; then
 		sudo eopkg update-repo && sudo eopkg upgrade
