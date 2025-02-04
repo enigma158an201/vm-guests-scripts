@@ -13,7 +13,7 @@ update_void() {
 }
 clean_void() {
 	sudo xbps-remove -yO
-	sudo vkpurge rm all
+	sudo vkpurge rm "$(vkpurge list | head -n -1)" #all
 }
 main_void_update() {
 	if [[ "$(checkRootPermissions)" = "true" ]]; then
