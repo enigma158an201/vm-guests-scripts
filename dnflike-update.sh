@@ -4,7 +4,7 @@
 set -euo pipefail # set -euxo pipefail
 
 update_dnf() {
-	if command -v sudo &>/dev/null; then 	sudo dnf update && sudo dnf full-upgrade
+	if command -v sudo &>/dev/null; then 	sudo dnf update && sudo dnf upgrade
 	else 									dnf update && dnf upgrade
 	fi
 }
