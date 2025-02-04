@@ -26,7 +26,9 @@ main_alpine_update() {
 		echo -e "\t>>> apk found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
 	fi
 	updateScriptsViaGit
-	update_apk && clean_apk && poweroff
+	update_apk && clean_apk #&& poweroff #&& sudo shutdown 0
+	bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
+	if [[ ${bVirtualized} -eq 0 ]]; then 			sudo poweroff; fi
 }
 
 main_alpine_update
