@@ -24,7 +24,7 @@ main_void_update() {
 			echo -e "\t>>> xbps found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
 		fi
 		updateScriptsViaGit
-		update_void #&& poweroff # && clean_void && shutdown 0
+		update_void && clean_void #&& poweroff # && shutdown 0
 		bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
 		if [[ ${bVirtualized} -eq 0 ]]; then poweroff; fi
 	fi
