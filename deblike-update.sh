@@ -14,14 +14,14 @@ update_apt() {
 	fi
 }
 clean_apt() {
-	if command -v sudo &>/dev/null; then 			sudo apt-get autoremove --purge && sudo apt-get clean
-	else 											apt-get autoremove --purge && apt-get clean
+	if command -v sudo &>/dev/null; then 		sudo apt-get autoremove --purge && sudo apt-get clean
+	else 										apt-get autoremove --purge && apt-get clean
 	fi
 }
 clean_dpkg() {
 	#shellcheck disable=SC2046
-	if command -v sudo &>/dev/null; then 			sudo apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')	#removed ""
-	else 											apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')			#removed ""
+	if command -v sudo &>/dev/null; then 		sudo apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')	#removed ""
+	else 										apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')			#removed ""
 	fi
 }
 main_deblike_update() {
@@ -35,7 +35,7 @@ main_deblike_update() {
 		updateScriptsViaGit
 		update_apt && clean_apt && clean_dpkg
 		bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
-		if [[ ${bVirtualized} -eq 0 ]]; then shutdown 0; fi
+		if [[ ${bVirtualized} -eq 0 ]]; then 	shutdown 0; fi
 	fi
 }
 
