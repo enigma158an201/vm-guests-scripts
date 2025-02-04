@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # developpé par enigma158an201 le 20/02/2020
+set -euxo pipefail
 # <>
 # A bien lire avant d'aller plus loin
 # 1. le programme est prévu pour effacer le disque complet et le partitionner (à voir pour sauter cette partie si souhait utulisateur)
