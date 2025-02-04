@@ -9,8 +9,8 @@ update_dnf() {
 	fi
 }
 clean_dnf() {
-	if command -v sudo &>/dev/null; then 	sudo dnf autoremove && sudo dnf clean
-	else 									dnf autoremove && dnf clean
+	if command -v sudo &>/dev/null; then 	sudo dnf autoremove && sudo dnf clean all
+	else 									dnf autoremove && dnf clean all
 	fi
 }
 main_rockylinux_update() {
