@@ -23,7 +23,7 @@ main_alpine_update() {
 		echo -e "\t>>> apk not found, exit now !!!"
 		exit 1
 	else
-		echo -e "\t>>> apk found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4.shutdown vm"
+		echo -e "\t>>> apk found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
 	fi
 	updateScriptsViaGit
 	update_apk && clean_apk && poweroff

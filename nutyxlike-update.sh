@@ -20,7 +20,7 @@ main_cardslike_update() {
 		echo -e "\t>>> cards not found, exit now !!!"
 		exit 1
 	else
-		echo -e "\t>>> cards found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4.shutdown vm"
+		echo -e "\t>>> cards found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
 	fi
 	updateScriptsViaGit
 	update_cards && sudo shutdown 0
