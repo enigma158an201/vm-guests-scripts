@@ -14,7 +14,7 @@ update_void() {
 clean_void() {
 	sudo xbps-remove -yO
 	#shellcheck disable=SC2046
-	sudo vkpurge rm $(vkpurge list | head -n -1) #all
+	if [[ $(vkpurge list | head -n -1) = '' ]]; then sudo vkpurge rm $(vkpurge list | head -n -1); fi #all
 }
 main_void_update() {
 	if [[ "$(checkRootPermissions)" = "true" ]]; then
