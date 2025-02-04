@@ -22,8 +22,10 @@ main_soluslike_update() {
 	else
 		echo -e "\t>>> eopkg command found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
 	fi
-	#update_freebsd
-	update_solus && clean_solus && poweroff
+	updateScriptsViaGit
+	update_solus && clean_solus #&& poweroff #&& sudo shutdown 0
+	bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
+	if [[ ${bVirtualized} -eq 0 ]]; then 	poweroff; fi
 }
 
 main_soluslike_update

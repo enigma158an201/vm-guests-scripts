@@ -23,7 +23,9 @@ main_cardslike_update() {
 		echo -e "\t>>> cards found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
 	fi
 	updateScriptsViaGit
-	update_cards && sudo shutdown 0
+	update_cards #&& sudo shutdown 0
+	bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
+	if [[ ${bVirtualized} -eq 0 ]]; then 	sudo shutdown 0; fi
 }
 
 main_cardslike_update

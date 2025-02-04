@@ -28,7 +28,7 @@ main_alpine_update() {
 	updateScriptsViaGit
 	update_apk && clean_apk #&& poweroff #&& sudo shutdown 0
 	bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
-	if [[ ${bVirtualized} -eq 0 ]]; then 			sudo poweroff; fi
+	if [[ ${bVirtualized} -eq 0 ]]; then 	sudo poweroff; fi
 }
 
 main_alpine_update

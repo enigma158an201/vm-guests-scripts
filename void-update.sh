@@ -6,6 +6,7 @@ set -euo pipefail # set -euxo pipefail
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 source "${sLaunchDir}/include/check-user-privileges"
 source "${sLaunchDir}/include/check-virtual-env"
+source "${sLaunchDir}/include/git-self-update"
 
 update_void() {
 	sudo xbps-install -Su
@@ -21,6 +22,7 @@ main_void_update() {
 		else
 			echo -e "\t>>> xbps found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
 		fi
+		updateScriptsViaGit
 		update_void #&& poweroff # && clean_void && shutdown 0
 		bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
 		if [[ ${bVirtualized} -eq 0 ]]; then poweroff; fi
