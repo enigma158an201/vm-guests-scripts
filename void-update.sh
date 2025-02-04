@@ -13,6 +13,7 @@ update_void() {
 }
 clean_void() {
 	sudo xbps-remove -yO
+	#shellcheck disable=SC2046
 	sudo vkpurge rm $(vkpurge list | head -n -1) #all
 }
 main_void_update() {
@@ -26,7 +27,7 @@ main_void_update() {
 		updateScriptsViaGit
 		update_void && clean_void #&& poweroff # && shutdown 0
 		bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
-		#if [[ ${bVirtualized} -eq 0 ]]; then poweroff; fi
+		if [[ ${bVirtualized} -eq 0 ]]; then poweroff; fi
 	fi
 }
 
