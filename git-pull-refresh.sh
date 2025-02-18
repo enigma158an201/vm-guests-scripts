@@ -5,7 +5,7 @@ set -euo pipefail # set -euxo pipefail
 
 findScriptsGitFolder() {
 	set +euo pipefail
-	find ~ -nowarn -type d -iname vm-guests-script 2>/dev/null
+	find ~ -nowarn -type d -iname 'vm-guests-script*' 2>/dev/null
 	set +euo pipefail
 }
 
