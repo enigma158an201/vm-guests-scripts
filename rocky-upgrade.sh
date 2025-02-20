@@ -28,20 +28,21 @@ majorReleaseUpgrade() {
 	fi
 }
 update_dnf() {
-	if command -v sudo &>/dev/null; then 	sudo dnf update && sudo dnf upgrade
-	else 									dnf update && sudo dnf upgrade
+	#shellcheck disable=SC2154
+	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'dnf update && dnf upgrade'"
+	else 										dnf update && dnf upgrade
 	fi
 }
 clean_dnf() {
-	if command -v sudo &>/dev/null; then 	sudo dnf autoremove && sudo dnf clean all
-	else 									dnf autoremove && sudo dnf clean all
+	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'dnf autoremove && dnf clean all'"
+	else 										dnf autoremove && dnf clean all
 	fi
 }
 
 main_rockylinux_upgrade() {
-	if ! command -v dnf; then 				echo -e "\t>>> dnf not found, exit now !!!"
-											exit 1
-	else 									echo -e "\t>>> dnf found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
+	if ! command -v dnf; then 					echo -e "\t>>> dnf not found, exit now !!!"
+												exit 1
+	else 										echo -e "\t>>> dnf found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
 	fi
 	updateScriptsViaGit
 	update_dnf && clean_dnf #&& shutdown 0

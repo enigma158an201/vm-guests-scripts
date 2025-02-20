@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 checkVirtEnv() {
 	bFoundString=1 #false
-	if command -v sudo &>/dev/null; then 			sResult="$(sudo dmesg --notime)"
+	#shellcheck disable=SC2154
+	if command -v "${sSuPfx}" &>/dev/null; then 	sResult="$(eval "${sSuPfx} dmesg --notime")"
 	else 											sResult="$(dmesg --notime)"; fi
 	sHypervisor=$(grep -i hypervisor <<< "${sResult}" | cut -d ':' -f2 | tr -d " \t\n\r")
 	if [[ -n ${sHypervisor} ]]; then 				bFoundString=0
-	else 
+	else
 													for sVirtEnv in virtualbox vboxservice vmware; do
 														if [[ ${sResult,,} =~ ${sVirtEnv} ]]; then
 																bFoundString=0 #${bFoundString} || echo "true")" #="$(echo  | grep -i )"
