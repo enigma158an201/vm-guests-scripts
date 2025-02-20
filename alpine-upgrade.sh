@@ -9,12 +9,13 @@ source "${sLaunchDir}/include/check-virtual-env"
 source "${sLaunchDir}/include/git-self-update"
 
 update_apk() {
+	#shellcheck disable=SC2154
 	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'apk update && apk upgrade'"
 	else 										apk update && apk upgrade
 	fi
 }
 clean_apk() {
-	if command -v sudo &>/dev/null; then 		sudo apk -v cache clean
+	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} apk -v cache clean"
 	else 										apk -v cache clean
 	fi
 }
@@ -26,7 +27,7 @@ main_alpine_update() {
 	updateScriptsViaGit
 	update_apk && clean_apk #&& poweroff #&& sudo shutdown 0
 	bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
-	if [[ ${bVirtualized} -eq 0 ]]; then 		sudo poweroff; fi
+	if [[ ${bVirtualized} -eq 0 ]]; then 		eval "${sSuPfx} poweroff"; fi
 }
 
 main_alpine_update
