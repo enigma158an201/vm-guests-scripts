@@ -4,9 +4,12 @@ checkRootPermissions() {
 	else 											echo "false"; fi
 }
 getSuPfx() {
-	if command -v sudo &>/dev/null; then 	echo "sudo"
-	elif command -v doas &>/dev/null; then 	echo "doas"
-	elif command -v su &>/dev/null; then 	echo "su - -c"
+	if ! checkRootPermissions; then
+		if command -v sudo &>/dev/null; then 	echo "sudo"
+		elif command -v doas &>/dev/null; then 	echo "doas"
+		elif command -v su &>/dev/null; then 	echo "su - -c"
+		fi
+	else 										echo ""
 	fi
 }
 # shellcheck disable=SC2034
