@@ -3,3 +3,12 @@ checkRootPermissions() {
 	if [[ ${UID} = 0 ]] || [[ ${UID} = 0 ]]; then 	echo "true"
 	else 											echo "false"; fi
 }
+getSuPfx() {
+	if command -v sudo &>/dev/null; then 	echo "sudo"
+	elif command -v doas &>/dev/null; then 	echo "doas"
+	elif command -v su &>/dev/null; then 	echo "su"
+	fi
+}
+# shellcheck disable=SC2034
+sSuPfx=$(getSuPfx)
+export sSuPfx
