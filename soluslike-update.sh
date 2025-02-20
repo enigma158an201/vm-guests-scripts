@@ -10,12 +10,12 @@ source "${sLaunchDir}/include/git-self-update"
 
 update_solus() {
 	#shellcheck disable=SC2154
-	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'eopkg update-repo && eopkg upgrade'"
+	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} eopkg update-repo" && eval "${sSuPfx} eopkg upgrade'"
 	elif test ${UID} -eq 0; then 				eopkg update-repo && eopkg upgrade
 	fi
 }
 clean_solus() {
-	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'eopkg remove-orphans && eopkg clean'"
+	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} eopkg remove-orphans" && eval "${sSuPfx} eopkg clean"
 	elif test ${UID} -eq 0; then 				eopkg remove-orphans && eopkg clean
 	fi
 }
