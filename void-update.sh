@@ -9,12 +9,13 @@ source "${sLaunchDir}/include/check-virtual-env"
 source "${sLaunchDir}/include/git-self-update"
 
 update_void() {
-	sudo xbps-install -Su
+	#shellcheck disable=SC2154
+	eval "${sSuPfx} xbps-install -Su"
 }
 clean_void() {
-	sudo xbps-remove -yO
+	eval "${sSuPfx} xbps-remove -yO"
 	#shellcheck disable=SC2046
-	if [[ ! $(vkpurge list | head -n -1) = '' ]]; then sudo vkpurge rm $(vkpurge list | head -n -1); fi #all
+	if [[ ! $(vkpurge list | head -n -1) = '' ]]; then eval "${sSuPfx} vkpurge rm $(vkpurge list | head -n -1)"; fi #all
 }
 main_void_update() {
 	if [[ "$(checkRootPermissions)" = "true" ]]; then

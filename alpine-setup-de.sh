@@ -10,24 +10,24 @@ source "${sLaunchDir}/include/check-user-privileges"
 
 update_setup() {
 	#shellcheck disable=SC2154
-	if command -v "${sSuPfx}" &>/dev/null; then 		sudo apk update && sudo apk upgrade
-	else 										apk update && apk upgrade
+	if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx}	'apk update && apk upgrade'"
+	else 											apk update && apk upgrade
 	fi
 }
 clean_setup() {
-	if command -v "${sSuPfx}" &>/dev/null; then 		sudo apk -v cache clean
-	else 										apk -v cache clean
+	if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx}	apk -v cache clean"
+	else 											apk -v cache clean
 	fi
 }
 gvfs_setup() {
-	if command -v "${sSuPfx}" &>/dev/null; then 		sudo apk add gvfs-fuse gvfs-mtp gvfs-nfs gvfs-smb
-	else 										apk add gvfs-fuse gvfs-mtp gvfs-nfs gvfs-smb
+	if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} apk add gvfs-fuse gvfs-mtp gvfs-nfs gvfs-smb"
+	else 											apk add gvfs-fuse gvfs-mtp gvfs-nfs gvfs-smb
 	fi
 }
 select_option() {
 	if ! command -v dialog &>/dev/null; then 
-		if command -v "${sSuPfx}" &>/dev/null; then 	sudo apk add dialog
-		else 									apk add dialog
+		if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} apk add dialog"
+		else 										apk add dialog
 		fi
 	fi
 	HEIGHT=25
@@ -62,20 +62,20 @@ select_option() {
 gpu_setup() {
 	sChoiceGpu=$(select_option xf86-video-amdgpu xf86-video-ati xf86-video-intel xf86-video-nouveau xf86-video-qxl xf86-video-vesa xf86-video-vmware)
 	#shellcheck disable=SC2086
-	if command -v "${sSuPfx}" &>/dev/null; then 	sudo apk add ${sChoiceGpu}
-	else 									apk add ${sChoiceGpu}
+	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} apk add ${sChoiceGpu}"
+	else 										apk add ${sChoiceGpu}
 	fi
 }
 input_setup() {
 	sChoiceInput=$(select_option xf86-input-evdev xf86-input-libinput xf86-input-synaptics xf86-input-vmmouse xf86-input-wacom)
 	#shellcheck disable=SC2086
-	if command -v "${sSuPfx}" &>/dev/null; then 	sudo apk add ${sChoiceInput}
-	else 									apk add ${sChoiceInput}
+	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx}	apk add ${sChoiceInput}"
+	else 										apk add ${sChoiceInput}
 	fi
 }
 sound_setup() {
-	if command -v "${sSuPfx}" &>/dev/null; then 	sudo apk add pulseaudio pavucontrol alsa-utils xfce4-pulseaudio-plugin && sudo rc-update add alsa
-	else 									setup add pulseaudio pavucontrol alsa-utils xfce4-pulseaudio-plugin && rc-update add alsa
+	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'apk add pulseaudio pavucontrol alsa-utils xfce4-pulseaudio-plugin && rc-update add alsa'"
+	else 										setup add pulseaudio pavucontrol alsa-utils xfce4-pulseaudio-plugin && rc-update add alsa
 	fi
 }
 lang_setup() {
@@ -92,12 +92,12 @@ LC_ALL="
 	MatchIsKeyboard \"on\"
 	Option \"XkbLayout\" \"fr\"
 EndSection"
-	if command -v "${sSuPfx}" &>/dev/null; then 	sudo apk add lang
-											echo "${sProfileFr}" | sudo tee /etc/profile.d/99-fr.sh
-											echo "${sKeyboardFrX}" | sudo tee /etc/X11/xorg.conf.d/30-keyboard.conf
-	else 									apk add lang
-											echo "${sProfileFr}" | tee /etc/profile.d/99-fr.sh 
-											echo "${sKeyboardFrX}" | tee /etc/X11/xorg.conf.d/30-keyboard.conf
+	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} apk add lang"
+												echo "${sProfileFr}" | eval "${sSuPfx} tee /etc/profile.d/99-fr.sh"
+												echo "${sKeyboardFrX}" | eval "${sSuPfx} tee /etc/X11/xorg.conf.d/30-keyboard.conf"
+	else 										apk add lang
+												echo "${sProfileFr}" | tee /etc/profile.d/99-fr.sh 
+												echo "${sKeyboardFrX}" | tee /etc/X11/xorg.conf.d/30-keyboard.conf
 	fi
 }
 main_setup_de() {
@@ -108,12 +108,12 @@ main_setup_de() {
 		echo -e "\t>>> apk found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. setup DE \n 5. "
 	fi
 	update_setup && clean_setup
-	if command -v "${sSuPfx}" &>/dev/null; then 	sudo apk add musl-locales
-											sudo setup-desktop
-											sudo apk add adw-gtk3 adwaita-icon-theme adwaita-xfce-icon-theme
-	else 									apk add musl-locales
-											setup-desktop
-											apk add adw-gtk3 adwaita-icon-theme adwaita-xfce-icon-theme
+	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} apk add musl-locales"
+												eval "${sSuPfx} setup-desktop"
+												eval "${sSuPfx} apk add adw-gtk3 adwaita-icon-theme adwaita-xfce-icon-theme"
+	else 										apk add musl-locales
+												setup-desktop
+												apk add adw-gtk3 adwaita-icon-theme adwaita-xfce-icon-theme
 	fi
 	gvfs_setup
 	gpu_setup

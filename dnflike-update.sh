@@ -27,7 +27,7 @@ main_rockylinux_update() {
 	updateScriptsViaGit
 	update_dnf && clean_dnf #&& shutdown 0
 	bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
-	if [[ ${bVirtualized} -eq 0 ]]; then 	eval "${sSuPfx} shutdown 0"; fi
+	if [[ ${bVirtualized} -eq 0 ]]; then 		eval "${sSuPfx} shutdown 0"; fi
 }
 
 main_rockylinux_update
