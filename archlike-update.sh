@@ -9,12 +9,12 @@ source "${sLaunchDir}/include/check-virtual-env"
 source "${sLaunchDir}/include/git-self-update"
 
 update_arch() {
-	if command -v sudo &>/dev/null; then 			sudo pacman -Syyuu
+	if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} pacman -Syyuu"
 	else 											pacman -Syyuu
 	fi
 }
 clean_arch() {
-	if command -v sudo &>/dev/null; then 			if pacman -Qdtq; then pacman -Qdtq | sudo pacman -Rs -; fi
+	if command -v "${sSuPfx}" &>/dev/null; then 	if pacman -Qdtq; then eval "pacman -Qdtq | ${sSuPfx} pacman -Rs -"; fi
 													sudo pacman -Scc --noconfirm 
 	else
 		 											if pacman -Qdtq; then pacman -Qdtq | pacman -Rs -; fi 

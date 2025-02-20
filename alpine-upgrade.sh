@@ -9,8 +9,8 @@ source "${sLaunchDir}/include/check-virtual-env"
 source "${sLaunchDir}/include/git-self-update"
 
 update_apk() {
-	if command -v sudo &>/dev/null; then 	sudo apk update && sudo apk upgrade
-	else 									apk update && apk upgrade
+	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'apk update && apk upgrade'"
+	else 										apk update && apk upgrade
 	fi
 }
 clean_apk() {
