@@ -9,13 +9,14 @@ source "${sLaunchDir}/include/check-virtual-env"
 source "${sLaunchDir}/include/git-self-update"
 
 update_arch() {
+	#shellcheck disable=SC2154
 	if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} pacman -Syyuu"
 	else 											pacman -Syyuu
 	fi
 }
 clean_arch() {
 	if command -v "${sSuPfx}" &>/dev/null; then 	if pacman -Qdtq; then eval "pacman -Qdtq | ${sSuPfx} pacman -Rs -"; fi
-													sudo pacman -Scc --noconfirm 
+													eval "${sSuPfx} pacman -Scc --noconfirm" 
 	else
 		 											if pacman -Qdtq; then pacman -Qdtq | pacman -Rs -; fi 
 													pacman -Scc --noconfirm
@@ -38,7 +39,7 @@ clean_trizen() {
 setup_paru() {
 	#if [[ ${UID} = 0 ]] || [[ ${UID} = 0 ]]; then exit 1; fi
 	cd /tmp || exit
-	if command -v sudo &>/dev/null; then 			sudo pacman -S --needed base-devel
+	if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} pacman -S --needed base-devel"
 	else 											pacman -S --needed base-devel
 	fi
 	if false; then 									git clone https://aur.archlinux.org/paru.git
@@ -49,16 +50,15 @@ setup_paru() {
 	makepkg -si
 }
 
-main_archlike_update() {
-	echo ${sSuPfx}; read -rp ""
+main_archlike_update() {	#echo ${sSuPfx}; read -rp ""
 	if ! command -v pacman &>/dev/null; then 		echo -e "\t>>> pacman not found, exit now !!!"
 													exit 1
 	else 											echo -e "\t>>> pacman found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
 	fi
 	updateScriptsViaGit
-	update_arch && clean_arch #&& sudo shutdown 0
+	update_arch && clean_arch
 	bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
-	#if [[ ${bVirtualized} -eq 0 ]]; then 			sudo shutdown 0; fi
+	if [[ ${bVirtualized} -eq 0 ]]; then 			eval "${sSuPfx} shutdown 0"; fi
 }
 
 main_archlike_update
