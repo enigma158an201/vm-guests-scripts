@@ -50,6 +50,7 @@ setup_paru() {
 }
 
 main_archlike_update() {
+	echo ${sSuPfx}; read -rp ""
 	if ! command -v pacman &>/dev/null; then 		echo -e "\t>>> pacman not found, exit now !!!"
 													exit 1
 	else 											echo -e "\t>>> pacman found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
