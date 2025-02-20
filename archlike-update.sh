@@ -57,7 +57,7 @@ main_archlike_update() {
 	updateScriptsViaGit
 	update_arch && clean_arch #&& sudo shutdown 0
 	bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
-	if [[ ${bVirtualized} -eq 0 ]]; then 			sudo shutdown 0; fi
+	#if [[ ${bVirtualized} -eq 0 ]]; then 			sudo shutdown 0; fi
 }
 
 main_archlike_update
