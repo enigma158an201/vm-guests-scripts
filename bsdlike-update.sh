@@ -31,9 +31,9 @@ upgrade_release_freebsd() {
 		echo -e "\t>>> FreeBSD ${sFreebsdCurrent} is not the latest version, upgrading to ${sFreebsdLatest}"
 		if command -v freebsd-update &>/dev/null; then
 			#shellcheck disable=SC2154
-			if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'freebsd-update upgrade -r ${sFreebsdLatest}'"
+			if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'freebsd-update upgrade -r ${sFreebsdLatest} || true'"
 														eval "${sSuPfx} 'freebsd-update install'"
-			elif test ${UID} -eq 0; then 				freebsd-update upgrade -r "${sFreebsdLatest}"
+			elif test ${UID} -eq 0; then 				freebsd-update upgrade -r "${sFreebsdLatest}" || true
 														freebsd-update install
 			fi
 		fi
