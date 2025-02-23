@@ -11,6 +11,10 @@ source "${sLaunchDir}/include/git-self-update"
 get_freebsd_latest_version() {
 	curl -s https://download.freebsd.org/releases/amd64/ | awk '{print $3}' | grep RELEASE | tr -d '"' | tr -d '/' | cut -f2 -d'=' | sort | tail -1
 }
+get_freebsd_installed_release() {
+	sRelease=$(freebsd-version)
+	echo "${sRelease#*-p}"
+}
 
 update_freebsd() {
 	if ! command -v freebsd-update &>/dev/null; then
@@ -22,7 +26,7 @@ update_freebsd() {
 }
 upgrade_release_freebsd() {
 	sFreebsdLatest="$(get_freebsd_latest_version)"
-	sFreebsdCurrent="$(freebsd-version | cut -d '-' -f 1)"
+	sFreebsdCurrent="$(get_freebsd_installed_release)" #"$(freebsd-version | cut -d '-' -f 1)"
 	if [[ ${sFreebsdLatest} -ne ${sFreebsdCurrent} ]]; then
 		echo -e "\t>>> FreeBSD ${sFreebsdCurrent} is not the latest version, upgrading to ${sFreebsdLatest}"
 		if ! command -v freebsd-update &>/dev/null; then
