@@ -27,7 +27,7 @@ update_freebsd() {
 upgrade_release_freebsd() {
 	sFreebsdLatest="$(get_freebsd_latest_version)"
 	sFreebsdCurrent="$(get_freebsd_installed_release)" #"$(freebsd-version | cut -d '-' -f 1)"
-	if [[ ${sFreebsdLatest} -ne ${sFreebsdCurrent} ]]; then
+	if [[ ${sFreebsdLatest} != "${sFreebsdCurrent}" ]]; then
 		echo -e "\t>>> FreeBSD ${sFreebsdCurrent} is not the latest version, upgrading to ${sFreebsdLatest}"
 		if ! command -v freebsd-update &>/dev/null; then
 			#shellcheck disable=SC2154
