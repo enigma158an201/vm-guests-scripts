@@ -18,8 +18,10 @@ get_freebsd_installed_release() {
 update_freebsd() {
 	if ! command -v freebsd-update &>/dev/null; then
 		#shellcheck disable=SC2154
-		if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'freebsd-update fetch && freebsd-update install'"
-		elif test ${UID} -eq 0; then 				freebsd-update fetch && freebsd-update install
+		if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'freebsd-update fetch'"
+													eval "${sSuPfx} 'freebsd-update install'"
+		elif test ${UID} -eq 0; then 				freebsd-update fetch 
+													freebsd-update install
 		fi
 	fi 
 }
@@ -32,9 +34,9 @@ upgrade_release_freebsd() {
 		if command -v freebsd-update &>/dev/null; then
 			#shellcheck disable=SC2154
 			if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'freebsd-update upgrade -r ${sFreebsdLatest} || true'"
-														eval "${sSuPfx} 'freebsd-update install'"
+														#eval "${sSuPfx} 'freebsd-update install'"
 			elif test ${UID} -eq 0; then 				freebsd-update upgrade -r "${sFreebsdLatest}" || true
-														freebsd-update install
+														#freebsd-update install
 			fi
 		fi
 		update_freebsd
