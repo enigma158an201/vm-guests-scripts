@@ -13,7 +13,7 @@ get_freebsd_latest_version() {
 }
 get_freebsd_installed_release() {
 	sRelease=$(freebsd-version)
-	echo "${sRelease#*-p}"
+	echo "${sRelease%%-p*}"
 }
 
 update_freebsd() {
