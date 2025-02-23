@@ -2,9 +2,13 @@
 checkVirtEnv() {
 	bFoundString=1 #false
 	#shellcheck disable=SC2154
-	if command -v "${sSuPfx}" &>/dev/null; then 	sResult="$(eval "${sSuPfx} dmesg --notime")"
-	else 											sResult="$(dmesg --notime)"; fi
+	if command -v dmesg &>/dev/null; then
+		if command -v "${sSuPfx}" &>/dev/null; then 	sResult="$(eval "${sSuPfx} dmesg --notime")"
+		else 											sResult="$(dmesg --notime)"; fi
+	#else 												sResult="$(truc)" #dmesg --notime ne fonctionne pas avec bsd
+	fi
 	sHypervisor=$(grep -i hypervisor <<< "${sResult}" | cut -d ':' -f2 | tr -d " \t\n\r")
+	
 	if [[ -n ${sHypervisor} ]]; then 				bFoundString=0
 	else
 													for sVirtEnv in virtualbox vboxservice vmware; do

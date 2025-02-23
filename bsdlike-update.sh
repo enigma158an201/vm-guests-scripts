@@ -8,6 +8,10 @@ source "${sLaunchDir}/include/check-user-privileges"
 source "${sLaunchDir}/include/check-virtual-env"
 source "${sLaunchDir}/include/git-self-update"
 
+get_freebsd_latest_version() {
+	curl -s https://download.freebsd.org/releases/amd64/ | awk '{print $3}' | grep RELEASE | tr -d '"' | tr -d '/' | cut -f2 -d'=' | sort | tail -1
+}
+
 update_freebsd() {
 	if ! command -v freebsd-update &>/dev/null; then
 		#shellcheck disable=SC2154
@@ -15,6 +19,24 @@ update_freebsd() {
 		elif test ${UID} -eq 0; then 				freebsd-update fetch && freebsd-update install
 		fi
 	fi 
+}
+upgrade_freebsd() {
+	sFreebsdLatest="$(get_freebsd_latest_version)"
+	sFreebsdCurrent="$(freebsd-version | cut -d '-' -f 1)"
+	if [[ ${sFreebsdLatest} -ne ${sFreebsdCurrent} ]]; then
+		echo -e "\t>>> FreeBSD ${sFreebsdCurrent} is not the latest version, upgrading to ${sFreebsdLatest}"
+		if ! command -v freebsd-update &>/dev/null; then
+			#shellcheck disable=SC2154
+			if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'freebsd-update upgrade -r ${sFreebsdLatest}'"
+			elif test ${UID} -eq 0; then 				freebsd-update upgrade -r "${sFreebsdLatest}"
+			fi
+		fi
+		update_freebsd
+	else
+		echo -e "\t>>> FreeBSD ${sFreebsdCurrent} is the latest version, no need to upgrade"
+		exit 0
+	fi
+	
 }
 update_bsd() {
 	if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} 'pkg update -f && pkg upgrade'"
