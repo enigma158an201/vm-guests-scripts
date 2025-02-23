@@ -20,7 +20,7 @@ update_freebsd() {
 		fi
 	fi 
 }
-upgrade_freebsd() {
+upgrade_release_freebsd() {
 	sFreebsdLatest="$(get_freebsd_latest_version)"
 	sFreebsdCurrent="$(freebsd-version | cut -d '-' -f 1)"
 	if [[ ${sFreebsdLatest} -ne ${sFreebsdCurrent} ]]; then
@@ -55,9 +55,9 @@ main_bsdlike_update() {
 	fi
 	updateScriptsViaGit
 	update_freebsd
-	update_bsd && clean_bsd #&& poweroff #&& sudo shutdown 0
-	bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
-	if [[ ${bVirtualized} -eq 0 ]]; then 			eval "${sSuPfx} poweroff"; fi
+	update_bsd && upgrade_release_freebsd && clean_bsd #&& poweroff #&& sudo shutdown 0
+	#bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
+	#if [[ ${bVirtualized} -eq 0 ]]; then 			eval "${sSuPfx} poweroff"; fi
 }
 
 main_bsdlike_update
