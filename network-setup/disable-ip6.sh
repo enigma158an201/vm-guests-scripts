@@ -24,5 +24,6 @@ applySysctl() {
 }
 main() {
 	blacklist-ip6-kernel-modules-sysctl
+	applySysctl
 }
 main
