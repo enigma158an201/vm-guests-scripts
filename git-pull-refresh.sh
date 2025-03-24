@@ -3,6 +3,8 @@
 # script by enigma158an201
 set -euo pipefail # set -euxo pipefail
 
+# script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
+
 findScriptsGitFolder() {
 	set +euo pipefail
 	find ~ -nowarn -type d -iname 'vm-guests-script*' 2>/dev/null

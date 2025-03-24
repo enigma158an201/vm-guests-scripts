@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # developpé par enigma158an201 le 20/02/2020
 set -euxo pipefail
+
+# script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
+
 # <>
 # A bien lire avant d'aller plus loin
 # 1. le programme est prévu pour effacer le disque complet et le partitionner (à voir pour sauter cette partie si souhait utulisateur)

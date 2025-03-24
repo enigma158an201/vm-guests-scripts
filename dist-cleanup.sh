@@ -3,7 +3,10 @@
 #https://easylinuxtipsproject.blogspot.com/p/clean-mint.html
 #https://easylinuxtipsproject.blogspot.com/p/speed-mint.html
 
+# script by enigma158an201
 set -euo pipefail
+
+# script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 source "${sLaunchDir}/include/check-user-privileges"

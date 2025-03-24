@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
+# script by enigma158an201
 set -euo pipefail # -x
+
+# script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
+
 declare sCmdParameters
 sCmdParameters="$*"
 declare bSudoGroup

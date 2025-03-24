@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
 # script by enigma158an201 01/04/2024 @ 18:50
+set -euxo pipefail
+
+# script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
 
 # https://linuxize.com/post/how-to-upgrade-debian-10-to-debian-11/
 # /etc/apt/sources.list

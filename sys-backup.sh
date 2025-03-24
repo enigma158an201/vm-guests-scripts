@@ -3,6 +3,8 @@
 # script by enigma158an201
 set -euo pipefail # set -euxo pipefail
 
+# script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
+
 sBackupHost=gwen@192.168.0.53
 sBackupFolder=/media/VMs/vm-backup
 

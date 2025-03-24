@@ -3,6 +3,8 @@
 # script by enigma158an201
 set -euxo pipefail # set -euxo pipefail
 
+# script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
+
 #https://linux.how2shout.com/five-commands-to-check-the-almalinux-or-rocky-linux-version/
 
 sMajorCurrentVersion=9

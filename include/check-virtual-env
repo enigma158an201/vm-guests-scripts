@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+
+# script by enigma158an201
+# script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
+
 checkVirtEnv() {
 	bFoundString=1 #false
 	#shellcheck disable=SC2154

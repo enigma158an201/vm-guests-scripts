@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
+# script by enigma158an201 
 set -euo pipefail #; set -x
+
+# script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
 
 #sLaunchDir="$(dirname "$0")"; if [[ "${sLaunchDir}" = "." ]]; then sLaunchDir="$(pwd)"; elif [[ "${sLaunchDir}" = "include" ]]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
