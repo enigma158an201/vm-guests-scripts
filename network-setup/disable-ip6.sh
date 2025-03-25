@@ -23,6 +23,9 @@ blacklist-ip6-kernel-modules-sysctl() {
 applySysctl() {
 	if command -v update-initramfs &>/dev/null; then 	eval "${sSuPfx} update-initramfs -u -k all"
 	elif command -v mkinitcpio &>/dev/null; then 		eval "${sSuPfx} mkinitcpio --allpresets"
+	elif command -v dracut &>/dev/null; then 			eval "${sSuPfx} dracut -f --regenerate-all"
+	else
+		echo -e "\t>>> No initramfs tool found to update"
 	fi
 }
 main() {
