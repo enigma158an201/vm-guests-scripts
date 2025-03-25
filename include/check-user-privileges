@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 
 # script by enigma158an201
+set -euo pipefail # -x
+
 # script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
 
 checkRootPermissions() {
-	if [[ ${UID} = 0 ]] || [[ ${UID} = 0 ]]; then 	echo "true"
+	if [[ ${UID} = 0 ]] || [[ ${EUID} = 0 ]]; then 	echo "true"
 	else 											echo "false"; fi
 }
 getSuPfx() {
@@ -16,6 +18,5 @@ getSuPfx() {
 	else 											echo ""
 	fi
 }
-# shellcheck disable=SC2034
 sSuPfx=$(getSuPfx)
 export sSuPfx
