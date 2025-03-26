@@ -27,16 +27,18 @@ sSshLocalAuthKeys=${HOME}/${sSshAuthKeys}
 installSshAlias() {
 	#sLoggedUser=$(whoami)
 	echo -e "\t>>> setup ssh alias config at ${sSshLocalAliasConfig}{,.d/}"
-	mkdir -p "${sSshLocalAliasConfigd}"
-	install -o "${USER}" -g "${USER}" -pv -m 0644 "${sSshRepoAliasConfig}" "${sSshLocalAliasConfig}"
-	for sAliasConfigSrc in "${sSshRepoAliasConfigd}"/*; do 
-		#install -o "${USER}" -g "${USER}" -pv -m 0644 "${sSshRepoAliasConfigd}/${sAliasConfigSrc}" "${sSshLocalAliasConfigd}/${sAliasConfigSrc}"
-		sAliasConfigDst="${sAliasConfigSrc/${sSshRepoSource}/${HOME}}"
-		#if [[ ${sAliasConfigDst} =~ ${sLoggedUser} ]]; then
-			echo -e "\t>>> proceed file ${sAliasConfigSrc} to ${sAliasConfigDst}"
-			install -o "${USER}" -g "${USER}" -pv -m 0644 "${sAliasConfigSrc}" "${sAliasConfigDst}"
-		#fi
-	done
+	#mkdir -p "${sSshLocalAliasConfigd}"
+	#install -o "${USER}" -g "${USER}" -pv -m 0644 "${sSshRepoAliasConfig}" "${sSshLocalAliasConfig}"
+	#for sAliasConfigSrc in "${sSshRepoAliasConfigd}"/*; do 
+	#	#install -o "${USER}" -g "${USER}" -pv -m 0644 "${sSshRepoAliasConfigd}/${sAliasConfigSrc}" "${sSshLocalAliasConfigd}/${sAliasConfigSrc}"
+	#	sAliasConfigDst="${sAliasConfigSrc/${sSshRepoSource}/${HOME}}"
+	#	#if [[ ${sAliasConfigDst} =~ ${sLoggedUser} ]]; then
+	#		echo -e "\t>>> proceed file ${sAliasConfigSrc} to ${sAliasConfigDst}"
+	#		install -o "${USER}" -g "${USER}" -pv -m 0644 "${sAliasConfigSrc}" "${sAliasConfigDst}"
+	#	#fi
+	#done
+	if [[ -f "${sSshRepoAliasConfig}" ]]; then 		rsync -av "${sSshRepoAliasConfig}" "${sSshLocalAliasConfig}"; fi
+	if [[ -d "${sSshRepoAliasConfigd}" ]]; then 	rsync -av "${sSshRepoAliasConfigd}/" "${sSshLocalAliasConfigd}/"; fi
 }
 installSshKeys() {
 	echo -e "\t>>> setup ssh keys at ${sSshLocalConf}"
@@ -73,7 +75,7 @@ cleanModuli() {
 main_ssh_config() {
 	cleanModuli
 	updateSshdConfig
-	#installSshAlias
+	installSshAlias
 	#installSshKeys
 	#importSshKeys
 	#suExecCommand sshd-config-settings
