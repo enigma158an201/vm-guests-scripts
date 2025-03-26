@@ -74,7 +74,7 @@ updateSshdConfig() {
 		fi
 	done
 	for sSshCrypt in rsa dsa ecdsa; do
-		rm \"/etc/ssh/ssh_host_*\$sSshCrypt*_key*\" || true
+		rm /etc/ssh/ssh_host_*\$sSshCrypt*_key || true
 	done
 	systemctl restart sshd.service'"
 }
