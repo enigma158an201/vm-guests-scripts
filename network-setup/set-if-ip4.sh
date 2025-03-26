@@ -9,17 +9,33 @@ set -euo pipefail #; set -x
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 source "${sLaunchDir}/../include/check-user-privileges"
 
+# Function to check if the input string is a valid IPv4 address
+is_valid_ipv4() {
+    local ip="$1"
+    if [[ ${ip} =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
+        IFS='.' read -r i1 i2 i3 i4 <<< "${ip}" # Split the IP into an array
+        if (( i1 >= 0 && i1 <= 255 )) && (( i2 >= 0 && i2 <= 255 )) && (( i3 >= 0 && i3 <= 255 )) && (( i4 >= 0 && i4 <= 255 )); then 	# Check if each octet is between 0 and 255
+            echo "${ip} is a valid IPv4 address."
+            return 0
+        fi
+    fi
+    echo "${ip} is not a valid IPv4 address."
+    return 1
+}
+
 createNetworkingIfStaticFile() {
-	sIfName=$1
-	sAddr4=$2
+	if [[ -f /dev/$1 ]]; then sIfName=$1; else exit 1; fi 	#validate if the interface exists
+	if is_valid_ipv4 "$2"; then sAddr4=$2; else exit 1; fi	#validate if the address is a valid IPv4 address
+	#todo: confirm the adress mask and gateway
+	sDns4="194.242.2.3 80.67.169.12"
 	sNetworkingIfDst="/etc/network/interfaces.d"
-	sHostname="$(hostname)"
+	if command -v hostname &>/dev/null; then sHostname="$(hostname)"; fi
 	#shellcheck disable=SC2154
 	echo -e "allow-hotplug ${sIfName}\niface ${sIfName} inet static
 	address         ${sAddr4}
 	netmask         255.255.255.0
 	gateway         192.168.0.254
-	dns-nameservers	80.67.169.12 80.67.169.40" | ${sSuPfx} tee "${sNetworkingIfDst}/${sIfName}-${sHostname}"
+	dns-nameservers	${sDns4}" | ${sSuPfx} tee "${sNetworkingIfDst}/${sIfName}-${sHostname}"
 }
 main() {
 	createNetworkingIfStaticFile "$@" #"enp0s3" "192.168.0.107"

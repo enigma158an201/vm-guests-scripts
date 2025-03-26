@@ -9,6 +9,11 @@ set -euo pipefail #; set -x
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 source "${sLaunchDir}/../include/check-user-privileges"
 
+checkSysctlEnabled() {
+	if sysctl -a &>/dev/null; then 			echo -e "\t>>> sysctl is enabled"; 		return 0
+	else 									echo -e "\t>>> sysctl is not enabled"; 	return 1; fi
+}
+getSysctlEnabled() { if command -v sysctl &>/dev/null; then echo -e "\t>>> sysctl is enabled"; else echo -e "\t>>> sysctl is not enabled"; fi; }
 blacklist-ip6-kernel-modules-sysctl() {
 	sIp6BcklDst="/etc/sysctl.d/00-disable-ip6-R13.conf"
 	sIp6BcklSrc="${sLaunchDir}/../src${sIp6BcklDst}"
@@ -29,6 +34,10 @@ applySysctl() {
 	fi
 }
 main() {
+	if ! checkSysctlEnabled; then
+		echo -e "\t>>> sysctl is not enabled, exiting..."
+		exit 1
+	fi
 	blacklist-ip6-kernel-modules-sysctl
 	applySysctl
 }
