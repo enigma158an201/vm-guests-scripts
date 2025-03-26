@@ -12,6 +12,7 @@ sSshUserFolder=.ssh
 sSshAliasConfig=${sSshUserFolder}/config
 sSshAliasConfigd=${sSshAliasConfig}.d
 sSshAuthKeys=${sSshUserFolder}/authorized_keys
+sSshAuthKeyKonnectVM="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH9rbQRZGsbwIi+EIgn3C8s59shJ1eMirAnXHzz8wStk vbox@konnect"
 
 sSshRepoSource="${sLaunchDir}/../src/home/user"
 sSshRepoConf=${sSshRepoSource}/${sSshUserFolder}
@@ -25,18 +26,7 @@ sSshLocalAliasConfigd=${HOME}/${sSshAliasConfigd}
 sSshLocalAuthKeys=${HOME}/${sSshAuthKeys}
 
 installSshAlias() {
-	#sLoggedUser=$(whoami)
 	echo -e "\t>>> setup ssh alias config at ${sSshLocalAliasConfig}{,.d/}"
-	#mkdir -p "${sSshLocalAliasConfigd}"
-	#install -o "${USER}" -g "${USER}" -pv -m 0644 "${sSshRepoAliasConfig}" "${sSshLocalAliasConfig}"
-	#for sAliasConfigSrc in "${sSshRepoAliasConfigd}"/*; do 
-	#	#install -o "${USER}" -g "${USER}" -pv -m 0644 "${sSshRepoAliasConfigd}/${sAliasConfigSrc}" "${sSshLocalAliasConfigd}/${sAliasConfigSrc}"
-	#	sAliasConfigDst="${sAliasConfigSrc/${sSshRepoSource}/${HOME}}"
-	#	#if [[ ${sAliasConfigDst} =~ ${sLoggedUser} ]]; then
-	#		echo -e "\t>>> proceed file ${sAliasConfigSrc} to ${sAliasConfigDst}"
-	#		install -o "${USER}" -g "${USER}" -pv -m 0644 "${sAliasConfigSrc}" "${sAliasConfigDst}"
-	#	#fi
-	#done
 	if [[ -f "${sSshRepoAliasConfig}" ]]; then 		rsync -av "${sSshRepoAliasConfig}" "${sSshLocalAliasConfig}"; fi
 	if [[ -d "${sSshRepoAliasConfigd}" ]]; then 	rsync -av "${sSshRepoAliasConfigd}/" "${sSshLocalAliasConfigd}/"; fi
 }
@@ -51,14 +41,16 @@ installSshKeys() {
 	done
 }
 importSshKeys() {
-	echo -e "\t>>> setup ssh keys at ${sSshLocalConf}"	#ssh-copy-id -i debian_server.pub pragmalin@debianvm
-	#for sSshPubKey in "${sSshRepoConf}"/*.pub; do
-		for sSshAlias in SKY41 testsalonk wtestsalonk #freebox-delta-wan
-		do
-			sSshPubKey="to-do-check_if_alias_reachable_and_key_importable"
-			if true; then 	echo "ssh-copy-id -i \"${sSshPubKey}\" \"${sSshAlias}\""; fi
-		done
-	#done
+	echo -e "\t>>> setup ssh authorized_keys at ${sSshLocalConf}"	#ssh-copy-id -i debian_server.pub pragmalin@debianvm
+	##for sSshPubKey in "${sSshRepoConf}"/*.pub; do
+	#	for sSshAlias in SKY41 testsalonk wtestsalonk #freebox-delta-wan
+	#	do
+	#		sSshPubKey="to-do-check_if_alias_reachable_and_key_importable"
+	#		if true; then 	echo "ssh-copy-id -i \"${sSshPubKey}\" \"${sSshAlias}\""; fi
+	#	done
+	##done
+	if [[ ! -f "${sSshLocalAuthKeys}" ]]; then touch "${sSshLocalAuthKeys}"; fi
+	echo "${sSshAuthKeyKonnectVM}" >> "${sSshLocalAuthKeys}"
 }
 updateSshdConfig() {
 	echo -e "\t>>> application des fichiers config ssh et sshd"
@@ -77,7 +69,6 @@ main_ssh_config() {
 	updateSshdConfig
 	installSshAlias
 	#installSshKeys
-	#importSshKeys
-	#suExecCommand sshd-config-settings
+	importSshKeys #todo: import existing vm ssh keys to host
 }
 main_ssh_config
