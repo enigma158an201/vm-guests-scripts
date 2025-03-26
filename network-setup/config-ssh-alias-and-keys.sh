@@ -61,8 +61,8 @@ importSshKeys() {
 updateSshdConfig() {
 	echo -e "\t>>> application des fichiers config ssh et sshd"
 	read -rp "${sLaunchDir}"
-	suExecCommand "	rsync -av \"$(readlink \"${sLaunchDir}/../src/etc/ssh/sshd_config.d/)\" /etc/ssh/sshd_config.d/; \
-					rsync -av \"$(readlink \"${sLaunchDir}/../src/etc/ssh/ssh_config.d/)\" /etc/ssh/ssh_config.d/"
+	suExecCommand "	rsync -av \"$(readlink ${sLaunchDir}/../src/etc/ssh/sshd_config.d/)\" /etc/ssh/sshd_config.d/; \
+					rsync -av \"$(readlink ${sLaunchDir}/../src/etc/ssh/ssh_config.d/)\" /etc/ssh/ssh_config.d/"
 	#suExecCommand "bash -x -c 'for sSshCrypt in rsa dsa ecdsa; do rm /etc/ssh/ssh_host_*\$sSshCrypt*_key* || true; done; systemctl restart sshd.service ssh.service'"
 }
 cleanModuli() {
