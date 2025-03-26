@@ -62,16 +62,17 @@ updateSshdConfig() {
 	echo -e "\t>>> application des fichiers config ssh et sshd"
 	declare -a sConfList
 	
-	mapfile -t sConfList < <(find "${sLaunchDir}/../src/etc/ssh/ssh_config.d/" -iname '*.conf')
-	export sConfList
-	suExecCommand "bash -x -c 'for sSshConfigFile in ${sConfList[*]}; do
-		sSshConfigFileName=\"\$(basename \"\${sSshConfigFile}\")\"
-		sSshConfigDst=\"/etc/ssh/ssh_config.d/\${sSshConfigFileName}\"
-		sSshConfigSrc=\"${sLaunchDir}\${sSshConfigDst}
-		if [[ -d \"\$(dirname \"\${sSshConfigDst}\")\" ]] && [[ -f \"\${sSshConfigSrc}\" ]]; then
-			install -o root -g root -m 0744 -pv \"\${sSshConfigSrc}\" \"\${sSshConfigDst}\"
-		fi
-	done'"
+	#mapfile -t sConfList < <(find "${sLaunchDir}/../src/etc/ssh/ssh_config.d/" -iname '*.conf')
+	#export sConfList
+	#suExecCommand "bash -x -c 'for sSshConfigFile in ${sConfList[*]}; do
+	#	sSshConfigFileName=\"\$(basename \"\${sSshConfigFile}\")\"
+	#	sSshConfigDst=\"/etc/ssh/ssh_config.d/\${sSshConfigFileName}\"
+	#	sSshConfigSrc=\"${sLaunchDir}\${sSshConfigDst}
+	#	if [[ -d \"\$(dirname \"\${sSshConfigDst}\")\" ]] && [[ -f \"\${sSshConfigSrc}\" ]]; then
+	#		install -o root -g root -m 0744 -pv \"\${sSshConfigSrc}\" \"\${sSshConfigDst}\"
+	#	fi
+	#done'"
+	suExecCommand "rsync -av \"${sLaunchDir}/../src/etc/ssh/ssh_config.d/\" /etc/ssh/ssh_config/"
 	mapfile -t sConfList < <(find "${sLaunchDir}/../src/etc/ssh/sshd_config.d/" -iname '*.conf')
 	export sConfList
 	suExecCommand  "bash -x -c 'for sSshdConfigFile in ${sConfList[*]}; do
