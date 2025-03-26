@@ -17,9 +17,7 @@ checkUserSudoOrWheelGroup() {
 	sUserGroups="${sUserGroups##*: }"		# sUserGroups="${`groups ${USER}`##*: }"
 	bSudoGroup="false"
 	for sGr in sudo wheel; do
-		for sGr2 in ${sUserGroups}; do
-			if [[ "${sGr}" = "${sGr2}" ]]; then 	bSudoGroup="true"; break; fi
-		done
+		for sGr2 in ${sUserGroups}; do 		if [[ "${sGr}" = "${sGr2}" ]]; then 	bSudoGroup="true"; break; fi; done
 		if [[ "${bSudoGroup}" = "true" ]]; then 	break; fi
 	done
 	echo "${bSudoGroup}"
@@ -27,17 +25,15 @@ checkUserSudoOrWheelGroup() {
 
 #checkSudoers() {
 	#set +x #if false; then sudo -l -U ${USER}; fi
-	#if false; then
-		#printf "sPassword\n" | sudo -S /bin/chmod --help >/dev/null 2>&1
-		#if [[ $? -eq 0 ];then 		has_sudo_access="YES"
-		#else 						has_sudo_access="NO"; fi
-		#echo "Does user `id -Gn` has sudo access?: ${has_sudo_access}"
+	#if false; then		#printf "sPassword\n" | sudo -S /bin/chmod --help >/dev/null 2>&1
+						#if [[ $? -eq 0 ];then 		has_sudo_access="YES"
+						#else 						has_sudo_access="NO"; fi
+						#echo "Does user `id -Gn` has sudo access?: ${has_sudo_access}"
 	#fi
-	#if false; then
-		#`timeout -k 2 2 bash -c "sudo /bin/chmod --help" >&/dev/null 2>&1` >/dev/null 2>&1
-		#if [[ $? -eq 0 ];then 		has_sudo_access="YES"
-		#else 						has_sudo_access="NO"; fi
-		#echo "Does user `id -Gn` has sudo access?: ${has_sudo_access}"
+	#if false; then		#`timeout -k 2 2 bash -c "sudo /bin/chmod --help" >&/dev/null 2>&1` >/dev/null 2>&1
+						#if [[ $? -eq 0 ];then 		has_sudo_access="YES"
+						#else 						has_sudo_access="NO"; fi
+						#echo "Does user `id -Gn` has sudo access?: ${has_sudo_access}"
 	#fi
 	#if false; then sudo --validate; fi
 	#if false; then sudo -n true; fi #sudo -l ${USER} -n true
@@ -77,27 +73,25 @@ getSuCmdNoPreserveEnv() {			#set +x
 }
 suExecCommand() {
 	sCommand="$*"
+	if ! sPfxSu="$(getSuCmd) "; then 					return 01; fi
 	if [[ ! "${EUID}" = "0" ]]; then 					eval "${sPfxSu} ${sCommand}"
 	elif [[ "${EUID}" = "0" ]]; then 					eval "${sCommand}"; fi
 }
 suExecCommandNoPreserveEnv() {
 	sCommand="$*"
+	if ! sPfxSuNoEnv="$(getSuCmdNoPreserveEnv) "; then 	return 01; fi
 	if [[ ! "${EUID}" = "0" ]]; then 					eval "${sPfxSuNoEnv} ${sCommand}"
 	elif [[ "${EUID}" = "0" ]]; then 					eval "${sCommand}"; fi
 }
 
 main_SU(){
-	sSudoPath="$(command -v sudo &>/dev/null || echo "false")"
-	sDoasPath="$(command -v doas &>/dev/null || echo "false")"
-	bSudoGroup="$(checkUserSudoOrWheelGroup)"
-	bSudoersUser="$(checkSudoers)"
+	sSudoPath="$(command -v sudo || echo "false")"
+	sDoasPath="$(command -v doas || echo "false")"
+	if [[ ! "${sSudoPath}" = "false" ]]; then 			bSudoGroup="$(checkUserSudoOrWheelGroup)"
+														bSudoersUser="$(checkSudoers)"
+	else 												bSudoGroup="false"; bSudoersUser="false"; fi
 	if [[ ! "${sDoasPath}" = "false" ]]; then 			bDoasUser="$(checkDoasUser)"
 	else 												bDoasUser="false"; fi				#suQuotes="$(getSuQuotes)"
-	if ! sPfxSu="$(getSuCmd) "; then 					exit 01; fi
-	if ! sPfxSuNoEnv="$(getSuCmdNoPreserveEnv) "; then 	exit 01; fi
-	#tests
-	#command -v apt-get &> /dev/null && suExecCommand "apt-get upgrade" #install vim" #"cat /etc/sudoers"
-	#command -v zypper &> /dev/null && suExecCommand "zypper update" #install doas"
 	if [[ -n "${sCmdParameters}" ]]; then 				suExecCommand "${sCmdParameters}" || suExecCommandNoPreserveEnv "${sCmdParameters}"
 	else 												echo ; fi
 }

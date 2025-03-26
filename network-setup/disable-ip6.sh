@@ -25,7 +25,7 @@ applySysctl() {
 	elif command -v mkinitcpio &>/dev/null; then 		eval "${sSuPfx} mkinitcpio --allpresets"
 	elif command -v dracut &>/dev/null; then 			eval "${sSuPfx} dracut -f --regenerate-all"
 	else
-		echo -e "\t>>> No initramfs tool found to update"
+		echo -e "\t>>> No initramfs tool found to update initramfs|initrd"
 	fi
 }
 main() {
