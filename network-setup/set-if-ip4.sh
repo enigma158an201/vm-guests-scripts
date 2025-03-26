@@ -38,6 +38,10 @@ createNetworkingIfStaticFile() {
 	dns-nameservers	${sDns4}" | ${sSuPfx} tee "${sNetworkingIfDst}/${sIfName}-${sHostname}"
 }
 main() {
+	if [[ $# -ne 2 ]]; then
+		echo "Usage: $0 <interface> <IPv4 address>"
+		exit 1
+	fi
 	createNetworkingIfStaticFile "$@" #"enp0s3" "192.168.0.107"
 }
 main "$@"
