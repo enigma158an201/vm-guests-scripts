@@ -5,8 +5,8 @@ set -euo pipefail # -x
 
 # script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
 
-declare sCmdParameters
-sCmdParameters="$*"
+#declare sCmdParameters
+#sCmdParameters="$*"
 declare bSudoGroup
 declare bSudoersUser
 declare bDoasUser
@@ -97,7 +97,7 @@ main_SU(){
 	if [[ ! "${sDoasPath}" = "false" ]]; then 			bDoasUser="$(checkDoasUser)"
 	else 												bDoasUser="false"; fi				#suQuotes="$(getSuQuotes)"
 	#if [[ -n "${sCmdParameters}" ]]; then 				
-	suExecCommand "${sCmdParameters}" || suExecCommandNoPreserveEnv "${sCmdParameters}"
+	#suExecCommand "${sCmdParameters}" || suExecCommandNoPreserveEnv "${sCmdParameters}"
 	#else 												echo ; fi
 }
 main_SU
