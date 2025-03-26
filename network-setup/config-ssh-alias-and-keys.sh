@@ -61,8 +61,6 @@ importSshKeys() {
 updateSshdConfig() {
 	echo -e "\t>>> application des fichiers config ssh et sshd"
 	declare -a sConfList
-	#sConfList=( "$(find "${sLaunchDir}/etc/ssh/sshd_config.d/" -iname '*.conf')" ) #	sConfList=${sConfList//'\n'/' '}
-	#sConfList=( $(ls "${sLaunchDir}/etc/ssh/sshd_config.d/*.conf") )
 	mapfile -t sConfList < <(find "${sLaunchDir}/../src/etc/ssh/sshd_config.d/" -iname '*.conf')
 	export sConfList
 	suExecCommand  "bash -x -c 'for sSshdConfigFile in ${sConfList[*]}; do
@@ -83,10 +81,7 @@ updateSshdConfig() {
 			install -o root -g root -m 0744 -pv \${sSshConfigSrc} \${sSshConfigDst}
 		fi
 	done'"
-	suExecCommand "bash -x -c 'for sSshCrypt in rsa dsa ecdsa; do
-		rm /etc/ssh/ssh_host_*\$sSshCrypt*_key* || true
-	done
-	systemctl restart sshd.service ssh.service'"
+	#suExecCommand "bash -x -c 'for sSshCrypt in rsa dsa ecdsa; do rm /etc/ssh/ssh_host_*\$sSshCrypt*_key* || true; done; systemctl restart sshd.service ssh.service'"
 }
 cleanModuli() {
 	suExecCommand "awk '\$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.safe;
