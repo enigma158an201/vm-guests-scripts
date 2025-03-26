@@ -73,7 +73,9 @@ updateSshdConfig() {
 			install -o root -g root -m 0744 -pv \${sSshdConfigSrc} \${sSshdConfigDst}
 		fi
 	done
-	rm /etc/ssh/ssh_host_*dsa* || true
+	for sSshCrypt in rsa dsa ecdsa; do
+		rm \"/etc/ssh/ssh_host_*\$sSshCrypt*_key*\" || true
+	done
 	systemctl restart sshd.service'"
 }
 cleanModuli() {
