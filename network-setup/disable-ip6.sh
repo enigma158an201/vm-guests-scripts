@@ -11,7 +11,7 @@ source "${sLaunchDir}/../include/check-user-privileges"
 
 blacklist-ip6-kernel-modules-sysctl() {
 	sIp6BcklDst="/etc/sysctl.d/00-disable-ip6-R13.conf"
-	sIp6BcklSrc="${sLaunchDir}/../${sIp6BcklDst}"
+	sIp6BcklSrc="${sLaunchDir}/../src${sIp6BcklDst}"
 	if [[ ! -f "${sIp6BcklDst}" ]]; then
 		echo -e "\t>>> proceed add disable ipv6 file to /etc/sysctl.d/ "
 		#shellcheck disable=SC2154

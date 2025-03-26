@@ -68,7 +68,6 @@ upgradeBusterToBullseye() {
 		for sRepo in ${sTiersRepos}; do 	suExecCommandNoPreserveEnv "sed -i.old 's/buster/bullseye/g' ${sRepo}"; done
 	fi
 }
-
 upgradeBullseyeToBookworm() {
 	suExecCommandNoPreserveEnv "sed -i.old 's/bullseye/bookworm/g' ${sAptSourcesListFile}"
 	if [[ -n "${sTiersRepos}" ]]; then
@@ -76,7 +75,6 @@ upgradeBullseyeToBookworm() {
 	fi
 	getNonFreeToNonFreeFirmware
 }
-
 upgradeBookwormToTrixie() {
 	suExecCommandNoPreserveEnv "sed -i.old 's/bookworm/trixie/g' ${sAptSourcesListFile}"
 	if [[ -n "${sTiersRepos}" ]]; then
@@ -84,7 +82,6 @@ upgradeBookwormToTrixie() {
 	fi
 	getNonFreeToNonFreeFirmware
 }
-
 upgradeToTesting() {
 	#if ${bHasSudo}; then 		sudo sed -i 's/bookworm/testing/g' "${sAptSourcesListSubfolder}" #/etc/apt/sources.list{,.d/*.list}
 	#elif ${bHasDoas}; then 		doas sed -i 's/bookworm/testing/g' "${sAptSourcesListSubfolder}"
@@ -92,12 +89,10 @@ upgradeToTesting() {
 	suExecCommandNoPreserveEnv "ed -i 's/bookworm/testing/g' ${sAptSourcesListFile}"
 	getNonFreeToNonFreeFirmware
 }
-
 upgradeToSid() {
 	suExecCommandNoPreserveEnv "sed -i.old 's/bookworm/sid/g' ${sAptSourcesListFile}"
 	getNonFreeToNonFreeFirmware
 }
-
 upgradeSourcesList() {
 	if [[ -r /etc/debian_version ]]; then
 		debInstalledVersion=$(getDebianVersion)
@@ -115,9 +110,7 @@ upgradeSourcesList() {
 		exit 1
 	fi
 }
-
 upgradeDebianDist() {
-#if command -v sudo &> /dev/null; then
 	if ! env | grep XDG_SESSION_TYPE=tty; then #check tty env
 		echo -e "\t>>> Le processus d'upgrade peut prendre selon la vitesse de connexion internet et la performance matériel 30 minutes ou plus."
 		echo -e "\t	La mise à jour depuis un environnement graphique est déconseillée, à moins d'avoir pris les dispositions pour empêcher"
