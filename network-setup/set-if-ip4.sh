@@ -24,8 +24,6 @@ is_valid_ipv4() {
 }
 
 createNetworkingIfStaticFile() {
-	if [[ -e /sys/class/net/$1 ]]; then sIfName=$1; else exit 1; fi 	#validate if the interface exists
-	if is_valid_ipv4 "$2"; then sAddr4=$2; else exit 1; fi	#validate if the address is a valid IPv4 address
 	#todo: confirm the adress mask and gateway
 	sDns4="194.242.2.3 80.67.169.12"
 	sNetworkingIfDst="/etc/network/interfaces.d"
@@ -38,10 +36,14 @@ createNetworkingIfStaticFile() {
 	dns-nameservers	${sDns4}" | ${sSuPfx} tee "${sNetworkingIfDst}/${sIfName}-${sHostname}"
 }
 main() {
-	if [[ $# -ne 2 ]]; then
-		echo "Usage: $0 <interface> <IPv4 address>"
-		exit 1
+	if [[ $# -ne 2 ]]; then 	echo "Usage: $0 <interface> <IPv4 address>"
+								exit 1
+	elif [[ $# -ne 2 ]]; then	if [[ -e /sys/class/net/$1 ]]; then sIfName=$1; else exit 1; fi #validate if the interface exists
+								if is_valid_ipv4 "$2"; then sAddr4=$2; else exit 1; fi			#validate if the address is a valid IPv4 address
+
 	fi
 	createNetworkingIfStaticFile "$@" #"enp0s3" "192.168.0.107"
+	#todo: disable dhcp lines in /etc/network/interfaces
+	#todo: restart networking service
 }
 main "$@"
