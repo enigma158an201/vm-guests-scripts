@@ -1,0 +1,11 @@
+# x11vnc configuration
+
+display :0	# Overides DISPLAY to use local framebuffer
+# shared	# Let more than one person attach
+#forever	# Keep running, even after last one detaches
+#usepw		# Use a password: may be commented if only local ssh connections
+auth guess
+noipv6
+localhost	# allow only connections through localhost (usefull for ssh tunnelling)
+nopw		# uncomment nopw ONLY if localhost uncommented
+#unixpw		# uses su to check password
