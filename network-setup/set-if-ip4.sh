@@ -37,7 +37,7 @@ createNetworkingIfStaticFile() {
 disableDhcpInterfaces() {
 	echo "Disabling DHCP interfaces"
 	if grep -q "^$1 inet dhcp" /etc/network/interfaces; then
-		sed -i.old -e 's/^iface.*inet dhcp$/#&/' /etc/network/interfaces
+		sed -i.old -e "s/^$1 inet dhcp$/#&/" /etc/network/interfaces
 	fi
 }
 main() {
