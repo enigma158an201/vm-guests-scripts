@@ -64,11 +64,15 @@ cleanModuli() {
 	mv /etc/ssh/moduli /etc/ssh/moduli.bak;
 	mv /etc/ssh/moduli.safe /etc/ssh/moduli"
 }
+restartSshd() {
+	if command -v systemctl; then systemctl restart sshd.service ssh.service; fi
+}
 main_ssh_config() {
 	cleanModuli
 	updateSshdConfig
 	installSshAlias
 	#installSshKeys
 	importSshKeys #todo: import existing vm ssh keys to host
+	restartSshd
 }
 main_ssh_config
