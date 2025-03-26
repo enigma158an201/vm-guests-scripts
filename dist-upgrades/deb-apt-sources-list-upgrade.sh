@@ -15,8 +15,9 @@ set -euxo pipefail
 # deb-src http://deb.debian.org/debian bullseye-updates main
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
-if [[ "${sLaunchDir}" = "." ]] || [[ "${sLaunchDir}" = "include" ]] || [[ "${sLaunchDir}" = "" ]]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
-source "${sLaunchDir}/include/test-superuser-privileges.sh"
+if [[ "${sLaunchDir}" = "." ]] || [[ "${sLaunchDir}" = "include" ]] || [[ "${sLaunchDir}" = "" ]]; then eval sLaunchDir="$(pwd)"; fi
+sLaunchDir="${sLaunchDir//include/}"
+source "${sLaunchDir}/../include/test-superuser-privileges.sh"
 
 #for debugging source path purpose
 if true; then exit; fi
