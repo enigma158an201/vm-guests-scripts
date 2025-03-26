@@ -17,10 +17,10 @@ set -euxo pipefail
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 if [[ "${sLaunchDir}" = "." ]] || [[ "${sLaunchDir}" = "include" ]] || [[ "${sLaunchDir}" = "" ]]; then eval sLaunchDir="$(pwd)"; fi
 sLaunchDir="${sLaunchDir//include/}"
-source "${sLaunchDir}/../include/check-user-privileges" # ${sLaunchDir}/../include/test-superuser-privileges.sh does not work
+source "${sLaunchDir}/../include/check-user-privileges" # ./include/test-superuser-privileges.sh moved to ${sLaunchDir}/../include/test-superuser-privileges
 
 #for debugging source path purpose
-if true; then exit; fi
+#if true; then exit; fi
 
 sAptSourcesListFile="/etc/apt/sources.list"
 sAptSourcesListSubfolder=${sAptSourcesListFile}.d
@@ -135,7 +135,8 @@ upgradeDebianDist() {
 main() {
 	#1st run recommended to update old distro 
 	upgradeDebianDist
-	upgradeSourcesList
+	#uncomment next line for non debug purpose
+	#upgradeSourcesList
 	#2nd run to version upgrading
 	upgradeDebianDist
 }
