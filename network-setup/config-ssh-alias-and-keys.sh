@@ -50,7 +50,7 @@ importSshKeys() {
 	#	done
 	##done
 	if [[ ! -f "${sSshLocalAuthKeys}" ]]; then touch "${sSshLocalAuthKeys}"; fi
-	echo "${sSshAuthKeyKonnectVM}" >> "${sSshLocalAuthKeys}"
+	if ! grep -q "${sSshAuthKeyKonnectVM}" "${sSshLocalAuthKeys}"; then echo "${sSshAuthKeyKonnectVM}" >> "${sSshLocalAuthKeys}"; fi
 }
 updateSshdConfig() {
 	echo -e "\t>>> application des fichiers config ssh et sshd"
