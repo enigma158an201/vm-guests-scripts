@@ -22,7 +22,6 @@ is_valid_ipv4() {
     echo "${ip} is not a valid IPv4 address."
     return 1
 }
-
 createNetworkingIfStaticFile() {
 	#todo: confirm the adress mask and gateway
 	sDns4="194.242.2.3 80.67.169.12"
@@ -35,6 +34,12 @@ createNetworkingIfStaticFile() {
 	gateway         192.168.0.254
 	dns-nameservers	${sDns4}" | ${sSuPfx} tee "${sNetworkingIfDst}/${sIfName}-${sHostname}"
 }
+disableDhcpInterfaces() {
+	echo "Disabling DHCP interfaces"
+	if grep -q "^iface.*inet dhcp" /etc/network/interfaces; then
+		sed -i.old -e 's/^iface.*inet dhcp$/#&/' /etc/network/interfaces
+	fi
+}
 main() {
 	if [[ $# -ne 2 ]]; then 	echo "Usage: $0 <interface> <IPv4 address>"
 								exit 1
@@ -42,8 +47,8 @@ main() {
 								if is_valid_ipv4 "$2"; then sAddr4=$2; else exit 1; fi			#validate if the address is a valid IPv4 address
 
 	fi
-	createNetworkingIfStaticFile "$@" #"enp0s3" "192.168.0.107"
-	#todo: disable dhcp lines in /etc/network/interfaces
+	createNetworkingIfStaticFile "$@" 	#"enp0s3" "192.168.0.107"
+	disableDhcpInterfaces "${sIfName}" 	#disable dhcp lines in /etc/network/interfaces
 	#todo: restart networking service
 }
 main "$@"
