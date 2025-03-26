@@ -63,7 +63,7 @@ updateSshdConfig() {
 	declare -a sConfList
 	#sConfList=( "$(find "${sLaunchDir}/etc/ssh/sshd_config.d/" -iname '*.conf')" ) #	sConfList=${sConfList//'\n'/' '}
 	#sConfList=( $(ls "${sLaunchDir}/etc/ssh/sshd_config.d/*.conf") )
-	mapfile -t sConfList < <(find "${sLaunchDir}/etc/ssh/sshd_config.d/" -iname '*.conf')
+	mapfile -t sConfList < <(find "${sLaunchDir}/../src/etc/ssh/sshd_config.d/" -iname '*.conf')
 	export sConfList
 	suExecCommand "bash -x -c 'for sSshdConfigFile in ${sConfList[*]}; do
 		sSshdConfigFileName=\$(basename \"\${sSshdConfigFile}\")
