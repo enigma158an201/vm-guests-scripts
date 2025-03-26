@@ -99,9 +99,9 @@ main_SU(){
 	else 												bSudoGroup="false"; bSudoersUser="false"; fi
 	if [[ ! "${sDoasPath}" = "false" ]]; then 			bDoasUser="$(checkDoasUser)"
 	else 												bDoasUser="false"; fi				#suQuotes="$(getSuQuotes)"
-	suExecCommand ""
-	suExecCommandNoPreserveEnv ""
-	#if [[ -n "${sCmdParameters}" ]]; then 				
+	export -f suExecCommand 							&& suExecCommand "" 
+	export -f suExecCommandNoPreserveEnv 				&& suExecCommandNoPreserveEnv ""
+	#if [[ -n "${sCmdParameters}" ]]; then
 	#suExecCommand "${sCmdParameters}" || suExecCommandNoPreserveEnv "${sCmdParameters}"
 	#else 												echo ; fi
 }
