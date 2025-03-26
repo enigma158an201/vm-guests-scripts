@@ -5,7 +5,7 @@ set -euo pipefail # set -euxo pipefail
 
 #https://www.ssh-audit.com/hardening_guides.html#debian_12
 
-sLaunchDir="$(dirname "$0")"
+sLaunchDir="$(readlink -f "$(dirname "$0")")"
 source "${sLaunchDir}/../include/check-user-privileges" #source "${sLaunchDir}/include/set-common-settings.sh"
 
 sSshUserFolder=.ssh
@@ -61,7 +61,8 @@ importSshKeys() {
 updateSshdConfig() {
 	echo -e "\t>>> application des fichiers config ssh et sshd"
 	read -rp "${sLaunchDir}"
-	suExecCommand "rsync -av \"${sLaunchDir}/../src/etc/ssh/sshd_config.d/\" /etc/ssh/sshd_config.d/; rsync -av \"${sLaunchDir}/../src/etc/ssh/ssh_config.d/\" /etc/ssh/ssh_config.d/"
+	suExecCommand "	rsync -av \"${sLaunchDir}/../src/etc/ssh/sshd_config.d/\" /etc/ssh/sshd_config.d/; 
+					rsync -av \"${sLaunchDir}/../src/etc/ssh/ssh_config.d/\" /etc/ssh/ssh_config.d/"
 	#suExecCommand "bash -x -c 'for sSshCrypt in rsa dsa ecdsa; do rm /etc/ssh/ssh_host_*\$sSshCrypt*_key* || true; done; systemctl restart sshd.service ssh.service'"
 }
 cleanModuli() {
