@@ -73,15 +73,19 @@ getSuCmdNoPreserveEnv() {			#set +x
 }
 suExecCommand() {
 	sCommand="$*"
-	if ! sPfxSu="$(getSuCmd) "; then 					return 01; fi
-	if [[ ! "${EUID}" = "0" ]]; then 					eval "${sPfxSu} ${sCommand}"
-	elif [[ "${EUID}" = "0" ]]; then 					eval "${sCommand}"; fi
+	if ! sSuPfx="$(getSuCmd) "; then 					return 01; fi
+	if [[ -n ${sCommand} ]]; then 						if [[ ! "${EUID}" = "0" ]]; then 	eval "${sSuPfx} ${sCommand}"
+														elif [[ "${EUID}" = "0" ]]; then 	eval "${sCommand}"; fi
+	else 												export sSuPfx
+	fi
 }
 suExecCommandNoPreserveEnv() {
 	sCommand="$*"
-	if ! sPfxSuNoEnv="$(getSuCmdNoPreserveEnv) "; then 	return 01; fi
-	if [[ ! "${EUID}" = "0" ]]; then 					eval "${sPfxSuNoEnv} ${sCommand}"
-	elif [[ "${EUID}" = "0" ]]; then 					eval "${sCommand}"; fi
+	if ! sSuPfxNoEnv="$(getSuCmdNoPreserveEnv) "; then 	return 01; fi
+	if [[ -n ${sCommand} ]]; then 						if [[ ! "${EUID}" = "0" ]]; then 	eval "${sSuPfxNoEnv} ${sCommand}"
+														elif [[ "${EUID}" = "0" ]]; then 	eval "${sCommand}"; fi
+	else 												export sSuPfxNoEnv
+	fi
 }
 
 main_SU(){
