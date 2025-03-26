@@ -90,7 +90,10 @@ suExecCommandNoPreserveEnv() {
 	else 												export sSuPfxNoEnv
 	fi
 }
-
+checkRootPermissions() {
+	if [[ ${UID} = 0 ]] || [[ ${EUID} = 0 ]]; then 	echo "true"
+	else 											echo "false"; fi
+}
 main_SU(){
 	sSudoPath="$(command -v sudo || echo "false")"
 	sDoasPath="$(command -v doas || echo "false")"
@@ -101,6 +104,7 @@ main_SU(){
 	else 												bDoasUser="false"; fi				#suQuotes="$(getSuQuotes)"
 	export -f suExecCommand 							&& suExecCommand "" 
 	export -f suExecCommandNoPreserveEnv 				&& suExecCommandNoPreserveEnv ""
+	export -f checkRootPermissions
 	#if [[ -n "${sCmdParameters}" ]]; then
 	#suExecCommand "${sCmdParameters}" || suExecCommandNoPreserveEnv "${sCmdParameters}"
 	#else 												echo ; fi
