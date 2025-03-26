@@ -60,7 +60,10 @@ getSuCmd() {						#set +x
 		[[ ! "${bSudoersUser}" = "false" ]] ; }; then							sSuCmd="${sSudoPath}" #"/usr/bin/sudo"
 	elif [[ ! "${sDoasPath}" = "false" ]] && [[ -f /etc/doas.conf ]] && \
 		[[ ! "${bSudoGroup}" = "false" ]]; then									sSuCmd="${sDoasPath}" #"/usr/bin/doas"
-	else																		sSuCmd="su - -c"; fi #"su - -p -c"
+	else
+		if [[ $(whoami) = "root" ]]; then 										sSuCmd=" "
+		else 																	sSuCmd="su - -c"; fi #"su - -p -c"
+	fi
 	echo "${sSuCmd}"
 }
 getSuCmdNoPreserveEnv() {			#set +x
