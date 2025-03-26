@@ -17,7 +17,7 @@ set -euxo pipefail
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 if [[ "${sLaunchDir}" = "." ]] || [[ "${sLaunchDir}" = "include" ]] || [[ "${sLaunchDir}" = "" ]]; then eval sLaunchDir="$(pwd)"; fi
 sLaunchDir="${sLaunchDir//include/}"
-source "${sLaunchDir}/../include/test-superuser-privileges.sh"
+source "${sLaunchDir}/../include/check-user-privileges" # ${sLaunchDir}/../include/test-superuser-privileges.sh does not work
 
 #for debugging source path purpose
 if true; then exit; fi
