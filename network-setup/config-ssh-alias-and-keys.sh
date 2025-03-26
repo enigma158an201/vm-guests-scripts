@@ -72,7 +72,7 @@ updateSshdConfig() {
 		if [[ -d \$(dirname \"\${sSshdConfigDst}\") ]] && [[ -f \"\${sSshdConfigSrc}\" ]]; then
 			install -o root -g root -m 0744 -pv \${sSshdConfigSrc} \${sSshdConfigDst}
 		fi
-	done"
+	done'"
 	mapfile -t sConfList < <(find "${sLaunchDir}/../src/etc/ssh/ssh_config.d/" -iname '*.conf')
 	export sConfList
 	suExecCommand "bash -x -c 'for sSshConfigFile in ${sConfList[*]}; do
@@ -82,7 +82,7 @@ updateSshdConfig() {
 		if [[ -d \$(dirname \"\${sSshConfigDst}\") ]] && [[ -f \"\${sSshConfigSrc}\" ]]; then
 			install -o root -g root -m 0744 -pv \${sSshConfigSrc} \${sSshConfigDst}
 		fi
-	done"
+	done'"
 	suExecCommand "bash -x -c 'for sSshCrypt in rsa dsa ecdsa; do
 		rm /etc/ssh/ssh_host_*\$sSshCrypt*_key* || true
 	done
@@ -94,7 +94,7 @@ cleanModuli() {
 	mv /etc/ssh/moduli.safe /etc/ssh/moduli"
 }
 main_ssh_config() {
-	cleanModuli
+	#cleanModuli
 	updateSshdConfig
 	#installSshAlias
 	#installSshKeys
