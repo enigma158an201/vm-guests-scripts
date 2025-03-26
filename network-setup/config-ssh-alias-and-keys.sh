@@ -13,7 +13,7 @@ sSshAliasConfig=${sSshUserFolder}/config
 sSshAliasConfigd=${sSshAliasConfig}.d
 sSshAuthKeys=${sSshUserFolder}/authorized_keys
 
-sSshRepoSource="${sLaunchDir}/src/home/user"
+sSshRepoSource="${sLaunchDir}/../src/home/user"
 sSshRepoConf=${sSshRepoSource}/${sSshUserFolder}
 sSshRepoAliasConfig=${sSshRepoSource}/${sSshAliasConfig}
 sSshRepoAliasConfigd=${sSshRepoSource}/${sSshAliasConfigd}
