@@ -64,21 +64,21 @@ updateSshdConfig() {
 	mapfile -t sConfList < <(find "${sLaunchDir}/../src/etc/ssh/sshd_config.d/" -iname '*.conf')
 	export sConfList
 	suExecCommand  "bash -x -c 'for sSshdConfigFile in ${sConfList[*]}; do
-		sSshdConfigFileName=\$(basename \"\${sSshdConfigFile}\")
-		sSshdConfigDst=/etc/ssh/sshd_config.d/\${sSshdConfigFileName}
-		sSshdConfigSrc=${sLaunchDir}\${sSshdConfigDst}
-		if [[ -d \$(dirname \"\${sSshdConfigDst}\") ]] && [[ -f \"\${sSshdConfigSrc}\" ]]; then
-			install -o root -g root -m 0744 -pv \${sSshdConfigSrc} \${sSshdConfigDst}
+		sSshdConfigFileName=\"\$(basename \"\${sSshdConfigFile}\")\"
+		sSshdConfigDst=\"/etc/ssh/sshd_config.d/\${sSshdConfigFileName}\"
+		sSshdConfigSrc=\"${sLaunchDir}\${sSshdConfigDst}\"
+		if [[ -d \"\$(dirname \"\${sSshdConfigDst}\")\" ]] && [[ -f \"\${sSshdConfigSrc}\" ]]; then
+			install -o root -g root -m 0744 -pv \"\${sSshdConfigSrc}\" \"\${sSshdConfigDst}\"
 		fi
 	done'"
 	mapfile -t sConfList < <(find "${sLaunchDir}/../src/etc/ssh/ssh_config.d/" -iname '*.conf')
 	export sConfList
 	suExecCommand "bash -x -c 'for sSshConfigFile in ${sConfList[*]}; do
-		sSshConfigFileName=\$(basename \"\${sSshConfigFile}\")
-		sSshConfigDst=/etc/ssh/ssh_config.d/\${sSshConfigFileName}
-		sSshConfigSrc=${sLaunchDir}\${sSshConfigDst}
-		if [[ -d \$(dirname \"\${sSshConfigDst}\") ]] && [[ -f \"\${sSshConfigSrc}\" ]]; then
-			install -o root -g root -m 0744 -pv \${sSshConfigSrc} \${sSshConfigDst}
+		sSshConfigFileName=\"\$(basename \"\${sSshConfigFile}\")\"
+		sSshConfigDst=\"/etc/ssh/ssh_config.d/\${sSshConfigFileName}\"
+		sSshConfigSrc=\"${sLaunchDir}\${sSshConfigDst}
+		if [[ -d \"\$(dirname \"\${sSshConfigDst}\")\" ]] && [[ -f \"\${sSshConfigSrc}\" ]]; then
+			install -o root -g root -m 0744 -pv \"\${sSshConfigSrc}\" \"\${sSshConfigDst}\"
 		fi
 	done'"
 	#suExecCommand "bash -x -c 'for sSshCrypt in rsa dsa ecdsa; do rm /etc/ssh/ssh_host_*\$sSshCrypt*_key* || true; done; systemctl restart sshd.service ssh.service'"
