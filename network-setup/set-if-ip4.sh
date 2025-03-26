@@ -24,7 +24,7 @@ is_valid_ipv4() {
 }
 
 createNetworkingIfStaticFile() {
-	if [[ -f /dev/$1 ]]; then sIfName=$1; else exit 1; fi 	#validate if the interface exists
+	if [[ -e /sys/class/net/$1 ]]; then sIfName=$1; else exit 1; fi 	#validate if the interface exists
 	if is_valid_ipv4 "$2"; then sAddr4=$2; else exit 1; fi	#validate if the address is a valid IPv4 address
 	#todo: confirm the adress mask and gateway
 	sDns4="194.242.2.3 80.67.169.12"
