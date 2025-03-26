@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# script by enigma158an201 01/04/2024 @ 18:50
+# script by enigma158an201 26/03/2025 @ 11:02
 set -euxo pipefail
 
 # script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
@@ -15,8 +15,8 @@ set -euxo pipefail
 # deb-src http://deb.debian.org/debian bullseye-updates main
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
-if [[ "${sLaunchDir}" = "." ]] || [[ "${sLaunchDir}" = "include" ]] || [[ "${sLaunchDir}" = "" ]]; then eval sLaunchDir="$(pwd)"; fi
-sLaunchDir="${sLaunchDir//include/}"
+#if [[ "${sLaunchDir}" = "." ]] || [[ "${sLaunchDir}" = "include" ]] || [[ "${sLaunchDir}" = "" ]]; then eval sLaunchDir="$(pwd)"; fi
+#sLaunchDir="${sLaunchDir//include/}"
 source "${sLaunchDir}/../include/check-user-privileges" # ./include/test-superuser-privileges.sh moved to ${sLaunchDir}/../include/test-superuser-privileges
 
 #for debugging source path purpose
