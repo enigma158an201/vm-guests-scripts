@@ -63,7 +63,7 @@ updateSshdConfig() {
 	read -rp "${sLaunchDir}"
 	suExecCommand "	rsync -av \"$(readlink -f "${sLaunchDir}/../src/etc/ssh/sshd_config.d/")\" /etc/ssh/sshd_config.d/; \
 					rsync -av \"$(readlink -f "${sLaunchDir}/../src/etc/ssh/ssh_config.d/")\" /etc/ssh/ssh_config.d/"
-	#suExecCommand "bash -x -c 'for sSshCrypt in rsa dsa ecdsa; do rm /etc/ssh/ssh_host_*\$sSshCrypt*_key* || true; done; systemctl restart sshd.service ssh.service'"
+	suExecCommand "bash -x -c 'for sSshCrypt in rsa dsa ecdsa; do rm /etc/ssh/ssh_host_*\$sSshCrypt*_key* || true; done; systemctl restart sshd.service ssh.service'"
 }
 cleanModuli() {
 	suExecCommand "awk '\$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.safe;
@@ -71,7 +71,7 @@ cleanModuli() {
 	mv /etc/ssh/moduli.safe /etc/ssh/moduli"
 }
 main_ssh_config() {
-	#cleanModuli
+	cleanModuli
 	updateSshdConfig
 	#installSshAlias
 	#installSshKeys
