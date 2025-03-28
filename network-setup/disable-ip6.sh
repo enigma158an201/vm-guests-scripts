@@ -50,7 +50,7 @@ blacklist-ip6-NetworkManager() {
 		suExecCommand "tCn=( $(find /sys/class/net -mindepth 1 ! -iname lo) )
 		for ConnectionDev in \"\${tCn[@]}\"; do
 			sCD=\$(basename \"\$ConnectionDev\")
-			sCn=\$(nmcli -f NAME,DEVICE connection show | tail -n +2 | grep \"\$sCD\" | awk '{ print \$1 }')
+			sCn=\$(nmcli -f NAME,DEVICE connection show | tail -n +2 | grep \"\$sCD\" }')
 			nmcli connection modify \"\${sCn}\" ipv6.method disabled || true ; 
 		done"
 	fi
