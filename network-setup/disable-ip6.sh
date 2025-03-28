@@ -48,8 +48,10 @@ blacklist-ip6-NetworkManager() {
 		echo -e "\t>>> proceed set disable ipv6 to network manager" ## $(nmcli connection show | awk '{ print $1 }')
 		# be careful with connection names including spaces
 		suExecCommand "tCn=( $(find /sys/class/net -mindepth 1 ! -iname lo) )
-		for ConnectionName in \"\${tCn[@]}\"; do  
-			nmcli connection modify \"\$(basename \"\$ConnectionName\")\" ipv6.method disabled || true ; 
+		for ConnectionDev in \"\${tCn[@]}\"; do
+			sCD=\$(basename \"\$ConnectionDev\")
+			sCn=\$(nmcli -f NAME,TYPE connection show | grep \"\$sCD\" | awk '{ print \$1 }')
+			nmcli connection modify \"\${sCn}\" ipv6.method disabled || true ; 
 		done"
 	fi
 	#if (systemctl status systemd-networkd); then
