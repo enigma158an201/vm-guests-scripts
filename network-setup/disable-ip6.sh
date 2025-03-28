@@ -64,6 +64,6 @@ main() {
 	fi
 	blacklist-ip6-kernel-modules-sysctl
 	applySysctl
-	blacklist-ip6-NetworkManagement
+	blacklist-ip6-NetworkManager
 }
 main
