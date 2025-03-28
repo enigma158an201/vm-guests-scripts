@@ -49,9 +49,9 @@ blacklist-ip6-NetworkManager() {
 		# be careful with connection names including spaces
 		suExecCommand "tCn=( $(find /sys/class/net -mindepth 1 ! -iname lo) )
 		for ConnectionDev in \"\${tCn[@]}\"; do
-			#sCD=\$(basename \"\$ConnectionDev\")
+			sCD=\$(basename \"\$ConnectionDev\")
 			#sCn=\$(nmcli -f NAME,DEVICE connection show | tail -n +2 | grep \"\$sCD\" }')
-			nmcli device modify \"\${sCn}\" ipv6.method ignore || true ; 
+			nmcli device modify \"\${sCD}\" ipv6.method ignore || true ; 
 		done"
 	fi
 	#if (systemctl status systemd-networkd); then
