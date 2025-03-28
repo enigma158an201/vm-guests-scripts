@@ -47,7 +47,8 @@ blacklist-ip6-NetworkManager() {
 		# all=$(LC_ALL=C nmcli dev status | tail -n +2); first=${all%% *}; echo "$first"
 		echo -e "\t>>> proceed set disable ipv6 to network manager" ## $(nmcli connection show | awk '{ print $1 }')
 		# be careful with connection names including spaces
-		suExecCommand "for ConnectionName in $(LC_ALL=C nmcli dev status | tail -n +2 | grep -Eo '^[^ ]+'); do  
+		suExecCommand "tCn=( $(LC_ALL=C nmcli dev status | tail -n +2 | grep -Eo '^[^ ]+') )
+		for ConnectionName in \"\${tCn[@]}\"; do  
 			nmcli connection modify \"\$ConnectionName\" ipv6.method disabled || true ; 
 		done"
 	fi
