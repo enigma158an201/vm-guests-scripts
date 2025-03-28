@@ -33,6 +33,30 @@ applySysctl() {
 		echo -e "\t>>> No initramfs tool found to update initramfs|initrd"
 	fi
 }
+blacklist-ip6-NetworkManager() {
+	#non persistant, but take effect immediately
+	if false; then
+		echo -e "\t>>> proceed set disable ipv6 to sysctl kernel parameters"
+		suExecCommand "sysctl -w net.ipv6.conf.all.disable_ipv6=1; \
+		sysctl -w net.ipv6.conf.default.disable_ipv6=1; \
+		sysctl -w net.ipv6.conf.lo.disable_ipv6=1; \
+		sysctl -p"
+	fi
+
+	if command -v nmcli &>/dev/null && { systemctl is-active NetworkManager || systemctl is-enabled NetworkManager; }; then
+		# all=$(LC_ALL=C nmcli dev status | tail -n +2); first=${all%% *}; echo "$first"
+		echo -e "\t>>> proceed set disable ipv6 to network manager" ## $(nmcli connection show | awk '{ print $1 }')
+		# be careful with connection names including spaces
+		suExecCommand "for ConnectionName in $(LC_ALL=C nmcli dev status | tail -n +2 | grep -Eo '^[^ ]+'); do  
+			nmcli connection modify \"\$ConnectionName\" ipv6.method disabled || true ; 
+		done"
+	fi
+	#if (systemctl status systemd-networkd); then
+		##sed -i '/[Network]/ s/"$/nLinkLocalAddressing=ipv4"/' /etc/systemd/networkd.conf; fi
+		#if (! grep '^LinkLocalAddressing=ipv4' /etc/systemd/networkd.conf); then	suExecCommand sed -i '/^\[Network\].*/a LinkLocalAddressing=ipv4 ' /etc/systemd/networkd.conf ;fi 
+	#fi
+}
+
 main() {
 	if ! checkSysctlEnabled; then
 		echo -e "\t>>> sysctl is not enabled, exiting..."
@@ -40,5 +64,6 @@ main() {
 	fi
 	blacklist-ip6-kernel-modules-sysctl
 	applySysctl
+	blacklist-ip6-NetworkManagement
 }
 main
