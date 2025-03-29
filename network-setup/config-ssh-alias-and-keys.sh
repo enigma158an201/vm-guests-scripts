@@ -62,10 +62,10 @@ mkdirUserSsh() {
 	fi
 }
 main_ssh_config() {
-	suExecCommand "$(readlink -f "${sLaunchDir}/../include/sshd-hardening.sh") $(readlink -f "${sLaunchDir}/../src/etc/ssh/")" #cleanModuli #updateSshdConfig
 	mkdirUserSsh
 	installSshAlias
 	#installSshKeys
 	importSshKeys #todo: import existing vm ssh keys to host #restartSshd
+	suExecCommand "$(readlink -f "${sLaunchDir}/../include/sshd-hardening.sh") $(readlink -f "${sLaunchDir}/../src/etc/ssh/")" #cleanModuli #updateSshdConfig
 }
 main_ssh_config
