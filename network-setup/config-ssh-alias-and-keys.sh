@@ -52,23 +52,7 @@ importSshKeys() {
 	if [[ ! -f "${sSshLocalAuthKeys}" ]]; then touch "${sSshLocalAuthKeys}"; fi
 	if ! grep -q "${sSshAuthKeyKonnectVM}" "${sSshLocalAuthKeys}"; then echo "${sSshAuthKeyKonnectVM}" >> "${sSshLocalAuthKeys}"; fi
 }
-updateSshdConfig() {
-	echo -e "\t>>> application des fichiers config ssh et sshd"
-	suExecCommand "rsync -av \"$(readlink -f "${sLaunchDir}/../src/etc/ssh/sshd_config.d")/\" /etc/ssh/sshd_config.d/"
-	suExecCommand "rsync -av \"$(readlink -f "${sLaunchDir}/../src/etc/ssh/ssh_config.d")/\" /etc/ssh/ssh_config.d/"
-					#bash -x -c '
-	suExecCommand "bash -c 'for sSshCrypt in /etc/ssh/ssh_host_*sa_key*\\\; do echo \"\" | tee \"\$sSshCrypt\" || true\\\; chattr +i \"\$sSshCrypt\"\\\; done'" #'
-	#read -rp " "
-}
-cleanModuli() {
-	echo -e "\t>>> hardening moduli"
-	suExecCommand bash -c "awk '\$5 >= 3071' /etc/ssh/moduli | tee /etc/ssh/moduli.safe
-	mv /etc/ssh/moduli /etc/ssh/moduli.bak
-	mv /etc/ssh/moduli.safe /etc/ssh/moduli"
-}
-restartSshd() {
-	if command -v systemctl &>/dev/null; then 	suExecCommand "bash -c 'for sSshSvc in sshd ssh; do systemctl restart \$sSshSvc.service || true; done'"; fi
-}
+
 mkdirUserSsh() {
 	if [[ ! -d "${sSshLocalConf}" ]]; then
 		echo -e "\t>>> create ssh user folder ${sSshLocalConf}"
@@ -78,12 +62,10 @@ mkdirUserSsh() {
 	fi
 }
 main_ssh_config() {
-	cleanModuli
-	updateSshdConfig
+	suExecCommand "$(readlink -f "${sLaunchDir}/../include/sshd-hardening.sh")" #cleanModuli #updateSshdConfig
 	mkdirUserSsh
 	installSshAlias
 	#installSshKeys
-	importSshKeys #todo: import existing vm ssh keys to host
-	restartSshd
+	importSshKeys #todo: import existing vm ssh keys to host #restartSshd
 }
 main_ssh_config
