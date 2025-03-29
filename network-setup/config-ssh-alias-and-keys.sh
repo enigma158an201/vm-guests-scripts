@@ -57,8 +57,7 @@ updateSshdConfig() {
 	suExecCommand "rsync -av \"$(readlink -f "${sLaunchDir}/../src/etc/ssh/sshd_config.d")/\" /etc/ssh/sshd_config.d/"
 	suExecCommand "rsync -av \"$(readlink -f "${sLaunchDir}/../src/etc/ssh/ssh_config.d")/\" /etc/ssh/ssh_config.d/"
 					#bash -x -c '
-	suExecCommand "for sSshCrypt in /etc/ssh/ssh_host_*sa_key*; do 
-						echo \$UID/\$EUID; echo \"\" | tee \"\$sSshCrypt\" || true; chattr +i \"\$sSshCrypt\"; done" #'
+	suExecCommand "for sSshCrypt in /etc/ssh/ssh_host_*sa_key*\; do echo \$UID/\$EUID\; echo \"\" | tee \"\$sSshCrypt\" || true\; chattr +i \"\$sSshCrypt\"\; done" #'
 	#read -rp " "
 }
 cleanModuli() {
