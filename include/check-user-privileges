@@ -75,12 +75,13 @@ getSuCmdNoPreserveEnv() {			#set +x
 	echo "${sSuCmd}"
 }
 suExecCommand() {
-	sCommand="$*"
+	set -x; sCommand="$*"
 	if ! sSuPfx="$(getSuCmd) "; then 					return 01; fi
 	if [[ -n ${sCommand} ]]; then 						if [[ ! "${EUID}" = "0" ]]; then 	eval "${sSuPfx} ${sCommand}"
 														elif [[ "${EUID}" = "0" ]]; then 	eval "${sCommand}"; fi
 	else 												export sSuPfx
 	fi
+	set +x
 }
 suExecCommandNoPreserveEnv() {
 	sCommand="$*"
