@@ -62,8 +62,8 @@ updateSshdConfig() {
 }
 cleanModuli() {
 	echo -e "\t>>> hardening moduli"
-	suExecCommand bash -c "awk '\$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.safe;
-	mv /etc/ssh/moduli /etc/ssh/moduli.bak;
+	suExecCommand bash -c "awk '\$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.safe
+	mv /etc/ssh/moduli /etc/ssh/moduli.bak
 	mv /etc/ssh/moduli.safe /etc/ssh/moduli"
 }
 restartSshd() {
