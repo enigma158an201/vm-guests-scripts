@@ -24,7 +24,9 @@ cleanModuli() {
     mv /etc/ssh/moduli.safe /etc/ssh/moduli
 }
 restartSshd() {
-	if command -v systemctl &>/dev/null; then 	suExecCommand "bash -c 'for sSshSvc in sshd ssh; do systemctl restart \$sSshSvc.service || true; done'"; fi
+	if command -v systemctl &>/dev/null; then 	
+		for sSshSvc in sshd ssh; do systemctl restart ${sSshSvc}.service || true; done
+	fi
 }
 mainSshHarderning() {
 	sSshsource="$(readlink -f "$(dirname "$@")")"

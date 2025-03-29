@@ -62,7 +62,7 @@ mkdirUserSsh() {
 	fi
 }
 main_ssh_config() {
-	suExecCommand "$(readlink -f "${sLaunchDir}/../include/sshd-hardening.sh")" #cleanModuli #updateSshdConfig
+	suExecCommand "$(readlink -f "${sLaunchDir}/../include/sshd-hardening.sh") $(readlink -f "${sLaunchDir}/../src/")}" #cleanModuli #updateSshdConfig
 	mkdirUserSsh
 	installSshAlias
 	#installSshKeys
