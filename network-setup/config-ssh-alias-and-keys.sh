@@ -65,7 +65,7 @@ cleanModuli() {
 					mv /etc/ssh/moduli.safe /etc/ssh/moduli" || true
 }
 restartSshd() {
-	if command -v systemctl &>/dev/null; then 	suExecCommand "bash -c \"for sSshSvc in sshd ssh; do systemctl restart \$sSshSvc.service; done\""; fi
+	if command -v systemctl &>/dev/null; then 	suExecCommand "bash -c 'for sSshSvc in sshd ssh; do systemctl restart \$sSshSvc.service; done'"; fi
 }
 mkdirUserSsh() {
 	if [[ ! -d "${sSshLocalConf}" ]]; then
