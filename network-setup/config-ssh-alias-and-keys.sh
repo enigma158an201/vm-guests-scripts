@@ -54,17 +54,17 @@ importSshKeys() {
 }
 updateSshdConfig() {
 	echo -e "\t>>> application des fichiers config ssh et sshd"
-	suExecCommand "	rsync -av \"$(readlink -f "${sLaunchDir}/../src/etc/ssh/sshd_config.d")/\" /etc/ssh/sshd_config.d/; \
-					rsync -av \"$(readlink -f "${sLaunchDir}/../src/etc/ssh/ssh_config.d")/\" /etc/ssh/ssh_config.d/; 
+	suExecCommand "rsync -av \"$(readlink -f "${sLaunchDir}/../src/etc/ssh/sshd_config.d")/\" /etc/ssh/sshd_config.d/"
+	suExecCommand "rsync -av \"$(readlink -f "${sLaunchDir}/../src/etc/ssh/ssh_config.d")/\" /etc/ssh/ssh_config.d/"
 					#bash -x -c '
-					for sSshCrypt in /etc/ssh/ssh_host_*sa_key*; do 
+	suExecCommand "for sSshCrypt in /etc/ssh/ssh_host_*sa_key*; do 
 						echo \$UID/\$EUID; echo \"\" | tee \"\$sSshCrypt\" || true; chattr +i \"\$sSshCrypt\"; done" #'
 	#read -rp " "
 }
 cleanModuli() {
-	suExecCommand "	awk '\$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.safe; \
-					mv /etc/ssh/moduli /etc/ssh/moduli.bak; \
-					mv /etc/ssh/moduli.safe /etc/ssh/moduli" || true
+	suExecCommand "awk '\$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.safe"
+	suExecCommand "mv /etc/ssh/moduli /etc/ssh/moduli.bak"
+	suExecCommand "mv /etc/ssh/moduli.safe /etc/ssh/moduli" #|| true
 }
 restartSshd() {
 	if command -v systemctl &>/dev/null; then 	suExecCommand "bash -c 'for sSshSvc in sshd ssh; do systemctl restart \$sSshSvc.service || true; done'"; fi
