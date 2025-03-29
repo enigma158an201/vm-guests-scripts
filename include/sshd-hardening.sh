@@ -7,7 +7,7 @@ set -euo pipefail # -x
 
 updateSshdConfig() {
 	set -x
-	sSshsource="$(readlink -f "$(dirname "$@")")"
+	sSshsource="$(readlink -f "$@")"
 	echo -e "\t>>> application des fichiers config ssh et sshd"
 	for sSshDst in /etc/ssh/sshd_config.d /etc/ssh/ssh_config.d; do
 		rsync -av "${sSshsource}/$(basename "${sSshDst}/")" "${sSshDst}/" 
