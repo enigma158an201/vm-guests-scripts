@@ -6,6 +6,7 @@ set -euo pipefail # -x
 # script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
 
 updateSshdConfig() {
+	set -x
 	sSshsource="$(readlink -f "$(dirname "$@")")"
 	echo -e "\t>>> application des fichiers config ssh et sshd"
 	for sSshDst in /etc/ssh/sshd_config.d /etc/ssh/ssh_config.d; do
