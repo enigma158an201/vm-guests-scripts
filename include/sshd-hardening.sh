@@ -9,7 +9,7 @@ updateSshdConfig() {
 	set -x
 	sSshsource="$(readlink -f "$@")"
 	echo -e "\t>>> application des fichiers config ssh et sshd"
-	for sSshDst in sshd_config.d /etc/ssh/ssh_config.d; do
+	for sSshDst in sshd_config.d ssh_config.d; do
 		rsync -av "${sSshsource}/${sSshDst}/" "/etc/ssh/${sSshDst}/" 
 	done
 	for sSshCrypt in /etc/ssh/ssh_host_*sa_key*; do 
@@ -30,7 +30,7 @@ restartSshd() {
 	fi
 }
 mainSshHarderning() {
-	sSshsource="$(readlink -f "$(dirname "$@")")"
+	sSshsource="$(readlink -f "$@")"
 	updateSshdConfig "${sSshsource}"
     cleanModuli
 	restartSshd
