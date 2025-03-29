@@ -94,7 +94,7 @@ suExecCommandNoPreserveEnv() {
 }
 checkRootPermissions() {
 	if [[ ${UID} = 0 ]] || [[ ${EUID} = 0 ]]; then 	echo "true"
-	else 											echo "false"; fi
+	else 											echo "false"; return 1; fi
 }
 main_SU(){
 	sSudoPath="$(command -v sudo || echo "false")"
