@@ -62,9 +62,9 @@ updateSshdConfig() {
 }
 cleanModuli() {
 	echo -e "\t>>> hardening moduli"
-	suExecCommand "awk '\$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.safe" || true
-	suExecCommand "mv /etc/ssh/moduli /etc/ssh/moduli.bak" || true
-	suExecCommand "mv /etc/ssh/moduli.safe /etc/ssh/moduli" || true
+	suExecCommand "awk '\$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.safe \
+	mv /etc/ssh/moduli /etc/ssh/moduli.bak
+	mv /etc/ssh/moduli.safe /etc/ssh/moduli" || true
 }
 restartSshd() {
 	if command -v systemctl &>/dev/null; then 	suExecCommand "bash -c 'for sSshSvc in sshd ssh; do systemctl restart \$sSshSvc.service || true; done'"; fi
