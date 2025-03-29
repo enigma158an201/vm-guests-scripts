@@ -9,7 +9,7 @@ updateSshdConfig() {
 	sSshsource="$(readlink -f "$(dirname "$@")")"
 	echo -e "\t>>> application des fichiers config ssh et sshd"
 	for sSshDst in /etc/ssh/sshd_config.d /etc/ssh/ssh_config.d; do
-		rsync -av "${sSshsource}/" "${sSshDst}/" 
+		rsync -av "${sSshsource}/$(basename "${sSshDst}/")" "${sSshDst}/" 
 	done
 	for sSshCrypt in /etc/ssh/ssh_host_*sa_key*; do 
 		echo "" | tee "${sSshCrypt}" || true
