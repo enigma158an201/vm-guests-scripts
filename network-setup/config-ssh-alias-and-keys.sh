@@ -67,9 +67,18 @@ cleanModuli() {
 restartSshd() {
 	if command -v systemctl &>/dev/null; then 	suExecCommand "bash -c \"for sSshSvc in sshd ssh; do systemctl restart \$sSshSvc.service; done"; fi
 }
+mkdirUserSsh() {
+	if [[ ! -d "${sSshLocalConf}" ]]; then
+		echo -e "\t>>> create ssh user folder ${sSshLocalConf}"
+		mkdir -p "${sSshLocalConf}"
+		chown "${USER}:${USER}" "${sSshLocalConf}"
+		chmod 700 "${sSshLocalConf}"
+	fi
+}
 main_ssh_config() {
 	cleanModuli
 	updateSshdConfig
+	mkdirUserSsh
 	installSshAlias
 	#installSshKeys
 	importSshKeys #todo: import existing vm ssh keys to host
