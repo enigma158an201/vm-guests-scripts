@@ -57,7 +57,7 @@ updateSshdConfig() {
 	suExecCommand "	rsync -av \"$(readlink -f "${sLaunchDir}/../src/etc/ssh/sshd_config.d")/\" /etc/ssh/sshd_config.d/; \
 					rsync -av \"$(readlink -f "${sLaunchDir}/../src/etc/ssh/ssh_config.d")/\" /etc/ssh/ssh_config.d/; 
 					bash -x -c 'for sSshCrypt in rsa dsa ecdsa; do rm -f /etc/ssh/ssh_host_*\$sSshCrypt*_key* || true; done'"
-	read -rp " "
+	#read -rp " "
 }
 cleanModuli() {
 	suExecCommand "	awk '\$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.safe; \
