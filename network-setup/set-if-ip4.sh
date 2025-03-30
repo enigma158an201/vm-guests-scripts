@@ -57,9 +57,9 @@ main() {
 	fi
 	sDns4="194.242.2.3 80.67.169.12"
 	sGtw4="192.168.0.254"
-	if [[ $(systemctl is-active networking) ]] || [[ $(systemctl is-enabled networking) ]]; then 	createNetworkingIfStaticFile 			#"enp0s3" "192.168.0.107"
-																									disableDhcpInterfaces "${sIfName}"; fi 	#disable dhcp lines in /etc/network/interfaces 	
-	if [[ $(systemctl is-active dhcpcd) ]] || [[ $(systemctl is-enabled dhcpcd) ]]; then 			appendDhcpcdIfStaticFile; fi 			#append dhcpcd lines in /etc/dhcpcd.conf
+	if systemctl is-active networking || systemctl is-enabled networking; then 	createNetworkingIfStaticFile 			#"enp0s3" "192.168.0.107"
+																				disableDhcpInterfaces "${sIfName}"; fi 	#disable dhcp lines in /etc/network/interfaces 	
+	if systemctl is-active dhcpcd || systemctl is-enabled dhcpcd; then 			appendDhcpcdIfStaticFile; fi 			#append dhcpcd lines in /etc/dhcpcd.conf
 	#todo: restart networking service
 }
 main "$@"
