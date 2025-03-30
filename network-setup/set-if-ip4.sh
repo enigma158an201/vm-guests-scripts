@@ -83,6 +83,6 @@ main() {
 	if systemctl is-active NetworkManager || systemctl is-enabled NetworkManager; then 	createNetworkManagerIfStaticFile				#append dhcpcd lines in /etc/dhcpcd.conf
 																						sRestartSvc=NetworkManager
 	fi
-	${sSuPfx} restart "${sRestartSvc}" service
+	${sSuPfx} systemctl restart "${sRestartSvc}.service"
 }
 main "$@"
