@@ -67,6 +67,8 @@ appendDhcpcdIfStaticFile() {
 		fi
 	fi
 }
+checkSystemdService() { if systemctl is-active "$1" || systemctl is-enabled "$1"; then return 0; else return 1; fi }
+
 main() {
 	if [[ $# -ne 2 ]]; then 	echo "Usage: $0 <interface> <IPv4 address>"
 								exit 1
@@ -75,14 +77,14 @@ main() {
 	fi
 	sDns4="194.242.2.3 80.67.169.12"
 	sGtw4="192.168.0.254"
-	if systemctl is-active networking || systemctl is-enabled networking; then 			createNetworkingIfStaticFile 					#"enp0s3" "192.168.0.107"
-																						disableDhcpNetworkingInterfaces "${sIfName}"	#disable dhcp lines in /etc/network/interfaces
-																						sRestartSvc=networking; fi
-	if systemctl is-active dhcpcd || systemctl is-enabled dhcpcd; then 					appendDhcpcdIfStaticFile						#append dhcpcd lines in /etc/dhcpcd.conf
-																						sRestartSvc=networking
+	if checkSystemdService networking; then 		createNetworkingIfStaticFile 					#"enp0s3" "192.168.0.107"
+													disableDhcpNetworkingInterfaces "${sIfName}"	#disable dhcp lines in /etc/network/interfaces
+													sRestartSvc=networking; fi
+	if checkSystemdService dhcpcd ; then 			appendDhcpcdIfStaticFile						#append dhcpcd lines in /etc/dhcpcd.conf
+													sRestartSvc=networking
 	fi
-	if systemctl is-active NetworkManager || systemctl is-enabled NetworkManager; then 	createNetworkManagerIfStaticFile				#append dhcpcd lines in /etc/dhcpcd.conf
-																						sRestartSvc=NetworkManager
+	if checkSystemdService NetworkManager; then 	createNetworkManagerIfStaticFile				#append dhcpcd lines in /etc/dhcpcd.conf
+													sRestartSvc=NetworkManager
 	fi
 	${sSuPfx} systemctl restart "${sRestartSvc}.service"
 }
