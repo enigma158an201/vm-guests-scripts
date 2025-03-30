@@ -55,6 +55,7 @@ createNetworkManagerIfStaticFile() {
 	method=manual
 	[ipv6]
 	method=ignore" | ${sSuPfx} tee "${sNetworkingIfDst}/${sIfName}-${sHostname}"
+	${sSuPfx} chmod 600 "${sNetworkingIfDst}/${sIfName}-${sHostname}"
 }
 appendDhcpcdIfStaticFile() {
 	if [[ -f /etc/dhcpcd.conf ]]; then
