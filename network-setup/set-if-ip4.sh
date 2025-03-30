@@ -35,11 +35,14 @@ createNetworkingIfStaticFile() {
 	dns-nameservers	${sDns4}" | ${sSuPfx} tee "${sNetworkingIfDst}/${sIfName}-${sHostname}"
 }
 appendDhcpcdIfStaticFile() {
-	if grep -q "^interface ${sIfName}" /etc/dhcpcd.conf; then #sed -i.old -e "s/^interface ens18$/#&/" /etc/dhcpcd.conf
-		echo -e "interface ${sIfName}
-		static ip_address=${sAddr4}/24
-		static routers=${sGtw4}
-		static domain_name_servers=${sDns4}" | ${sSuPfx} tee -a /etc/dhcpcd.conf
+	if [[ -f /etc/dhcpcd.conf ]]; then
+	
+		if ! grep -q "^interface ${sIfName}" /etc/dhcpcd.conf; then #sed -i.old -e "s/^interface ens18$/#&/" /etc/dhcpcd.conf
+			echo -e "interface ${sIfName}
+			static ip_address=${sAddr4}/24
+			static routers=${sGtw4}
+			static domain_name_servers=${sDns4}" | ${sSuPfx} tee -a /etc/dhcpcd.conf
+		fi
 	fi
 }
 
