@@ -25,7 +25,8 @@ is_valid_ipv4() {
 createNetworkingIfStaticFile() {
 	#todo: confirm the adress mask and gateway
 	sNetworkingIfDst="/etc/network/interfaces.d"
-	if ! command -v hostname &>/dev/null; then sHostname="$(hostname)"; fi
+	if ! command -v hostname &>/dev/null; then 	sHostname="$(hostname)"
+	elif [[ -f /etc/hostname ]]; then 			sHostname="$(cat /etc/hostname -s)"; fi
 	#shellcheck disable=SC2154
 	echo -e "allow-hotplug ${sIfName}\niface ${sIfName} inet static
 	address         ${sAddr4}
