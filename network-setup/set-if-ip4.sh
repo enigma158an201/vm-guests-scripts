@@ -52,7 +52,9 @@ createNetworkManagerIfStaticFile() {
 	address1=${sAddr4}/24
 	dns=${sDns4}
 	dns-priority=100
-	method=manual" | ${sSuPfx} tee "${sNetworkingIfDst}/${sIfName}-${sHostname}"
+	method=manual
+	[ipv6]
+	method=ignore" | ${sSuPfx} tee "${sNetworkingIfDst}/${sIfName}-${sHostname}"
 }
 appendDhcpcdIfStaticFile() {
 	if [[ -f /etc/dhcpcd.conf ]]; then
