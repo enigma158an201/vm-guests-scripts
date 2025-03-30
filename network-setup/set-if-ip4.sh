@@ -5,7 +5,6 @@ set -euo pipefail #; set -x
 
 # script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
 
-
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 source "${sLaunchDir}/../include/check-user-privileges"
 
@@ -34,22 +33,35 @@ createNetworkingIfStaticFile() {
 	gateway         ${sGtw4}
 	dns-nameservers	${sDns4}" | ${sSuPfx} tee "${sNetworkingIfDst}/${sIfName}-${sHostname}"
 }
+disableDhcpNetworkingInterfaces() {
+	echo "Disabling DHCP interfaces"
+	if grep -q "^iface $1 inet dhcp" /etc/network/interfaces; then
+		sed -i.old -e "s/^iface $1 inet dhcp$/#&/" /etc/network/interfaces
+	fi
+}
+createNetworkManagerIfStaticFile() {
+	sNetworkingIfDst="/etc/NetworkManager/system-connections"
+	if command -v hostname &>/dev/null; then 	sHostname="$(hostname)"
+	elif [[ -f /etc/hostname ]]; then 			sHostname="$(cat /etc/hostname -s)"; fi
+	echo -e "[connection]
+	id=${sIfName}
+	uuid=$(uuidgen)
+	type=ethernet
+	autoconnect=true
+	[ipv4]
+	address1=${sAddr4}/24
+	dns=${sDns4}
+	dns-priority=100
+	method=manual" | ${sSuPfx} tee "${sNetworkingIfDst}/${sIfName}-${sHostname}"
+}
 appendDhcpcdIfStaticFile() {
 	if [[ -f /etc/dhcpcd.conf ]]; then
-	
 		if ! grep -q "^interface ${sIfName}" /etc/dhcpcd.conf; then #sed -i.old -e "s/^interface ens18$/#&/" /etc/dhcpcd.conf
 			echo -e "interface ${sIfName}
 			static ip_address=${sAddr4}/24
 			static routers=${sGtw4}
 			static domain_name_servers=${sDns4}" | ${sSuPfx} tee -a /etc/dhcpcd.conf
 		fi
-	fi
-}
-
-disableDhcpInterfaces() {
-	echo "Disabling DHCP interfaces"
-	if grep -q "^iface $1 inet dhcp" /etc/network/interfaces; then
-		sed -i.old -e "s/^iface $1 inet dhcp$/#&/" /etc/network/interfaces
 	fi
 }
 main() {
@@ -60,9 +72,15 @@ main() {
 	fi
 	sDns4="194.242.2.3 80.67.169.12"
 	sGtw4="192.168.0.254"
-	if systemctl is-active networking || systemctl is-enabled networking; then 	createNetworkingIfStaticFile 			#"enp0s3" "192.168.0.107"
-																				disableDhcpInterfaces "${sIfName}"; fi 	#disable dhcp lines in /etc/network/interfaces 	
-	if systemctl is-active dhcpcd || systemctl is-enabled dhcpcd; then 			appendDhcpcdIfStaticFile; fi 			#append dhcpcd lines in /etc/dhcpcd.conf
-	#todo: restart networking service
+	if systemctl is-active networking || systemctl is-enabled networking; then 			createNetworkingIfStaticFile 					#"enp0s3" "192.168.0.107"
+																						disableDhcpNetworkingInterfaces "${sIfName}"	#disable dhcp lines in /etc/network/interfaces
+																						sRestartSvc=networking; fi
+	if systemctl is-active dhcpcd || systemctl is-enabled dhcpcd; then 					appendDhcpcdIfStaticFile						#append dhcpcd lines in /etc/dhcpcd.conf
+																						sRestartSvc=networking
+	fi
+	if systemctl is-active NetworkManager || systemctl is-enabled NetworkManager; then 	createNetworkManagerIfStaticFile				#append dhcpcd lines in /etc/dhcpcd.conf
+																						sRestartSvc=NetworkManager
+	fi
+	${sSuPfx} restart "${sRestartSvc}" service
 }
 main "$@"
