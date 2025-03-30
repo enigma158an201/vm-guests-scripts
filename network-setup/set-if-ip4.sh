@@ -24,16 +24,24 @@ is_valid_ipv4() {
 }
 createNetworkingIfStaticFile() {
 	#todo: confirm the adress mask and gateway
-	sDns4="194.242.2.3 80.67.169.12"
 	sNetworkingIfDst="/etc/network/interfaces.d"
 	if command -v hostname &>/dev/null; then sHostname="$(hostname)"; fi
 	#shellcheck disable=SC2154
 	echo -e "allow-hotplug ${sIfName}\niface ${sIfName} inet static
 	address         ${sAddr4}
 	netmask         255.255.255.0
-	gateway         192.168.0.254
+	gateway         ${sGtw4}
 	dns-nameservers	${sDns4}" | ${sSuPfx} tee "${sNetworkingIfDst}/${sIfName}-${sHostname}"
 }
+appendDhcpcdIfStaticFile() {
+	if grep -q "^interface ${sIfName}" /etc/dhcpcd.conf; then #sed -i.old -e "s/^interface ens18$/#&/" /etc/dhcpcd.conf
+		echo -e "interface ${sIfName}
+		static ip_address=${sAddr4}/24
+		static routers=${sGtw4}
+		static domain_name_servers=${sDns4}" | ${sSuPfx} tee -a /etc/dhcpcd.conf
+	fi
+}
+
 disableDhcpInterfaces() {
 	echo "Disabling DHCP interfaces"
 	if grep -q "^iface $1 inet dhcp" /etc/network/interfaces; then
@@ -45,10 +53,12 @@ main() {
 								exit 1
 	elif [[ $# -eq 2 ]]; then	if [[ -e /sys/class/net/$1 ]]; then sIfName=$1; else exit 1; fi #validate if the interface exists
 								if is_valid_ipv4 "$2"; then sAddr4=$2; else exit 1; fi			#validate if the address is a valid IPv4 address
-
 	fi
-	createNetworkingIfStaticFile "$@" 	#"enp0s3" "192.168.0.107"
-	disableDhcpInterfaces "${sIfName}" 	#disable dhcp lines in /etc/network/interfaces
+	sDns4="194.242.2.3 80.67.169.12"
+	sGtw4="192.168.0.254"
+	if [[ $(systemctl is-active networking) ]] || [[ $(systemctl is-enabled networking) ]]; then 	createNetworkingIfStaticFile 			#"enp0s3" "192.168.0.107"
+																									disableDhcpInterfaces "${sIfName}"; fi 	#disable dhcp lines in /etc/network/interfaces 	
+	if [[ $(systemctl is-active dhcpcd) ]] || [[ $(systemctl is-enabled dhcpcd) ]]; then 			appendDhcpcdIfStaticFile; fi 			#append dhcpcd lines in /etc/dhcpcd.conf
 	#todo: restart networking service
 }
 main "$@"
