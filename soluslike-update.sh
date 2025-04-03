@@ -12,7 +12,7 @@ source "${sLaunchDir}/include/git-self-update"
 
 update_solus() {
 	#shellcheck disable=SC2154
-	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} eopkg update-repo" && eval "${sSuPfx} eopkg upgrade'"
+	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} eopkg update-repo" && eval "${sSuPfx} eopkg upgrade"
 	elif test ${UID} -eq 0; then 				eopkg update-repo && eopkg upgrade
 	fi
 }
