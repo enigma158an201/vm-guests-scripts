@@ -17,8 +17,8 @@ update_solus() {
 	fi
 }
 clean_solus() {
-	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} eopkg remove-orphans" && eval "${sSuPfx} eopkg clean"
-	elif test ${UID} -eq 0; then 				eopkg remove-orphans && eopkg clean
+	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} eopkg remove-orphans" && eval "${sSuPfx} eopkg delete-cache" && eval "${sSuPfx} eopkg clean"
+	elif test ${UID} -eq 0; then 				eopkg remove-orphans && eopkg delete-cache && eopkg clean
 	fi
 }
 main_soluslike_update() {
