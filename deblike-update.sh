@@ -29,8 +29,11 @@ clean_dpkg() {
 	else 											apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')			#removed ""
 	fi
 }
+upgrade_omv() {	suExecCommand omv-upgrade;	}
+
 main_deblike_update() {
 	if [[ "$(checkRootPermissions)" = "true" ]]; then
+		if ! command -v omv-upgrade &>/dev/null; then upgrade_omv; fi
 		if ! command -v apt-get &>/dev/null || ! command -v apt &>/dev/null; then 
 			echo -e "\t>>> apt not found, exit now !!!"
 			exit 1
