@@ -43,18 +43,9 @@ createNetworkManagerIfStaticFile() {
 	sNetworkingIfDst="/etc/NetworkManager/system-connections"
 	if command -v hostname &>/dev/null; then 	sHostname="$(hostname)"
 	elif [[ -f /etc/hostname ]]; then 			sHostname="$(cat /etc/hostname -s)"; fi
-	echo -e "[connection]
-id=${sIfName}
-uuid=$(uuidgen)
-type=ethernet
-autoconnect=true
-[ipv4]
-address1=${sAddr4}/24,${sGtw4}
-dns=${sDns4}
-dns-priority=100
-method=manual
-[ipv6]
-method=ignore" | ${sSuPfx} tee "${sNetworkingIfDst}/${sIfName}-${sHostname}"
+	echo -e "[connection]\nid=${sIfName}\nuuid=$(uuidgen)\ntype=ethernet\nautoconnect=true\n
+[ipv4]\naddress1=${sAddr4}/24,${sGtw4}\ndns=${sDns4}\ndns-priority=100\nmethod=manual\n
+[ipv6]\nmethod=ignore" | ${sSuPfx} tee "${sNetworkingIfDst}/${sIfName}-${sHostname}"
 	${sSuPfx} chmod 600 "${sNetworkingIfDst}/${sIfName}-${sHostname}"
 }
 appendDhcpcdIfStaticFile() {

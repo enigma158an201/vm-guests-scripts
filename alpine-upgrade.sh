@@ -17,7 +17,7 @@ update_apk() {
 	fi
 }
 clean_apk() {
-	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} apk -v cache clean"
+	if command -v "${sSuPfx}" &>/dev/null; then suExecCommand "apk -v cache clean" #eval ${sSuPfx} 
 	else 										apk -v cache clean
 	fi
 }
@@ -29,7 +29,7 @@ main_alpine_update() {
 	updateScriptsViaGit
 	update_apk && clean_apk #&& poweroff #&& sudo shutdown 0
 	bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
-	if [[ ${bVirtualized} -eq 0 ]]; then 		echo eval "${sSuPfx} poweroff"; fi
+	if [[ ${bVirtualized} -eq 0 ]]; then 		suExecCommand "poweroff"; fi #eval ${sSuPfx} 
 }
 
 main_alpine_update
