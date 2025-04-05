@@ -12,7 +12,7 @@ source "${sLaunchDir}/include/git-self-update"
 
 update_apk() {
 	#shellcheck disable=SC2154
-	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'apk update && apk upgrade'"
+	if command -v "${sSuPfx}" &>/dev/null; then suExecCommand 'apk update && apk upgrade' #eval "${sSuPfx}"
 	else 										apk update && apk upgrade
 	fi
 }
