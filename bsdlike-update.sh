@@ -49,12 +49,12 @@ upgrade_release_freebsd() {
 	
 }
 update_bsd() {
-	if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} 'pkg update -f && pkg upgrade'"
+	if command -v "${sSuPfx}" &>/dev/null; then 	suExecCommand 'pkg update -f && pkg upgrade' #eval "${sSuPfx}"
 	elif test ${UID} -eq 0; then 					pkg update -f && pkg upgrade
 	fi
 }
 clean_bsd() {
-	if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} 'pkg autoremove && pkg clean'"
+	if command -v "${sSuPfx}" &>/dev/null; then 	suExecCommand 'pkg autoremove && pkg clean' #eval "${sSuPfx} "
 	elif test ${UID} -eq 0; then 					pkg autoremove && pkg clean
 	fi
 }
