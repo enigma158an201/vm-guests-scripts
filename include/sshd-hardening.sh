@@ -25,9 +25,11 @@ cleanModuli() {
     mv /etc/ssh/moduli.safe /etc/ssh/moduli
 }
 restartSshd() {
-	if command -v systemctl &>/dev/null; then 	
-		for sSshSvc in sshd ssh; do systemctl restart ${sSshSvc}.service || true; done
-	fi
+	for sSshSvc in sshd ssh; do
+		if command -v systemctl &>/dev/null; then systemctl restart ${sSshSvc}.service || true; fi
+		if command -v service &>/dev/null; then service ${sSshSvc} restart || true; fi
+		#if command -v /etc/init.d/${sSshSvc} &>/dev/null; then /etc/init.d/${sSshSvc} restart || true; fi
+	done
 }
 mainSshHarderning() {
 	sSshsource="$(readlink -f "$@")"

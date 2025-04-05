@@ -57,7 +57,6 @@ importSshKeys() {
 	if [[ ! -f "${sSshLocalAuthKeys}" ]]; then touch "${sSshLocalAuthKeys}"; fi
 	if ! grep -q "${sSshAuthKeyKonnectVM}" "${sSshLocalAuthKeys}"; then echo "${sSshAuthKeyKonnectVM}" >> "${sSshLocalAuthKeys}"; fi
 }
-
 mkdirUserSsh() {
 	if [[ ! -d "${sSshLocalConf}" ]]; then
 		echo -e "\t>>> create ssh user folder ${sSshLocalConf}"
