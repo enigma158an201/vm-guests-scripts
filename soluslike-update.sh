@@ -29,7 +29,7 @@ main_soluslike_update() {
 	updateScriptsViaGit
 	update_solus && clean_solus #&& poweroff #&& sudo shutdown 0
 	bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
-	if [[ ${bVirtualized} -eq 0 ]]; then 		echo eval "${sSuPfx} poweroff"; fi
+	if [[ ${bVirtualized} -eq 0 ]]; then 		eval "${sSuPfx} poweroff"; fi
 }
 
 main_soluslike_update
