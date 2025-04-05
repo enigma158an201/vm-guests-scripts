@@ -26,7 +26,7 @@ sSshLocalAliasConfigd=${HOME}/${sSshAliasConfigd}
 sSshLocalAuthKeys=${HOME}/${sSshAuthKeys}
 
 checkPrerequisites() {
-	for sBin in ssh ssh-copy-id rsync; do
+	for sBin in sshd ssh ssh-copy-id rsync; do
 		if ! command -v "${sBin}" &> /dev/null; then 	echo "${sBin} could not be found, please install it first."; exit 1; fi
 	done
 }
