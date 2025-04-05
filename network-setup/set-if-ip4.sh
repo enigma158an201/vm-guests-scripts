@@ -64,6 +64,16 @@ createSystemdNetworkdIfStaticFile() {
 	elif [[ -f /etc/hostname ]]; then 			sHostname="$(cat /etc/hostname -s)"; fi
 	echo -e "[Match]\nName=${sIfName}\n\n[Network]\nDHCP=no\nAddress=${sAddr4}/24\nGateway=${sGtw4}\nDNS=${sDns4}\nLinkLocalAddressing=no\nIPv6AcceptRA=no" | ${sSuPfx} tee "${sNetworkingIfDst}/${sIfName}-${sHostname}.network"
 }
+appendRcConfIfStatic() { #https://www.cyberciti.biz/faq/how-to-configure-static-ip-address-on-freebsd/
+	sNetworkingIfDst="/etc/rc.conf.d"
+	echo -e "config_${sIfName}=\"inet ${sAddr4} netmask ${sMask4}\"" >> "${sNetworkingIfDst}/${sIfName}-${sHostname}"
+}
+appendResolverConf() {
+	sResolverConf="/etc/resolv.conf"
+	for i in ${sDns4}; do
+		if ! grep -q "^nameserver ${i}" "${sResolverConf}"; then echo "nameserver ${i}" >> "${sResolverConf}"; fi
+	done
+}
 checkSystemdService() { if systemctl is-active "$1" || systemctl is-enabled "$1"; then return 0; else return 1; fi }
 
 main() {
@@ -74,6 +84,7 @@ main() {
 	fi
 	sDns4="194.242.2.3 80.67.169.12"
 	sGtw4="192.168.0.254"
+	sMask4="255.255.255.0"
 	if checkSystemdService networking; then 		createNetworkingIfStaticFile 					#"enp0s3" "192.168.0.107"
 													disableDhcpNetworkingInterfaces "${sIfName}"	#disable dhcp lines in /etc/network/interfaces
 													sRestartSvc=networking; fi
