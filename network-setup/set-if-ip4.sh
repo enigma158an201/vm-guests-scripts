@@ -71,13 +71,7 @@ createSystemdNetworkdIfStaticFile() {
 	sNetworkingIfDst="/etc/systemd/network"
 	if command -v hostname &>/dev/null; then 	sHostname="$(hostname)"
 	elif [[ -f /etc/hostname ]]; then 			sHostname="$(cat /etc/hostname -s)"; fi
-	echo -e "[Match]
-	name=${sIfName}
-	[Network]
-	DHCP=no
-	Address=${sAddr4}/24
-	Gateway=${sGtw4}
-	DNS=${sDns4}" | ${sSuPfx} tee "${sNetworkingIfDst}/${sIfName}-${sHostname}.network"
+	echo -e "[Match]\nName=${sIfName}\n\n[Network]\nDHCP=no\nAddress=${sAddr4}/24\nGateway=${sGtw4}\nDNS=${sDns4}\nLinkLocalAddressing=no\nIPv6AcceptRA=no" | ${sSuPfx} tee "${sNetworkingIfDst}/${sIfName}-${sHostname}.network"
 }
 checkSystemdService() { if systemctl is-active "$1" || systemctl is-enabled "$1"; then return 0; else return 1; fi }
 
