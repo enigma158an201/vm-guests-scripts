@@ -29,10 +29,9 @@ clean_arch() {
 	fi
 }
 clean_paru() {
-	if command -v paru &>/dev/null; then 
-		paru -Sccd --noconfirm
-	else
-		if [[ "$(checkRootPermissions)" = "false" ]]; then setup_paru; fi #else exit 1; 
+	if command -v paru &>/dev/null; then 			paru -Sccd --noconfirm
+	elif [[ "$(checkRootPermissions)" = "false" ]]; then 
+													setup_paru #else exit 1; 
 	fi
 }
 clean_trizen() {
