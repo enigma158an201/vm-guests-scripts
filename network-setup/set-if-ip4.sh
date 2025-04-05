@@ -67,6 +67,18 @@ appendDhcpcdIfStaticFile() {
 		fi
 	fi
 }
+createSystemdNetworkdIfStaticFile() {
+	sNetworkingIfDst="/etc/systemd/network"
+	if command -v hostname &>/dev/null; then 	sHostname="$(hostname)"
+	elif [[ -f /etc/hostname ]]; then 			sHostname="$(cat /etc/hostname -s)"; fi
+	echo -e "[Match]
+	name=${sIfName}
+	[Network]
+	DHCP=no
+	Address=${sAddr4}/24
+	Gateway=${sGtw4}
+	DNS=${sDns4}" | ${sSuPfx} tee "${sNetworkingIfDst}/${sIfName}-${sHostname}.network"
+}
 checkSystemdService() { if systemctl is-active "$1" || systemctl is-enabled "$1"; then return 0; else return 1; fi }
 
 main() {
@@ -83,9 +95,12 @@ main() {
 	if checkSystemdService dhcpcd ; then 			appendDhcpcdIfStaticFile						#append dhcpcd lines in /etc/dhcpcd.conf
 													sRestartSvc=networking
 	fi
-	if checkSystemdService NetworkManager; then 	createNetworkManagerIfStaticFile				#append dhcpcd lines in /etc/dhcpcd.conf
+	if checkSystemdService NetworkManager; then 	createNetworkManagerIfStaticFile
 													sRestartSvc=NetworkManager
 	fi
-	${sSuPfx} systemctl restart "${sRestartSvc}.service"
+	if checkSystemdService systemd-networkd; then 	createSystemdNetworkdIfStaticFile
+													sRestartSvc=systemd-networkd
+	fi
+	if [[ -n "${sRestartSvc}" ]]; then 				${sSuPfx} systemctl restart "${sRestartSvc}.service"; fi
 }
 main "$@"
