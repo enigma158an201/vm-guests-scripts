@@ -44,7 +44,7 @@ upgrade_release_freebsd() {
 		update_freebsd
 	else
 		echo -e "\t>>> FreeBSD ${sFreebsdCurrent} is the latest version, no need to upgrade"
-		exit 0
+		return 0
 	fi
 	
 }
