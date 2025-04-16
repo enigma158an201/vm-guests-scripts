@@ -11,10 +11,11 @@ source "${sLaunchDir}/include/check-virtual-env"
 source "${sLaunchDir}/include/git-self-update"
 
 update_cards() {
-	#shellcheck disable=SC2154
-	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'cards sync && cards upgrade'"
-	else 										cards sync && cards upgrade
-	fi
+	##shellcheck disable=SC2154
+	#if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'cards sync && cards upgrade'"
+	#else 										cards sync && cards upgrade
+	#fi
+	suExecCommand "cards sync && cards upgrade"
 }
 #useless: clean_cards() {}
 
@@ -26,7 +27,7 @@ main_cardslike_update() {
 	updateScriptsViaGit
 	update_cards #&& sudo shutdown 0
 	bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
-	if [[ ${bVirtualized} -eq 0 ]]; then 		eval "${sSuPfx} shutdown 0"; fi
+	if [[ ${bVirtualized} -eq 0 ]]; then 		suExecCommand "shutdown 0"; fi #eval ${sSuPfx}
 }
 
 main_cardslike_update
