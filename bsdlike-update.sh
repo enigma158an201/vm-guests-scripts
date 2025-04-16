@@ -66,8 +66,8 @@ main_bsdlike_update() {
 	updateScriptsViaGit
 	update_freebsd
 	update_bsd && upgrade_release_freebsd && clean_bsd #&& poweroff #&& sudo shutdown 0
-	#bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
-	#if [[ ${bVirtualized} -eq 0 ]]; then 			eval "${sSuPfx} poweroff"; fi
+	bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
+	if [[ ${bVirtualized} -eq 0 ]]; then 			eval "${sSuPfx} poweroff"; fi
 }
 
 main_bsdlike_update
