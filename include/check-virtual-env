@@ -3,8 +3,16 @@
 # script by enigma158an201
 # script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
 
+#source "./check-user-privileges"
+
 checkVirtEnv() {
 	bFoundString=1 #false
+	if command -v virt-what &>/dev/null; then
+		sResult="$(virt-what)"
+		if [[ ${sResult} =~ "kvm" || ${sResult} =~ "qemu" ]]; then 	bFoundString=0 #true
+		else 														bFoundString=1 #false
+		fi
+	fi
 	#shellcheck disable=SC2154
 	if command -v dmesg &>/dev/null; then
 		if command -v "${sSuPfx}" &>/dev/null; then 	sResult="$(eval "${sSuPfx} dmesg --notime")"
