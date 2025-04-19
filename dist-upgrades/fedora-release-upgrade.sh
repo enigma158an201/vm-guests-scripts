@@ -62,13 +62,7 @@ postUpgradeFedoraRelease() {
 																	suExecCommand "dnf install rpmconf"
 																	suExecCommand "rpmconf -a"
 																	bootloaderReinstall
-																	suExecCommand "dnf install remove-retired-packages"
-																	if suExecCommand "dnf repoquery --duplicates"; then 
-																		suExecCommand "dnf remove --duplicates"
-																	fi
-																	#sudo dnf list --extras
-																	#sudo dnf remove $(sudo dnf repoquery --extras --exclude=kernel,kernel-\*,kmod-\*)
-																	#sudo dnf autoremove
+																	autoremoveOldPkgs
 																	removeOldKernels
 																	#sudo dnf install clean-rpm-gpg-pubkey
 																	#sudo clean-rpm-gpg-pubkey
@@ -77,6 +71,12 @@ postUpgradeFedoraRelease() {
 																	#sudo rm /boot/*rescue*
 																	#sudo kernel-install add "$(uname -r)" "/lib/modules/$(uname -r)/vmlinuz"
 	fi
+}
+autoremoveOldPkgs() {
+	suExecCommand "dnf install remove-retired-packages"
+	if suExecCommand "dnf repoquery --duplicates"; then 			suExecCommand "dnf remove --duplicates"; fi
+	if suExecCommand "dnf list --extras"; then 						suExecCommand "dnf remove $(sudo dnf repoquery --extras --exclude=kernel,kernel-\*,kmod-\*)"; fi
+	suExecCommand "dnf autoremove"
 }
 removeOldKernels() {	#suExecCommand "dnf remove $(dnf repoquery --installonly --latest-limit=-2 -q)";
 	#shellcheck disable=SC2207
@@ -93,7 +93,9 @@ fetchFedoraCurrent() { # Fetch the HTML content from the redirected mirror
 	echo "${highest_version}"	# Set the environment variable	#export VERSION=${highest_version}	#echo "VERSION=$#"
 }
 main() {
-	# 1st run recommended to update old distro 
+	autoremoveOldPkgs
+	removeOldKernels
+	# 1st run recommended to update old distro
 	upgradeRefreshDnf
 	{ switchDownloadFedoraRelease || exit 1; } #&& upgradeFedoraRelease
 	# 2nd run to version upgrading
