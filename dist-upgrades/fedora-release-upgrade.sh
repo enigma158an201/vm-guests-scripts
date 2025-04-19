@@ -12,7 +12,7 @@ source "${sLaunchDir}/../include/check-user-privileges"
 #source "${sLaunchDir}/../include/check-virtual-env"
 source "${sLaunchDir}/../include/git-self-update"
 
-upgrade_refresh_dnf() { suExecCommand "dnf upgrade --refresh"; }
+upgradeRefreshDnf() { suExecCommand "dnf upgrade --refresh"; }
 getFedoraRelease() {
 	if [[ -f /etc/fedora-release ]]; then 	sFedoraRelease="$(cat /etc/fedora-release)"
 											sFedoraRelease="${sFedoraRelease,,}"
@@ -36,7 +36,8 @@ switchFedoraRelease() {
 		if [[ ${sYesNo} = "y" ]]; then 		#suExecCommand "dnf --setopt=deltarpm=false --assumeyes --refresh --releasever=${sNextRelease}"
 											suExecCommand "dnf system-upgrade download --releasever=${sNextRelease}"#--allowerasing #--best #--setopt=keepcache=1
 		else 								echo -e "\t>>> Upgrade cancelled, exiting now"
-											exit 0
+											return 1
+											#exit 0
 		fi
 	fi
 }
@@ -89,9 +90,8 @@ fetchFedoraCurrent() { # Fetch the HTML content from the redirected mirror
 }
 main() {
 	# 1st run recommended to update old distro 
-	upgrade_refresh_dnf
-	switchFedoraRelease
-	#upgradeFedoraRelease
+	upgradeRefreshDnf
+	{ switchFedoraRelease || exit 1; } && upgradeFedoraRelease
 	# 2nd run to version upgrading
 	#upgradeDebianDist
 }
