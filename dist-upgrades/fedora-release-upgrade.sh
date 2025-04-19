@@ -75,7 +75,7 @@ autoremoveOldPkgs() {
 	suExecCommand "dnf install remove-retired-packages" || true
 	if suExecCommand "dnf repoquery --duplicates"; then 			suExecCommand "dnf remove --duplicates" || true; fi
 	if suExecCommand "dnf list --extras"; then 						suExecCommand "dnf remove $(sudo dnf repoquery --extras --exclude=kernel,kernel-\*,kmod-\*)"; fi
-	suExecCommand "dnf autoremove"
+	suExecCommand "dnf autoremove --skip-broken" || true
 	suExecCommand "dnf install symlinks"
 	suExecCommand "symlinks -r /usr | grep dangling" && suExecCommand "symlinks -r -d /usr"
 }
