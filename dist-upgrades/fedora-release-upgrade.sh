@@ -87,7 +87,7 @@ removeOldKernels() {	#suExecCommand "dnf remove $(dnf repoquery --installonly --
 	echo "Removed old kernels" #; exit 0
 }
 rescueKernelReinstall() {
-	suExecCommand "rm /boot/*rescue*"
+	suExecCommand "rm /boot/*rescue*" || true
 	suExecCommand "kernel-install add \"\$(uname -r)\" \"/lib/modules/\$(uname -r)/vmlinuz\""
 }
 fetchFedoraCurrent() { # Fetch the HTML content from the redirected mirror
