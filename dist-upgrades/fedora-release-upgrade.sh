@@ -37,7 +37,8 @@ switchDownloadFedoraRelease() {
 			suExecCommand "tmux new-session -A -s supgradeF -n wupgradeF -d"
 			suExecCommand "tmux -attach-session -t supgradeF"
 			if true; then 					suExecCommand "tmux send-keys -t supgradeF 'dnf system-upgrade download --releasever=${sNextRelease} --allowerasing --best' C-m" #--setopt=keepcache=1
-											suExecCommand "tmux send-keys -t supgradeF 'dnf system-upgrade --reboot' C-m"
+											suExecCommand "tmux send-keys -t supgradeF 'dnf system-upgrade --reboot' C-m" || \
+											suExecCommand "tmux send-keys -t supgradeF 'dnf system-upgrade reboot' C-m"
 			else 							#suExecCommand "dnf install fedora-upgrade" && suExecCommand "fedora-upgrade"											
 											suExecCommand "tmux send-keys -t supgradeF 'dnf install fedora-upgrade' C-m"
 											suExecCommand "tmux send-keys -t supgradeF 'fedora-upgrade --releasever=${sNextRelease}' C-m"
@@ -103,7 +104,7 @@ main() {
 	removeOldKernels
 	# 1st run recommended to update old distro
 	upgradeRefreshDnf
-	{ switchDownloadFedoraRelease || exit 1; } #&& upgradeFedoraRelease
+	{ switchDownloadFedoraRelease || exit 1; } && upgradeFedoraRelease
 	# 2nd run to version upgrading
 	rescueKernelReinstall
 }
