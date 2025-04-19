@@ -33,7 +33,9 @@ switchDownloadFedoraRelease() {
 	echo -e "\t>>> Your release is ${sRelease}, upgrade is available to release ${sNextRelease}, and the current stable release is ${sCurrent}"
 	if [[ -n ${sRelease} ]]; then 			read -rp "Do you want to upgrade to ${sNextRelease} (y/n)? " -n 1 sYesNo								
 		if [[ ${sYesNo} = "y" ]]; then 		#suExecCommand "dnf --setopt=deltarpm=false --assumeyes --refresh --releasever=${sNextRelease}"
-											suExecCommand "dnf system-upgrade download --releasever=${sNextRelease}" #--allowerasing #--best #--setopt=keepcache=1
+			if false; then					suExecCommand "dnf system-upgrade download --releasever=${sNextRelease}" #--allowerasing #--best #--setopt=keepcache=1
+			else 							suExecCommand "dnf install fedora-upgrade" && suExecCommand "fedora-upgrade"
+			fi
 		else 								echo -e "\t>>> Upgrade cancelled, exiting now"
 											return 1
 											#exit 0
