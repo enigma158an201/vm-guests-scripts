@@ -73,7 +73,7 @@ postUpgradeFedoraRelease() {
 	fi
 }
 autoremoveOldPkgs() {
-	suExecCommand "dnf install remove-retired-packages"
+	suExecCommand "dnf install remove-retired-packages" || true
 	if suExecCommand "dnf repoquery --duplicates"; then 			suExecCommand "dnf remove --duplicates"; fi
 	if suExecCommand "dnf list --extras"; then 						suExecCommand "dnf remove $(sudo dnf repoquery --extras --exclude=kernel,kernel-\*,kmod-\*)"; fi
 	suExecCommand "dnf autoremove"
