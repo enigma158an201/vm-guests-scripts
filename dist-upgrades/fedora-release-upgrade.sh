@@ -23,7 +23,7 @@ getFedoraRelease() {
 }
 switchFedoraRelease() {
 	sRelease="$(getFedoraRelease)"
-	sNextRelease="$(echo "${sRelease}" | awk -F. '{print $1+1}')"
+	sNextRelease=$((sRelease + 1 )) #"$(echo "${sRelease}" | awk -F. '{print $1+1}')"
 	echo "${sNextRelease}"
 	#if [[ -n ${sRelease} ]]; then 			#suExecCommand "dnf --setopt=deltarpm=false --assumeyes --refresh --releasever=${sNextRelease}"
 	#										suExecCommand "dnf system-upgrade download --releasever=${sNextRelease}"; fi #--allowerasing #--best #--setopt=keepcache=1
