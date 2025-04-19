@@ -74,7 +74,7 @@ autoremoveOldPkgs() {
 	if suExecCommand "dnf list --extras"; then 						suExecCommand "dnf remove $(sudo dnf repoquery --extras --exclude=kernel,kernel-\*,kmod-\*)"; fi
 	suExecCommand "dnf autoremove"
 	suExecCommand "dnf install symlinks"
-	suExecCommand "symlinks -r /usr | grep dangling" && suExecCommand "dnf install symlinks"
+	suExecCommand "symlinks -r /usr | grep dangling" && suExecCommand "symlinks -r -d /usr"
 }
 removeOldKernels() {	#suExecCommand "dnf remove $(dnf repoquery --installonly --latest-limit=-2 -q)";
 	#shellcheck disable=SC2207
