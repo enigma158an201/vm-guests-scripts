@@ -36,7 +36,7 @@ switchDownloadFedoraRelease() {
 			suExecCommand "dnf install tmux"
 			suExecCommand "tmux new-session -A -s supgradeF -n wupgradeF -d"
 			suExecCommand "tmux -attach-session -t supgradeF"
-			if true; then 					suExecCommand "tmux send-keys -t supgradeF 'dnf system-upgrade download --releasever=${sNextRelease} --allowerasing --best' C-m" #--setopt=keepcache=1
+			if true; then 					suExecCommand "tmux send-keys -t supgradeF 'dnf system-upgrade download --releasever=${sNextRelease} --allowerasing --best --skip-broken' C-m" #--setopt=keepcache=1
 											suExecCommand "tmux send-keys -t supgradeF 'dnf system-upgrade --reboot' C-m" || \
 											suExecCommand "tmux send-keys -t supgradeF 'dnf system-upgrade reboot' C-m"
 			else 							#suExecCommand "dnf install fedora-upgrade" && suExecCommand "fedora-upgrade"											
