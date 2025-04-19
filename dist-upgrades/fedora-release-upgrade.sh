@@ -66,10 +66,6 @@ postUpgradeFedoraRelease() {
 																	removeOldKernels
 																	#sudo dnf install clean-rpm-gpg-pubkey
 																	#sudo clean-rpm-gpg-pubkey
-																	#sudo dnf install symlinks
-																	#sudo symlinks -r /usr | grep dangling && sudo dnf install symlinks
-																	#sudo rm /boot/*rescue*
-																	#sudo kernel-install add "$(uname -r)" "/lib/modules/$(uname -r)/vmlinuz"
 	fi
 }
 autoremoveOldPkgs() {
@@ -77,6 +73,8 @@ autoremoveOldPkgs() {
 	if suExecCommand "dnf repoquery --duplicates"; then 			suExecCommand "dnf remove --duplicates" || true; fi
 	if suExecCommand "dnf list --extras"; then 						suExecCommand "dnf remove $(sudo dnf repoquery --extras --exclude=kernel,kernel-\*,kmod-\*)"; fi
 	suExecCommand "dnf autoremove"
+	suExecCommand "dnf install symlinks"
+	suExecCommand "symlinks -r /usr | grep dangling" && suExecCommand "dnf install symlinks"
 }
 removeOldKernels() {	#suExecCommand "dnf remove $(dnf repoquery --installonly --latest-limit=-2 -q)";
 	#shellcheck disable=SC2207
@@ -84,6 +82,10 @@ removeOldKernels() {	#suExecCommand "dnf remove $(dnf repoquery --installonly --
 	if [[ "${#old_kernels[@]}" -eq 0 ]]; then 	echo "No old kernels found"; exit 0; fi
 	if ! dnf remove "${old_kernels[@]}"; then 	echo "Failed to remove old kernels"; fi #exit 1
 	echo "Removed old kernels" #; exit 0
+}
+rescueKernelReinstall() {
+	suExecCommand "rm /boot/*rescue*"
+	suExecCommand "kernel-install add \"\$(uname -r)\" \"/lib/modules/\$(uname -r)/vmlinuz\""
 }
 fetchFedoraCurrent() { # Fetch the HTML content from the redirected mirror
 	url="https://download.fedoraproject.org/pub/fedora/linux/releases/"
@@ -99,6 +101,6 @@ main() {
 	upgradeRefreshDnf
 	{ switchDownloadFedoraRelease || exit 1; } #&& upgradeFedoraRelease
 	# 2nd run to version upgrading
-	#upgradeDebianDist
+	rescueKernelReinstall
 }
 main
