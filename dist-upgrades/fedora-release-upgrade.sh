@@ -79,8 +79,8 @@ autoremoveOldPkgs() {
 removeOldKernels() {	#suExecCommand "dnf remove $(dnf repoquery --installonly --latest-limit=-2 -q)";
 	#shellcheck disable=SC2207
 	old_kernels=($(dnf repoquery --installonly --latest-limit=-1 -q))
-	if [[ "${#old_kernels[@]}" -eq 0 ]]; then 	echo "No old kernels found"; exit 0; fi
-	if ! dnf remove "${old_kernels[@]}"; then 	echo "Failed to remove old kernels"; fi #exit 1
+	if [[ "${#old_kernels[@]}" -eq 0 ]]; then 	echo "No old kernels found"; return 0; fi 			#exit 0
+	if ! dnf remove "${old_kernels[@]}"; then 	echo "Failed to remove old kernels"; return 1; fi 	#exit 1
 	echo "Removed old kernels" #; exit 0
 }
 rescueKernelReinstall() {
