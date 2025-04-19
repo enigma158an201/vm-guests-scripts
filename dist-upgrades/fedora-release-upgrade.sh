@@ -33,15 +33,15 @@ switchDownloadFedoraRelease() {
 	echo -e "\t>>> Your release is ${sRelease}, upgrade is available to release ${sNextRelease}, and the current stable release is ${sCurrent}"
 	if [[ -n ${sRelease} ]]; then 			read -rp "Do you want to upgrade to ${sNextRelease} (y/n)? " -n 1 sYesNo								
 		if [[ ${sYesNo} = "y" ]]; then 		#suExecCommand "dnf --setopt=deltarpm=false --assumeyes --refresh --releasever=${sNextRelease}"
-			if false; then 					suExecCommand "dnf system-upgrade download --releasever=${sNextRelease}" #--allowerasing #--best #--setopt=keepcache=1
-			else 							#suExecCommand "dnf install fedora-upgrade" && suExecCommand "fedora-upgrade"
-											suExecCommand "dnf install tmux"
-											suExecCommand "tmux new-session -A -s supgradeF -n wupgradeF -d"
-											suExecCommand "tmux -attach-session -t supgradeF"
+			suExecCommand "dnf install tmux"
+			suExecCommand "tmux new-session -A -s supgradeF -n wupgradeF -d"
+			suExecCommand "tmux -attach-session -t supgradeF"
+			if true; then 					suExecCommand "tmux send-keys -t supgradeF 'dnf system-upgrade download --releasever=${sNextRelease}' C-m" #--allowerasing #--best #--setopt=keepcache=1
+			else 							#suExecCommand "dnf install fedora-upgrade" && suExecCommand "fedora-upgrade"											
 											suExecCommand "tmux send-keys -t supgradeF 'dnf install fedora-upgrade' C-m"
 											suExecCommand "tmux send-keys -t supgradeF 'fedora-upgrade --releasever=${sNextRelease}' C-m"
-											#suExecCommand  "tmux kill-session -t supgradeF"
 			fi
+			#suExecCommand  "tmux kill-session -t supgradeF"
 		else 								echo -e "\t>>> Upgrade cancelled, exiting now"
 											return 1
 											#exit 0
