@@ -15,7 +15,7 @@ source "${sLaunchDir}/../include/git-self-update"
 upgrade_refresh_dnf() { suExecCommand "dnf upgrade --refresh"; }
 getFedoraRelease() {
 	if [[ -f /etc/fedora-release ]]; then 	sFedoraRelease="$(cat /etc/fedora-release)"
-											sFedoraRelease="${sFedoraRelease,,//Fedora release /}"
+											sFedoraRelease="${sFedoraRelease,,//fedora release /}"
 											echo "${sFedoraRelease%%(*}"
 	else 									echo "false"
 											exit 1
