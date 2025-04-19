@@ -30,9 +30,15 @@ switchFedoraRelease() {
 	elif [[ $(( sCurrent - sRelease )) -gt 1 ]]; then iOffset=2
 	fi #	else 										echo "Current version: ${sRelease}"
 	sNextRelease=$(( sRelease + iOffset )) #"$(echo "${sRelease}" | awk -F. '{print $1+1}')"
-	echo "${sNextRelease}"
-	#if [[ -n ${sRelease} ]]; then 			#suExecCommand "dnf --setopt=deltarpm=false --assumeyes --refresh --releasever=${sNextRelease}"
-	#										suExecCommand "dnf system-upgrade download --releasever=${sNextRelease}"; fi #--allowerasing #--best #--setopt=keepcache=1
+	echo -e "\t>>> Your release is ${sRelease}, upgrade is available to release ${sNextRelease}, and the current stable release is ${sCurrent}"
+	if [[ -n ${sRelease} ]]; then 			read -rp "Do you want to upgrade to ${sNextRelease} (y/n)? " -n 1 sYesNo
+											
+		if [[ ${sYesNo} = "y" ]]; then 		#suExecCommand "dnf --setopt=deltarpm=false --assumeyes --refresh --releasever=${sNextRelease}"
+											suExecCommand "dnf system-upgrade download --releasever=${sNextRelease}"#--allowerasing #--best #--setopt=keepcache=1
+		else 								echo -e "\t>>> Upgrade cancelled, exiting now"
+											exit 0
+		fi
+	fi
 }
 upgradeFedoraRelease() {	if [[ -n ${sRelease} ]]; then 			suExecCommand "dnf system-upgrade reboot"; fi; }
 bootloaderReinstall() {	#suExecCommand "dnf install grub2-efi shim" || suExecCommand "dnf install grub2-pc"
