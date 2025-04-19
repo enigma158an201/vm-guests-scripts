@@ -24,7 +24,12 @@ getFedoraRelease() {
 }
 switchFedoraRelease() {
 	sRelease="$(getFedoraRelease)"
-	sNextRelease=$((sRelease + 1 )) #"$(echo "${sRelease}" | awk -F. '{print $1+1}')"
+	sCurrent=$(fetchFedoraCurrent)
+	if [[ ${sRelease} = "${sCurrent}" ]]; then 	echo "Already on the latest version: ${sRelease}" #; exit 0
+	elif [[ $(( sCurrent - sRelease )) -eq 1 ]]; then iOffset=1
+	elif [[ $(( sCurrent - sRelease )) -gt 1 ]]; then iOffset=2
+	fi #	else 										echo "Current version: ${sRelease}"
+	sNextRelease=$(( sRelease + iOffset )) #"$(echo "${sRelease}" | awk -F. '{print $1+1}')"
 	echo "${sNextRelease}"
 	#if [[ -n ${sRelease} ]]; then 			#suExecCommand "dnf --setopt=deltarpm=false --assumeyes --refresh --releasever=${sNextRelease}"
 	#										suExecCommand "dnf system-upgrade download --releasever=${sNextRelease}"; fi #--allowerasing #--best #--setopt=keepcache=1
