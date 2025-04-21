@@ -76,10 +76,14 @@ checkMariaRemoteConnection() {
 		echo -e "\t>>> Galera Cluster setup completed."
 	fi
 }
-dnsTodo() {
+dnsTodoPostInstall() {
 	echo -e "\t>>> Please add or check the following lines to your /etc/hosts file:"
 	for sIp in $(echo "${sGaleraNodeIps}" | tr ',' ' '); do
 		echo -e "\t\t${sIp} $(getent hosts "${sIp}" | awk '{print $2}')"
+	done
+	echo -e "\t>>> or haproxy backends lines to your /etc/haproxy/haproxy.cfg file:"
+	for sIp in $(echo "${sGaleraNodeIps}" | tr ',' ' '); do
+		echo -e "\t\tserver ${sIp} ${sIp}:3306 check"
 	done
 }
 mainSetupGalera() {
@@ -89,7 +93,6 @@ mainSetupGalera() {
 	installationTypeChoice || true
 	displayGaleraClusterStatus
 	checkMariaRemoteConnection
-	dnsTodo
-
+	dnsTodoPostInstall
 }
 mainSetupGalera
