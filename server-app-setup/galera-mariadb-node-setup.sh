@@ -82,6 +82,7 @@ dnsTodoPostInstall() {
 		echo -e "\t\t${sIp} $(getent hosts "${sIp}" | awk '{print $2}')"
 	done
 	echo -e "\t>>> or haproxy backends lines to your /etc/haproxy/haproxy.cfg file:"
+	echo -e "\tbackend backendMysql\n\t\tdescription Backend pour maria db SQL\n\t\tmode tcp\n\t\toption httpchk\n"
 	for sIp in $(echo "${sGaleraNodeIps}" | tr ',' ' '); do
 		echo -e "\t\tserver ${sIp} ${sIp}:3306 check"
 	done
