@@ -68,11 +68,18 @@ displayGaleraClusterStatus() { # see /usr/share/mysql/wsrep.cnf
 	mariadb -s -r -u root -e "SHOW STATUS LIKE 'wsrep_connected';"
 	mariadb -s -r -u root -e "SHOW STATUS LIKE 'wsrep_local_state_comment';"
 }
+checkMariaRemoteConnection() {
+	echo -e "\t>>> Checking remote connection..."
+	if [[ $(grep "bind-address" /etc/mysql/mariadb.conf.d/50-server.cnf) =~ 127.0.0.1 ]]; then
+		echo -e "\t>>> ERROR: bind-address is set to localhost, please change it to	0.0.0.0"
+	fi
+}
 mainSetupGalera() {
 	sGaleraNodeIps="192.168.0.100,192.168.0.108" #values separated by commas
 	prerequisites
 	checkGaleraDbEngine
 	installationTypeChoice || true
 	displayGaleraClusterStatus
+	checkMariaRemoteConnection
 }
 mainSetupGalera
