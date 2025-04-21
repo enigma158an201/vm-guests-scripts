@@ -9,7 +9,7 @@ set -euo pipefail
 
 prerequisites() { apt-get update && apt-get install mariadb-server galera-4; }
 checkGaleraDbEngine() { #mariadb -u root <<EOF #show variables like 'default_storage_engine'; #EOF
-	bInnoDb=$(mariadb -s -r -u root -e "show variables like 'default_storage_engine';" | grep -i "innodb" && echo "true" || echo "false")
+	bInnoDb=$(mariadb -s -r -u root -e "show variables like 'default_storage_engine';" | grep -iq "innodb" && echo "true" || echo "false")
 	#shellcheck disable=SC2207
 	tDbNames=( $(mariadb -s -r -u root -e "SHOW DATABASES;" | tail -n +2) )
 	for sDbName in "${tDbNames[@]}"; do
