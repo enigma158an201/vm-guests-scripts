@@ -21,20 +21,14 @@ checkGaleraDbEngine() { #mariadb -u root <<EOF #show variables like 'default_sto
 			bMyISAM="false"
 		fi
 	done
-	if ${bInnoDb} && ! ${bMyISAM}; then return 0
-	elif ! ${bInnoDb} && ! ${bMyISAM} && true; then
-		echo -e "\t>>> ERROR: InnoDB is not the default storage engine, please check your configuration."
-		return 1
-	elif ${bInnoDb} && ${bMyISAM}; then
+	iErr=0
+	if ! ${bInnoDb}; then echo echo -e "\t>>> ERROR: InnoDB is not the default storage engine, please check your configuration."; iErr=$((iErr + 1)); fi
+	if ${bMyISAM}; then
 		echo -e "\t>>> ERROR: MyISAM tables found in the database, please convert them to InnoDB."
 		echo -e "\t>>> ERROR: Please check your configuration and try again."
-		return 1
-	elif ! ${bInnoDb} && ${bMyISAM}; then
-		echo -e "\t>>> ERROR: InnoDB is not the default storage engine, please check your configuration."
-		echo -e "\t>>> ERROR: MyISAM tables found in the database, please convert them to InnoDB."
-		echo -e "\t>>> ERROR: Please check your configuration and try again."
-		return 1
+		iErr=$((iErr + 2))
 	fi
+	return ${iErr}
 }
 configMainCluster() { # see /usr/share/mysql/wsrep.cnf
 	if [[ ${1} = m ]]; then sUserChoice="master"; elif [[ ${1} = s ]]; then sUserChoice="slave"; else return 1; fi
