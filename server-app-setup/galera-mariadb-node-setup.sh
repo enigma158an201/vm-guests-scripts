@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+# https://www.it-connect.fr/comment-mettre-en-place-mariadb-galera-cluster-sur-debian-11/
+
+#mysql -u root -p
+
+prerequisites() {
+	apt-get update && apt-get install mariadb-server galera-4
+}
+checkGaleraDbEngine() {
+	#mariadb -u root <<EOF
+#show variables like 'default_storage_engine';
+#EOF
+	mariadb -s -r -u root -e "show variables like 'default_storage_engine';"
+	#shellcheck disable=SC2207
+	tDbNames=( $(mariadb -s -r -u root -e "SHOW DATABASES;" | tail -n +2) )
+	for sDbName in "${tDbNames[@]}"; do
+		mariadb -s -r -u root -e "SELECT TABLE_NAME, ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = '${sDbName}' and ENGINE = 'myISAM';"
+	done
+}
+configMainCluster() { # see /usr/share/mysql/wsrep.cnf
+	if [[ ${1} = "m" ]]; then sUserChoice="master"; elif [[ ${1} = "s" ]]; then sUserChoice="slave"; fi
+	if [[ -e /root/bkp/60-galera.conf ]]; then rsync -avzh /etc/mysql/mariadb.conf.d/60-galera.cnf /root/bkp/60-galera.conf; fi
+	echo "[galera]
+# Mandatory settings
+wsrep_on = ON
+wsrep_provider = /usr/lib/galera/libgalera_smm.so
+wsrep_cluster_name = \"Galera_Cluster_Konnect\"
+wsrep_cluster_address = gcomm://192.168.0.100,192.168.0.108
+binlog_format = row
+default_storage_engine = InnoDB
+innodb_autoinc_lock_mode = 2
+innodb_force_primary_key = 1
+
+# Allow server to accept connections on all interfaces.
+bind-address = 0.0.0.0
+
+# Optional settings
+#wsrep_slave_threads = 1
+#innodb_flush_log_at_trx_commit = 0
+log_error = /var/log/mysql/error-galera.log" | tee /etc/mysql/mariadb.conf.d/60-galera.cnf
+	systemctl stop mariadb
+	if [[ ${sUserChoice} = "master" ]]; then galera_new_cluster; fi
+	systemctl start mariadb
+	mariadb -s -r -u root -e "show status like 'wsrep_cluster_size';"
+}
+installationTypeChoice() {
+	echo -e "\t>>> which cluster type to you want? (type m for master galera cluster or s for slave one"
+	read -rp "(m/S) ?" -n 1 sClusterType
+	configMainCluster "${sClusterType,,}"
+}
+mainSetupGalera() {
+	prerequisites
+	checkGaleraDbEngine
+	installationTypeChoice
+}
+mainSetupGalera
