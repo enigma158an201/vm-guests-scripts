@@ -49,9 +49,17 @@ installationTypeChoice() {
 	read -rp "(m/S) ?" -n 1 sClusterType
 	configMainCluster "${sClusterType,,}"
 }
+displayGaleraClusterStatus() { # see /usr/share/mysql/wsrep.cnf
+	mariadb -s -r -u root -e "SHOW STATUS LIKE 'wsrep_cluster_size';"
+	mariadb -s -r -u root -e "SHOW STATUS LIKE 'wsrep_cluster_state_uuid';"
+	mariadb -s -r -u root -e "SHOW STATUS LIKE 'wsrep_ready';"
+	mariadb -s -r -u root -e "SHOW STATUS LIKE 'wsrep_connected';"
+	mariadb -s -r -u root -e "SHOW STATUS LIKE 'wsrep_local_state_comment';"
+}
 mainSetupGalera() {
 	prerequisites
 	checkGaleraDbEngine
 	installationTypeChoice
+	displayGaleraClusterStatus
 }
 mainSetupGalera
