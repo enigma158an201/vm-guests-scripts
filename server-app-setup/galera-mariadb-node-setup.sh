@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
+# script by Enigma158an201
 # https://www.it-connect.fr/comment-mettre-en-place-mariadb-galera-cluster-sur-debian-11/
+
+set -euo pipefail
 
 #mysql -u root -p
 
@@ -26,7 +29,7 @@ configMainCluster() { # see /usr/share/mysql/wsrep.cnf
 wsrep_on = ON
 wsrep_provider = /usr/lib/galera/libgalera_smm.so
 wsrep_cluster_name = \"Galera_Cluster_Konnect\"
-wsrep_cluster_address = gcomm://192.168.0.100,192.168.0.108
+wsrep_cluster_address = gcomm://${sGaleraNodeIps}
 binlog_format = row
 default_storage_engine = InnoDB
 innodb_autoinc_lock_mode = 2
@@ -57,6 +60,7 @@ displayGaleraClusterStatus() { # see /usr/share/mysql/wsrep.cnf
 	mariadb -s -r -u root -e "SHOW STATUS LIKE 'wsrep_local_state_comment';"
 }
 mainSetupGalera() {
+	sGaleraNodeIps="192.168.0.100,192.168.0.108" #values separated by commas
 	prerequisites
 	checkGaleraDbEngine
 	installationTypeChoice
