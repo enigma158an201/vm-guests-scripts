@@ -14,15 +14,35 @@ checkGaleraDbEngine() {
 	#mariadb -u root <<EOF
 #show variables like 'default_storage_engine';
 #EOF
-	mariadb -s -r -u root -e "show variables like 'default_storage_engine';"
+	bInnoDb=$(mariadb -s -r -u root -e "show variables like 'default_storage_engine';" | tail -n +2 | grep -i "innodb" && echo "true" || echo "false")
 	#shellcheck disable=SC2207
 	tDbNames=( $(mariadb -s -r -u root -e "SHOW DATABASES;" | tail -n +2) )
 	for sDbName in "${tDbNames[@]}"; do
-		mariadb -s -r -u root -e "SELECT TABLE_NAME, ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = '${sDbName}' and ENGINE = 'myISAM';"
+		sMyISAM=$(mariadb -s -r -u root -e "SELECT TABLE_NAME, ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = '${sDbName}' and ENGINE = 'myISAM';")
+		if [[ -n ${sMyISAM} ]]; then
+			bMyISAM="true"
+			break
+		else
+			bMyISAM="false"
+		fi
 	done
+	if ${bInnoDb} && ! ${bMyISAM}; then return 0
+	elif ! ${bInnoDb} && ! ${bMyISAM} && true; then
+		echo -e "\t>>> ERROR: InnoDB is not the default storage engine, please check your configuration."
+		return 1
+	elif ${bInnoDb} && ${bMyISAM}; then
+		echo -e "\t>>> ERROR: MyISAM tables found in the database, please convert them to InnoDB."
+		echo -e "\t>>> ERROR: Please check your configuration and try again."
+		return 1
+	elif ! ${bInnoDb} && ${bMyISAM}; then
+		echo -e "\t>>> ERROR: InnoDB is not the default storage engine, please check your configuration."
+		echo -e "\t>>> ERROR: MyISAM tables found in the database, please convert them to InnoDB."
+		echo -e "\t>>> ERROR: Please check your configuration and try again."
+		return 1
+	fi
 }
 configMainCluster() { # see /usr/share/mysql/wsrep.cnf
-	if [[ ${1} = "m" ]]; then sUserChoice="master"; elif [[ ${1} = "s" ]]; then sUserChoice="slave"; else return 1; fi
+	if [[ ${1} = m ]]; then sUserChoice="master"; elif [[ ${1} = s ]]; then sUserChoice="slave"; else return 1; fi
 	if [[ -e /root/bkp/60-galera.conf ]]; then rsync -avzh /etc/mysql/mariadb.conf.d/60-galera.cnf /root/bkp/60-galera.conf; fi
 	echo "[galera]
 # Mandatory settings
