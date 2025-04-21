@@ -70,7 +70,7 @@ displayGaleraClusterStatus() { # see /usr/share/mysql/wsrep.cnf
 }
 checkMariaRemoteConnection() {
 	echo -e "\t>>> Checking remote connection..."
-	if [[ $(grep "bind-address" /etc/mysql/mariadb.conf.d/50-server.cnf) =~ 127.0.0.1 ]]; then
+	if [[ $(grep "bind-address" /etc/mysql/mariadb.conf.d/50-server.cnf | grep -v '#') =~ 127.0.0.1 ]]; then
 		echo -e "\t>>> ERROR: bind-address is set to localhost, please change it to	0.0.0.0"
 	fi
 }
