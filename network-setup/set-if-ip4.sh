@@ -82,7 +82,7 @@ main() {
 	elif [[ $# -eq 2 ]]; then	if [[ -e /sys/class/net/$1 ]]; then sIfName=$1; else exit 1; fi #validate if the interface exists
 								if is_valid_ipv4 "$2"; then sAddr4=$2; else exit 1; fi			#validate if the address is a valid IPv4 address
 	fi
-	sDns4="194.242.2.3 80.67.169.12"
+	sDns4="194.242.2.3 1.1.1.1" #80.67.169.12"
 	sGtw4="192.168.0.254"
 	sMask4="255.255.255.0"
 	if checkSystemdService networking; then 		createNetworkingIfStaticFile 					#"enp0s3" "192.168.0.107"
