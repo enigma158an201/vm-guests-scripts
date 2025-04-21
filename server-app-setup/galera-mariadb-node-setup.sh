@@ -63,7 +63,7 @@ mainSetupGalera() {
 	sGaleraNodeIps="192.168.0.100,192.168.0.108" #values separated by commas
 	prerequisites
 	checkGaleraDbEngine
-	installationTypeChoice
+	installationTypeChoice || true
 	displayGaleraClusterStatus
 }
 mainSetupGalera
