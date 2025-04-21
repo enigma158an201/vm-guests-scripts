@@ -72,7 +72,15 @@ checkMariaRemoteConnection() {
 	echo -e "\t>>> Checking remote connection..."
 	if [[ $(grep "bind-address" /etc/mysql/mariadb.conf.d/50-server.cnf | grep -v '#') =~ 127.0.0.1 ]]; then
 		echo -e "\t>>> ERROR: bind-address is set to localhost, please change it to	0.0.0.0"
+	else
+		echo -e "\t>>> Galera Cluster setup completed."
 	fi
+}
+dnsTodo() {
+	echo -e "\t>>> Please add or check the following lines to your /etc/hosts file:"
+	for sIp in $(echo "${sGaleraNodeIps}" | tr ',' ' '); do
+		echo -e "\t\t${sIp} $(getent hosts "${sIp}" | awk '{print $2}')"
+	done
 }
 mainSetupGalera() {
 	sGaleraNodeIps="192.168.0.100,192.168.0.108" #values separated by commas
@@ -81,5 +89,7 @@ mainSetupGalera() {
 	installationTypeChoice || true
 	displayGaleraClusterStatus
 	checkMariaRemoteConnection
+	dnsTodo
+
 }
 mainSetupGalera
