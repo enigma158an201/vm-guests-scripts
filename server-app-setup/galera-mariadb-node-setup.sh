@@ -22,7 +22,7 @@ checkGaleraDbEngine() {
 	done
 }
 configMainCluster() { # see /usr/share/mysql/wsrep.cnf
-	if [[ ${1} = "m" ]]; then sUserChoice="master"; elif [[ ${1} = "s" ]]; then sUserChoice="slave"; fi
+	if [[ ${1} = "m" ]]; then sUserChoice="master"; elif [[ ${1} = "s" ]]; then sUserChoice="slave"; else return 1; fi
 	if [[ -e /root/bkp/60-galera.conf ]]; then rsync -avzh /etc/mysql/mariadb.conf.d/60-galera.cnf /root/bkp/60-galera.conf; fi
 	echo "[galera]
 # Mandatory settings
@@ -48,7 +48,7 @@ log_error = /var/log/mysql/error-galera.log" | tee /etc/mysql/mariadb.conf.d/60-
 	mariadb -s -r -u root -e "show status like 'wsrep_cluster_size';"
 }
 installationTypeChoice() {
-	echo -e "\t>>> which cluster type to you want? (type m for master galera cluster or s for slave one"
+	echo -e "\t>>> which cluster type to you want? (type m for master galera cluster, s for slave one, any other key to display status)"
 	read -rp "(m/S) ?" -n 1 sClusterType
 	configMainCluster "${sClusterType,,}"
 }
