@@ -110,6 +110,10 @@ sqlTodoPostInstall() {
 	echo -e "\tmariadb -s -r -u root -e \"CREATE USER 'haproxy'@'<replace.by.haproxy.ip>';\"" #IDENTIFIED BY 'password'
 	mariadb -s -r -u root -e "CREATE USER 'haproxy'@'%';" #IDENTIFIED BY 'password'
 }
+sqlClusterListUsers() {
+	echo -e "\t>>> The following list of users can connect database:"
+	mariadb -s -r -u root -e "SELECT user, host FROM mysql.user;"
+}
 mainSetupGalera() {
 	sGaleraNodeIps="192.168.0.100,192.168.0.108" #values separated by commas
 	prerequisites
@@ -119,5 +123,6 @@ mainSetupGalera() {
 	checkMariaRemoteConnection
 	dnsTodoPostInstall
 	sqlTodoPostInstall
+	sqlClusterListUsers
 }
 mainSetupGalera
