@@ -51,6 +51,7 @@ bind-address = 0.0.0.0
 #wsrep_slave_threads = 1
 #innodb_flush_log_at_trx_commit = 0
 log_error = /var/log/mysql/error-galera.log" | tee /etc/mysql/mariadb.conf.d/60-galera.cnf
+	mkdir -p /var/log/mysql/ && touch /var/log/mysql/error-galera.log
 	systemctl stop mariadb
 	if [[ ${sUserChoice} = "master" ]]; then galera_new_cluster; fi
 	systemctl start mariadb
@@ -107,8 +108,8 @@ dnsTodoPostInstall() {
 }
 sqlTodoPostInstall() {
 	echo -e "\t>>> Please run the following SQL commands to create the haproxy user:"
-	echo -e "\tmariadb -s -r -u root -e \"CREATE USER IF NOT EXISTS 'haproxy'@'<replace.by.haproxy.ip>';\"" #IDENTIFIED BY 'password'
-	mariadb -s -r -u root -e "CREATE USER  IF NOT EXISTS 'haproxy'@'%';" #IDENTIFIED BY 'password'
+	echo -e "\tmariadb -s -r -u root -e \"CREATE USER IF NOT EXISTS 'haproxy'@'<replace.by.haproxy.ip>' IDENTIFIED BY 'password';\"" #
+	mariadb -s -r -u root -e "CREATE USER IF NOT EXISTS 'haproxy'@'%' IDENTIFIED BY 'password';" #
 }
 sqlClusterListUsers() {
 	echo -e "\t>>> The following list of users can connect database:"
