@@ -31,6 +31,8 @@ checkGaleraDbEngine() { #mariadb -u root <<EOF #show variables like 'default_sto
 	return ${iErr}
 }
 configMainCluster() { # see /usr/share/mysql/wsrep.cnf
+	if [[ ! -d /var/log/mysql/ ]]; then mkdir -p /var/log/mysql/; fi
+	if [[ ! -e /var/log/mysql/error-galera.log ]]; then touch /var/log/mysql/error-galera.log; fi
 	if [[ ${1} = m ]]; then sUserChoice="master"; elif [[ ${1} = s ]]; then sUserChoice="slave"; else return 1; fi
 	if [[ -e /root/bkp/60-galera.conf ]]; then rsync -avzh /etc/mysql/mariadb.conf.d/60-galera.cnf /root/bkp/60-galera.conf; fi
 	echo "[galera]
@@ -51,7 +53,6 @@ bind-address = 0.0.0.0
 #wsrep_slave_threads = 1
 #innodb_flush_log_at_trx_commit = 0
 log_error = /var/log/mysql/error-galera.log" | tee /etc/mysql/mariadb.conf.d/60-galera.cnf
-	mkdir -p /var/log/mysql/ && touch /var/log/mysql/error-galera.log
 	systemctl stop mariadb
 	if [[ ${sUserChoice} = "master" ]]; then galera_new_cluster; fi
 	systemctl start mariadb
