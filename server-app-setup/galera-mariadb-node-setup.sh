@@ -108,7 +108,7 @@ dnsTodoPostInstall() {
 sqlTodoPostInstall() {
 	echo -e "\t>>> Please run the following SQL commands to create the haproxy user:"
 	echo -e "\tmariadb -s -r -u root -e \"CREATE USER 'haproxy'@'<replace.by.haproxy.ip>';\"" #IDENTIFIED BY 'password'
-	mariadb -s -r -u root -e "CREATE USER 'haproxy'@'%';" #IDENTIFIED BY 'password'
+	mariadb -s -r -u root -e "CREATE USER 'haproxy'@'%' IF NOT EXISTS;" #IDENTIFIED BY 'password'
 }
 sqlClusterListUsers() {
 	echo -e "\t>>> The following list of users can connect database:"
