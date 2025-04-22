@@ -82,10 +82,32 @@ dnsTodoPostInstall() {
 		echo -e "\t\t${sIp} $(getent hosts "${sIp}" | awk '{print $2}')"
 	done
 	echo -e "\t>>> or haproxy backends lines to your /etc/haproxy/haproxy.cfg file:"
-	echo -e "\tbackend backendMysql\n\t\tdescription Backend pour maria db SQL\n\t\tmode tcp\n\t\toption httpchk\n"
+	echo -e "\tdefaults
+	\tlog global
+	\tmode tcp
+	\toption tcplog
+	\ttimeout connect 10000
+	\ttimeout client 50000
+	\ttimeout server  50000"
+
+	echo -e "\tlisten galera
+	\tbind *:3306
+	\tbalance source
+	\tmode tcp
+	\toption tcplog
+	\toption tcpka
+	\toption mysql-check user haproxy"
+
+	echo -e "\tbackend backendMysql\n\t\tdescription Backend pour maria db SQL\n\t\tmode tcp\n\t\toption httpchk"
 	for sIp in $(echo "${sGaleraNodeIps}" | tr ',' ' '); do
-		echo -e "\t\tserver ${sIp} ${sIp}:3306 check"
+		iBeNr=$((iBeNr + 1))
+		echo -e "\t\tserver galera-${iBeNr} ${sIp}:3306 check weight 1"
 	done
+}
+sqlTodoPostInstall() {
+	echo -e "\t>>> Please run the following SQL commands to create the haproxy user:"
+	echo -e "\tmariadb -s -r -u root -e \"CREATE USER 'haproxy'@'%' IDENTIFIED BY 'password';\""
+	mariadb -s -r -u root -e "CREATE USER 'haproxy'@'%' IDENTIFIED BY 'password';"
 }
 mainSetupGalera() {
 	sGaleraNodeIps="192.168.0.100,192.168.0.108" #values separated by commas
@@ -95,5 +117,6 @@ mainSetupGalera() {
 	displayGaleraClusterStatus
 	checkMariaRemoteConnection
 	dnsTodoPostInstall
+	sqlTodoPostInstall
 }
 mainSetupGalera
