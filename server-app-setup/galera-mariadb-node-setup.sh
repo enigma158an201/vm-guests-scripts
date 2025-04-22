@@ -99,6 +99,7 @@ dnsTodoPostInstall() {
 	\toption mysql-check user haproxy"
 
 	echo -e "\tbackend backendMysql\n\t\tdescription Backend pour maria db SQL\n\t\tmode tcp\n\t\toption httpchk"
+	iBeNr=0
 	for sIp in $(echo "${sGaleraNodeIps}" | tr ',' ' '); do
 		iBeNr=$((iBeNr + 1))
 		echo -e "\t\tserver galera-${iBeNr} ${sIp}:3306 check weight 1"
