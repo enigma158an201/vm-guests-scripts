@@ -13,8 +13,13 @@ checkVirtEnv() {
 		else 														bFoundString=1 #false
 		fi
 	fi
+	if [[ -f /etc/os-release ]]; then
+		source /etc/os-release
+		#if [[ ${NAME,,} =~ linux ]]; then 	bFoundLinux=0; else bFoundLinux=1; fi
+		if [[ ${NAME,,} =~ bsd ]]; then 	bFoundBsd=0; else bFoundBsd=1; fi
+	fi
 	#shellcheck disable=SC2154
-	if command -v dmesg &>/dev/null; then
+	if command -v dmesg &>/dev/null && [[ ${bFoundBsd} -eq 1 ]]; then
 		if command -v "${sSuPfx}" &>/dev/null; then 	sResult="$(eval "${sSuPfx} dmesg --notime")"
 		else 											sResult="$(dmesg --notime)"; fi
 	#else 												sResult="$(truc)" #dmesg --notime ne fonctionne pas avec bsd
