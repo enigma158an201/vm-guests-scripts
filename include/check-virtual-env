@@ -23,7 +23,9 @@ checkVirtEnv() {
 		if command -v "${sSuPfx}" &>/dev/null; then 	sResult="$(eval "${sSuPfx} dmesg --notime")"
 		else 											sResult="$(dmesg --notime)"; fi
 	elif command -v dmesg &>/dev/null && [[ ${bFoundBsd} -eq 0 ]]; then
-		 												sResult="$(dmesg)" #dmesg --notime ne fonctionne pas avec bsd
+		if command -v "${sSuPfx}" &>/dev/null; then 	sResult="$(eval "${sSuPfx} dmesg")"
+		else											sResult="$(dmesg)" #dmesg --notime ne fonctionne pas avec bsd
+		fi
 	fi
 	sHypervisor=$(grep -i hypervisor <<< "${sResult}" | cut -d ':' -f2 | tr -d " \t\n\r")
 	
