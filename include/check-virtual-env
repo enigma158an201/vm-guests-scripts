@@ -22,11 +22,12 @@ checkVirtEnv() {
 	if command -v dmesg &>/dev/null && [[ ${bFoundBsd} -eq 1 ]]; then
 		if command -v "${sSuPfx}" &>/dev/null; then 	sResult="$(eval "${sSuPfx} dmesg --notime")"
 		else 											sResult="$(dmesg --notime)"; fi
-	#else 												sResult="$(truc)" #dmesg --notime ne fonctionne pas avec bsd
+	elif command -v dmesg &>/dev/null && [[ ${bFoundBsd} -eq 0 ]]; then
+		 												sResult="$(dmesg)" #dmesg --notime ne fonctionne pas avec bsd
 	fi
 	sHypervisor=$(grep -i hypervisor <<< "${sResult}" | cut -d ':' -f2 | tr -d " \t\n\r")
 	
-	if [[ -n ${sHypervisor} ]]; then 				bFoundString=0
+	if [[ -n ${sHypervisor:-} ]]; then 				bFoundString=0
 	else
 													for sVirtEnv in virtualbox vboxservice vmware; do
 														if [[ ${sResult,,} =~ ${sVirtEnv} ]]; then
