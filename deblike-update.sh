@@ -13,21 +13,20 @@ source "${sLaunchDir}/include/git-self-update"
 update_apt() {
 	#shellcheck disable=SC2154
 	#if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} 'apt-get update && apt-get full-upgrade'"
-	#else 											apt-get update && apt-get full-upgrade
-	#fi
+	#else 											apt-get update && apt-get full-upgrade; fi
 	suExecCommand "apt-get update && apt-get full-upgrade"
 }
 clean_apt() {
 	#shellcheck disable=SC2154
-	if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} 'apt-get autoremove --purge && apt-get clean'"
-	else 											apt-get autoremove --purge && apt-get clean
-	fi
+	#if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} 'apt-get autoremove --purge && apt-get clean'"
+	#else 											apt-get autoremove --purge && apt-get clean; fi
+	suExecCommand "apt-get autoremove --purge && apt-get clean"
 }
 clean_dpkg() {
 	#shellcheck disable=SC2046
-	if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} 'apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')'"	#removed ""
-	else 											apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')			#removed ""
-	fi
+	#if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} 'apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')'"	#removed ""
+	#else 											apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}'); fi			#removed ""
+	suExecCommand "apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')"
 }
 upgrade_omv() {	if command -v omv-upgrade &>/dev/null; then suExecCommand omv-upgrade; fi }
 
