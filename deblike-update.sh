@@ -42,7 +42,7 @@ main_deblike_update() {
 		updateScriptsViaGit
 		update_apt && clean_apt && clean_dpkg
 		bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
-		if [[ ${bVirtualized} -eq 0 ]]; then 		eval "${sSuPfx} shutdown 0"; fi
+		if [[ ${bVirtualized} -eq 0 ]]; then 		suExecCommand "shutdown 0"; fi
 	fi
 }
 
