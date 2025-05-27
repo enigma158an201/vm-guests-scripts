@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# script by enigma158an201
+# script by enigma158an201 and https://www.tecmint.com/remove-unwanted-services-from-linux/
 set -euo pipefail
 
 # script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
