@@ -19,7 +19,7 @@ main_disable_services() {
 		# Disable services # qemu-guest-agent
 		for sService in avahi-daemon bluetooth iscsi iscsid.socket iscsiuio.socket lvm2-monitor lvm2-lvmpolld.socket mdmonitor raid-check.timer \
 						nfs-convert nfs-client.target cups postfix sssd hyperv-daemons apport zeitgeist telepathy; do
-			suExecCommand "systemctl disable "${sService}.service" || true"
+			suExecCommand "systemctl disable ${sService}.service || true"
 		done
 	fi
 }
