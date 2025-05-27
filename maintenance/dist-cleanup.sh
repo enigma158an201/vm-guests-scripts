@@ -81,7 +81,7 @@ lessSyslogLogs() {
 }
 lessFirewallLogs() {
 	echo -e "\t>>> cleaning old ufw log files and apply new settings, if applicable"
-    if command -v ufw &>/dev/null; then 			ufw logging low; fi #ufw logging off
+	if command -v ufw &>/dev/null; then 			ufw logging low; fi #ufw logging off
 }
 
 mainCleanUp() {
