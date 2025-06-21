@@ -20,11 +20,12 @@ get_freebsd_installed_release() {
 update_freebsd() {
 	if ! command -v freebsd-update &>/dev/null; then
 		#shellcheck disable=SC2154
-		if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'freebsd-update fetch'"
-													eval "${sSuPfx} 'freebsd-update install'"
-		elif test ${UID} -eq 0; then 				freebsd-update fetch 
-													freebsd-update install
-		fi
+		#if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'freebsd-update fetch'"
+		#											eval "${sSuPfx} 'freebsd-update install'"
+		#elif test ${UID} -eq 0; then 				freebsd-update fetch 
+		#											freebsd-update install
+		#fi
+		suExecCommand "freebsd-update fetch && || freebsd-update install"
 	fi 
 }
 upgrade_release_freebsd() {
@@ -50,14 +51,16 @@ upgrade_release_freebsd() {
 	
 }
 update_bsd() {
-	if command -v "${sSuPfx}" &>/dev/null; then 	suExecCommand 'pkg update -f && pkg upgrade' #eval "${sSuPfx}"
-	elif test ${UID} -eq 0; then 					pkg update -f && pkg upgrade
-	fi
+	#if command -v "${sSuPfx}" &>/dev/null; then 	suExecCommand 'pkg update -f && pkg upgrade' #eval "${sSuPfx}"
+	#elif test ${UID} -eq 0; then 					pkg update -f && pkg upgrade
+	#fi
+	suExecCommand 'pkg update -f && pkg upgrade'
 }
 clean_bsd() {
-	if command -v "${sSuPfx}" &>/dev/null; then 	suExecCommand 'pkg autoremove && pkg clean' #eval "${sSuPfx} "
-	elif test ${UID} -eq 0; then 					pkg autoremove && pkg clean
-	fi
+	#if command -v "${sSuPfx}" &>/dev/null; then 	suExecCommand 'pkg autoremove && pkg clean' #eval "${sSuPfx} "
+	#elif test ${UID} -eq 0; then 					pkg autoremove && pkg clean
+	#fi
+	suExecCommand 'pkg autoremove && pkg clean'
 }
 main_bsdlike_update() {
 	if ! command -v pkg &>/dev/null; then 			echo -e "\t>>> pkg command not found, exit now !!!"
@@ -68,7 +71,7 @@ main_bsdlike_update() {
 	update_freebsd
 	update_bsd && upgrade_release_freebsd && clean_bsd #&& poweroff #&& sudo shutdown 0
 	bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
-	if [[ ${bVirtualized} -eq 0 ]]; then 			eval "${sSuPfx} poweroff"; fi
+	if [[ ${bVirtualized} -eq 0 ]]; then 			suExecCommand "poweroff"; fi #eval "${sSuPfx} poweroff"
 }
 
 main_bsdlike_update
