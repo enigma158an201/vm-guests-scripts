@@ -60,7 +60,13 @@ blacklist-ip6-NetworkManager() {
 		#if (! grep '^LinkLocalAddressing=ipv4' /etc/systemd/networkd.conf); then	suExecCommand sed -i '/^\[Network\].*/a LinkLocalAddressing=ipv4 ' /etc/systemd/networkd.conf ;fi 
 	#fi
 }
-
+blacklist-ip6-systemd-networkd() { #to test
+	if command -v systemctl &>/dev/null && systemctl is-active systemd-networkd; then
+		echo -e "\t>>> proceed set disable ipv6 to systemd-networkd"
+		suExecCommand "sed -i '/^\[Network\].*/a LinkLocalAddressing=ipv4 ' /etc/systemd/networkd.conf"
+		suExecCommand "systemctl restart systemd-networkd"
+	fi
+}
 main() {
 	if ! checkSysctlEnabled; then
 		echo -e "\t>>> sysctl is not enabled, exiting..."
@@ -69,5 +75,6 @@ main() {
 	blacklist-ip6-kernel-modules-sysctl
 	applySysctl
 	blacklist-ip6-NetworkManager
+	#blacklist-ip6-systemd-networkd
 }
 main
