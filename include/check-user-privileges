@@ -78,7 +78,7 @@ suExecCommand() {
 	sCommand="$*"
 	sSuPfx="$(getSuCmd)" #if ! sSuPfx="$(getSuCmd)"; then 					return 01; fi
 	if [[ -n ${sCommand} ]]; then 						if ! checkRootPermissions; then 	eval "${sSuPfx} ${sCommand}"
-														else 							 	eval ${sCommand}; fi
+														else 							 	eval "${sCommand}"; fi
 	fi #else 												
 	export sSuPfx
 	#fi
