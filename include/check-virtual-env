@@ -4,11 +4,12 @@
 # script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
 
 #source "./check-user-privileges"
+source check-virtual-env
 
 checkVirtEnv() {
 	bFoundString=1 #false
 	if command -v virt-what &>/dev/null; then
-		sResult="$(virt-what)"
+		sResult="$(suExecCommand virt-what)"
 		if [[ ${sResult} =~ "kvm" || ${sResult} =~ "qemu" ]]; then 	bFoundString=0 #true
 		else 														bFoundString=1 #false
 		fi
