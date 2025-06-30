@@ -9,7 +9,7 @@ set -euo pipefail
 
 preChecks() {
 	source /etc/os-release
-	if [[ ! ${ID_LIKE:-} =~ debian ]] && [[ ${ID} = debian ]]; then echo -e "\t${RED}>>> Please run only on debian like${NOCOLOR}";	return 1; fi
+	if [[ ! ${ID_LIKE:-} =~ debian ]] && [[ ! ${ID} = debian ]]; then echo -e "\t${RED}>>> Please run only on debian like${NOCOLOR}";	return 1; fi
 	if ! command -v dpkg &>/dev/null; then 							return 1; fi
 	mkdir -p "${sWorkDir}" || return 1
 	return 0 #|| exit 1
