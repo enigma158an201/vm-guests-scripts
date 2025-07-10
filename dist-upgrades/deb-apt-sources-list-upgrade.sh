@@ -82,6 +82,22 @@ upgradeBookwormToTrixie() {
 	fi
 	getNonFreeToNonFreeFirmware
 }
+upgradeTrixieToForky() {
+	suExecCommandNoPreserveEnv "sed -i.old 's/trixie/forky/g' ${sAptSourcesListFile}"
+	if [[ -n "${sTiersRepos}" ]]; then
+		for sRepo in ${sTiersRepos}; do 	suExecCommandNoPreserveEnv "sed -i.old 's/trixie/forky/g' ${sRepo}"; done
+	fi
+	getNonFreeToNonFreeFirmware
+}
+upgradeForkyToDuke() {
+	suExecCommandNoPreserveEnv "sed -i.old 's/forky/duke/g' ${sAptSourcesListFile}"
+	if [[ -n "${sTiersRepos}" ]]; then
+		for sRepo in ${sTiersRepos}; do 	suExecCommandNoPreserveEnv "sed -i.old 's/forky/duke/g' ${sRepo}"; done
+	fi
+	getNonFreeToNonFreeFirmware
+}
+
+
 upgradeToTesting() {
 	#if ${bHasSudo}; then 		sudo sed -i 's/bookworm/testing/g' "${sAptSourcesListSubfolder}" #/etc/apt/sources.list{,.d/*.list}
 	#elif ${bHasDoas}; then 		doas sed -i 's/bookworm/testing/g' "${sAptSourcesListSubfolder}"
