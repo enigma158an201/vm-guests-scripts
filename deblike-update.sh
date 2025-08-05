@@ -28,11 +28,13 @@ clean_dpkg() {
 	#else 											apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}'); fi			#removed ""
 	suExecCommand "apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')"
 }
-upgrade_omv() {	if command -v omv-upgrade &>/dev/null; then suExecCommand omv-upgrade; fi }
+upgrade_omv() {	if command -v omv-upgrade &>/dev/null; then 	suExecCommand omv-upgrade; fi }
+upgrade_pve() {	if command -v pveupgrade &>/dev/null; then 		suExecCommand pveupgrade; fi }
 
 main_deblike_update() {
 	if [[ "$(checkRootPermissions)" = "true" ]]; then
-		if command -v omv-upgrade &>/dev/null; then upgrade_omv; fi
+		if command -v omv-upgrade &>/dev/null; then 	upgrade_omv; fi
+		if command -v pveupgrade &>/dev/null; then 		upgrade_pve; fi
 		if ! command -v apt-get &>/dev/null || ! command -v apt &>/dev/null; then 
 			echo -e "\t>>> apt not found, exit now !!!"
 			exit 1
