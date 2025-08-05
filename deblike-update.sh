@@ -14,19 +14,19 @@ update_apt() {
 	#shellcheck disable=SC2154
 	#if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} 'apt-get update && apt-get full-upgrade'"
 	#else 											apt-get update && apt-get full-upgrade; fi
-	suExecCommand "apt-get update && apt-get full-upgrade"
+	suExecCommand "apt-get update && apt-get full-upgrade" || return 1
 }
 clean_apt() {
 	#shellcheck disable=SC2154
 	#if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} 'apt-get autoremove --purge && apt-get clean'"
 	#else 											apt-get autoremove --purge && apt-get clean; fi
-	suExecCommand "apt-get autoremove --purge && apt-get clean"
+	suExecCommand "apt-get autoremove --purge && apt-get clean" || return 1
 }
 clean_dpkg() {
 	#shellcheck disable=SC2046
 	#if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} 'apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')'"	#removed ""
 	#else 											apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}'); fi			#removed ""
-	suExecCommand "apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')"
+	suExecCommand "apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')" || return 1
 }
 upgrade_omv() {	if command -v omv-upgrade &>/dev/null; then 	suExecCommand omv-upgrade; fi }
 upgrade_pve() {	if command -v pveupgrade &>/dev/null; then 		suExecCommand pveupgrade; fi }
@@ -47,5 +47,4 @@ main_deblike_update() {
 		if [[ ${bVirtualized} -eq 0 ]]; then 		suExecCommand "shutdown 0"; fi
 	fi
 }
-
 main_deblike_update
