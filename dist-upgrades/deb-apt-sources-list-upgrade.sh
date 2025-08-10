@@ -46,14 +46,14 @@ getNonFreeToNonFreeFirmware() {
 upgradeJessieToStretch() {
 	suExecCommandNoPreserveEnv "sed -i.old 's/jessie/stretch/g' ${sAptSourcesListFile}"
 	if [[ -n "${sTiersRepos}" ]]; then 
-		for sRepo in ${sTiersRepos}; do 	suExecCommandNoPreserveEnv "sed -i.old 's/jessie/stretch/g' ${sRepo}"; done
+		for sRepo in ${sTiersRepos}; do 	suExecCommandNoPreserveEnv "sed -i.old 's/jessie/stretch/g' \"${sRepo}\""; done
 	fi
 	#suExecCommandNoPreserveEnv sed -i 's#/debian-security\ stretch/updates#\ stretch-security#g' ${sAptSourcesListFile}
 }
 upgradeStretchToBuster() {
 	suExecCommandNoPreserveEnv "sed -i.old 's/stretch/buster/g' ${sAptSourcesListFile}" #{,.d/*.list}
 	if [[ -n "${sTiersRepos}" ]]; then 
-		for sRepo in ${sTiersRepos}; do 	suExecCommandNoPreserveEnv "sed -i.old 's/stretch/buster/g' ${sRepo}"; done
+		for sRepo in ${sTiersRepos}; do 	suExecCommandNoPreserveEnv "sed -i.old 's/stretch/buster/g' \"${sRepo}\""; done
 	fi
 	#suExecCommandNoPreserveEnv sed -i 's#/debian-security\ buster/updates#\ buster-security#g' ${sAptSourcesListFile} 
 }
@@ -65,34 +65,34 @@ upgradeBusterToBullseye() {
 		suExecCommandNoPreserveEnv "sed -i 's#/debian-security\ bullseye/updates#\ bullseye-security#g' ${sAptSourcesListFile}"
 	fi
 	if [[ -n "${sTiersRepos}" ]]; then
-		for sRepo in ${sTiersRepos}; do 	suExecCommandNoPreserveEnv "sed -i.old 's/buster/bullseye/g' ${sRepo}"; done
+		for sRepo in ${sTiersRepos}; do 	suExecCommandNoPreserveEnv "sed -i.old 's/buster/bullseye/g' \"${sRepo}\""; done
 	fi
 }
 upgradeBullseyeToBookworm() {
 	suExecCommandNoPreserveEnv "sed -i.old 's/bullseye/bookworm/g' ${sAptSourcesListFile}"
 	if [[ -n "${sTiersRepos}" ]]; then
-		for sRepo in ${sTiersRepos}; do 	suExecCommandNoPreserveEnv "sed -i.old 's/bullseye/bookworm/g' ${sRepo}"; done	
+		for sRepo in ${sTiersRepos}; do 	suExecCommandNoPreserveEnv "sed -i.old 's/bullseye/bookworm/g' \"${sRepo}\""; done	
 	fi
 	getNonFreeToNonFreeFirmware
 }
 upgradeBookwormToTrixie() {
 	suExecCommandNoPreserveEnv "sed -i.old 's/bookworm/trixie/g' ${sAptSourcesListFile}"
 	if [[ -n "${sTiersRepos}" ]]; then
-		for sRepo in ${sTiersRepos}; do 	suExecCommandNoPreserveEnv "sed -i.old 's/bookworm/trixie/g' ${sRepo}"; done
+		for sRepo in ${sTiersRepos}; do 	suExecCommandNoPreserveEnv "sed -i.old 's/bookworm/trixie/g' \"${sRepo}\""; done
 	fi
 	getNonFreeToNonFreeFirmware
 }
 upgradeTrixieToForky() {
 	suExecCommandNoPreserveEnv "sed -i.old 's/trixie/forky/g' ${sAptSourcesListFile}"
 	if [[ -n "${sTiersRepos}" ]]; then
-		for sRepo in ${sTiersRepos}; do 	suExecCommandNoPreserveEnv "sed -i.old 's/trixie/forky/g' ${sRepo}"; done
+		for sRepo in ${sTiersRepos}; do 	suExecCommandNoPreserveEnv "sed -i.old 's/trixie/forky/g' \"${sRepo}\""; done
 	fi
 	getNonFreeToNonFreeFirmware
 }
 upgradeForkyToDuke() {
 	suExecCommandNoPreserveEnv "sed -i.old 's/forky/duke/g' ${sAptSourcesListFile}"
 	if [[ -n "${sTiersRepos}" ]]; then
-		for sRepo in ${sTiersRepos}; do 	suExecCommandNoPreserveEnv "sed -i.old 's/forky/duke/g' ${sRepo}"; done
+		for sRepo in ${sTiersRepos}; do 	suExecCommandNoPreserveEnv "sed -i.old 's/forky/duke/g' \"${sRepo}\""; done
 	fi
 	getNonFreeToNonFreeFirmware
 }
@@ -102,11 +102,11 @@ upgradeToTesting() {
 	#if ${bHasSudo}; then 		sudo sed -i 's/bookworm/testing/g' "${sAptSourcesListSubfolder}" #/etc/apt/sources.list{,.d/*.list}
 	#elif ${bHasDoas}; then 		doas sed -i 's/bookworm/testing/g' "${sAptSourcesListSubfolder}"
 	#else 						su - -c "sed -i 's/bookworm/testing/g' ${sAptSourcesListSubfolder}"; fi
-	suExecCommandNoPreserveEnv "ed -i 's/bookworm/testing/g' ${sAptSourcesListFile}"
+	suExecCommandNoPreserveEnv "sed -i 's/bookworm/testing/g' ${sAptSourcesListFile}"
 	getNonFreeToNonFreeFirmware
 }
 upgradeToSid() {
-	suExecCommandNoPreserveEnv "sed -i.old 's/bookworm/sid/g' ${sAptSourcesListFile}"
+	suExecCommandNoPreserveEnv "sed -i.old 's/trixie/sid/g' ${sAptSourcesListFile}"
 	getNonFreeToNonFreeFirmware
 }
 upgradeSourcesList() {
