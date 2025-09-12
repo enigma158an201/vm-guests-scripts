@@ -12,22 +12,21 @@ sLaunchDir="$(readlink -f "$(dirname "$0")")"
 #sLaunchDir="${sLaunchDir//include/}"
 source "${sLaunchDir}/../include/check-user-privileges" # ./include/test-superuser-privileges.sh moved to ${sLaunchDir}/../include/test-superuser-privileges
 
-sDistBackupFolder="/dist-backup"
-
-sEtcFolder=/etc
-sVarLibDpkg=/var/lib/dpkg
-sVarLibAptExt=/var/lib/apt/extended_states
+sDistBackupFolder="dist-backup"
+sEtcFolder=etc
+sVarLibDpkg=var/lib/dpkg
+sVarLibAptExt=var/lib/apt/extended_states
 sDpkgGetSelections="${sDistBackupFolder}/dpkg-get-selections" # dpkg --get-selections '*' # (the quotes are important)
-sVarLibAptitudePkgstates="/var/lib/aptitude/pkgstates"
+sVarLibAptitudePkgstates="var/lib/aptitude/pkgstates"
 
 getDebianVersion() { 			if [[ -f /etc/debian_version ]]; then 			sDebMainVersion="$(cat /etc/debian_version)"; echo "${sDebMainVersion%%.*}"
 								else 											echo "false"; exit 1; fi; }
-getDiskBackupFolder() { 		if [[ ! -d ${sDistBackupFolder} ]]; then 		mkdir -p "${sDistBackupFolder}"; chmod 700 "${sDistBackupFolder}"; fi; }
+getDiskBackupFolder() { 		if [[ ! -d /${sDistBackupFolder} ]]; then 		mkdir -p "/${sDistBackupFolder}"; chmod 700 "/${sDistBackupFolder}"; fi; }
 backupDpkgSelections() { 		if command -v dpkg &>/dev/null; then 			dpkg --get-selections '*' > "${sDpkgGetSelections}"; fi; }
-backupAptitudePkgstates() { 	if [[ -f ${sVarLibAptitudePkgstates} ]]; then 	cp -a "${sVarLibAptitudePkgstates}" "${sDistBackupFolder}/"; fi; }
-backupAptExtendedStates() { 	if [[ -f ${sVarLibAptExt} ]]; then 				cp -a "${sVarLibAptExt}" "${sDistBackupFolder}/"; fi; }
-backupEtcFolder() { 			if [[ -d ${sEtcFolder} ]]; then 				tar -czf "${sDistBackupFolder}/etc-backup.tar.gz" -C / etc; fi; }
-backupVarLibDpkg() { 			if [[ -d ${sVarLibDpkg} ]]; then 				tar -czf "${sDistBackupFolder}/var-lib-dpkg-backup.tar.gz" -C / var/lib/dpkg; fi; }	
+backupAptitudePkgstates() { 	if [[ -f /${sVarLibAptitudePkgstates} ]]; then 	tar -czf "/${sDistBackupFolder}/${sVarLibAptitudePkgstates/'/'/'-'}-backup.tar.gz" -C / ${sVarLibAptitudePkgstates}; fi; } #cp -a "${sVarLibAptitudePkgstates}" "${sDistBackupFolder}/"
+backupAptExtendedStates() { 	if [[ -f /${sVarLibAptExt} ]]; then 			tar -czf "/${sDistBackupFolder}/${sVarLibAptExt/'/'/'-'}-backup.tar.gz" -C / /${sVarLibAptExt}; fi; } #cp -a "${sVarLibAptExt}" "${sDistBackupFolder}/"
+backupEtcFolder() { 			if [[ -d /${sEtcFolder} ]]; then 				tar -czf "/${sDistBackupFolder}/${sEtcFolder}-backup.tar.gz" -C / etc; fi; }
+backupVarLibDpkg() { 			if [[ -d /${sVarLibDpkg} ]]; then 				tar -czf "/${sDistBackupFolder}/${sVarLibDpkg/'/'/'-'}-backup.tar.gz" -C / ${sVarLibDpkg}; fi; }	
 
 main() {
 	getDiskBackupFolder
