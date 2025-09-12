@@ -22,7 +22,7 @@ sVarLibAptitudePkgstates="var/lib/aptitude/pkgstates"
 getDebianVersion() { 			if [[ -f /etc/debian_version ]]; then 			sDebMainVersion="$(cat /etc/debian_version)"; echo "${sDebMainVersion%%.*}"
 								else 											echo "false"; exit 1; fi; }
 getDiskBackupFolder() { 		if [[ ! -d /${sDistBackupFolder} ]]; then 		mkdir -p "/${sDistBackupFolder}"; chmod 700 "/${sDistBackupFolder}"; fi; }
-backupDpkgSelections() { 		if command -v dpkg &>/dev/null; then 			dpkg --get-selections '*' > "${sDpkgGetSelections}"; fi; }
+backupDpkgSelections() { 		if command -v dpkg &>/dev/null; then 			dpkg --get-selections '*' > "/${sDpkgGetSelections}"; fi; }
 backupAptitudePkgstates() { 	if [[ -f /${sVarLibAptitudePkgstates} ]]; then 	tar -czf "/${sDistBackupFolder}/${sVarLibAptitudePkgstates/'/'/'-'}-backup.tar.gz" -C / ${sVarLibAptitudePkgstates}; fi; } #cp -a "${sVarLibAptitudePkgstates}" "${sDistBackupFolder}/"
 backupAptExtendedStates() { 	if [[ -f /${sVarLibAptExt} ]]; then 			tar -czf "/${sDistBackupFolder}/${sVarLibAptExt/'/'/'-'}-backup.tar.gz" -C / /${sVarLibAptExt}; fi; } #cp -a "${sVarLibAptExt}" "${sDistBackupFolder}/"
 backupEtcFolder() { 			if [[ -d /${sEtcFolder} ]]; then 				tar -czf "/${sDistBackupFolder}/${sEtcFolder}-backup.tar.gz" -C / etc; fi; }
