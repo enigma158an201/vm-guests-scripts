@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # script by enigma158an201 12/09/2025 @ 23:08
-set -euxo pipefail
+set -euo pipefail
 
 # script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
 
