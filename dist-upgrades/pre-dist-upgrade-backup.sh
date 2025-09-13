@@ -55,6 +55,7 @@ main() {
 	backupEtcFolder
 	backupVarLibDpkg
 	echo "Backup completed and saved to ${sDistBackupFolder}"
-	echo "You can now proceed with the distribution upgrade."
+	upgradeCheck
+	echo -e "System is ready for distribution upgrade.\nYou can now proceed with the distribution upgrade."
 }
 main
