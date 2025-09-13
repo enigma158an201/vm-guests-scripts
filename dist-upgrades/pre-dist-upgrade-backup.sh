@@ -28,12 +28,11 @@ backupAptExtendedStates() { 	if [[ -f /${sVarLibAptExt} ]]; then 			tar -czf "/$
 backupEtcFolder() { 			if [[ -d /${sEtcFolder} ]]; then 				tar -czf "/${sDistBackupFolder}/${sEtcFolder}-backup.tar.gz" -C / ${sEtcFolder}; fi; }
 backupVarLibDpkg() { 			if [[ -d /${sVarLibDpkg} ]]; then 				tar -czf "/${sDistBackupFolder}/${sVarLibDpkg//'/'/'-'}-backup.tar.gz" -C / ${sVarLibDpkg}; fi; }	
 upgradeCheck() {
-	apt-get autoremove
-	apt-mark showhold | grep -q . && { echo "There are held packages. Please unhold them before proceeding with the upgrade."; exit 1; } # apt-mark hold package_name || apt-mark unhold package_name
-	dpkg --audit | grep -q . && { echo "There are broken packages. Please fix them before proceeding with the upgrade."; exit 1; }
+	apt-mark showhold | grep -q . && { echo -e "\t>>> There are held packages. Please unhold them before proceeding with the upgrade."; exit 1; } # apt-mark hold package_name || apt-mark unhold package_name
+	dpkg --audit | grep -q . && { echo -e "\t>>> There are broken packages. Please fix them before proceeding with the upgrade."; exit 1; }
 	for sMotif in obsolete orphaned config-files; do
 		if apt-get list "?${sMotif}" 2>/dev/null | grep -q .; then
-			echo "There are ${sMotif} packages. Please remove them before proceeding with the upgrade."
+			echo -e "\t>>> There are ${sMotif} packages. Script will try autoremove them before proceeding with the upgrade."
 			apt-get autoremove
 			exit 1
 		fi
@@ -46,8 +45,8 @@ main() {
 	backupAptExtendedStates
 	backupEtcFolder
 	backupVarLibDpkg
-	echo "Backup completed and saved to ${sDistBackupFolder}"
+	echo -e "\t>>> Backup completed and saved to ${sDistBackupFolder}"
 	upgradeCheck
-	echo -e "System is ready for distribution upgrade.\nYou can now proceed with the distribution upgrade."
+	echo -e "\t>>> System is ready for distribution upgrade.\nYou can now proceed with the distribution upgrade."
 }
 main
