@@ -31,21 +31,13 @@ upgradeCheck() {
 	apt-get autoremove
 	apt-mark showhold | grep -q . && { echo "There are held packages. Please unhold them before proceeding with the upgrade."; exit 1; } # apt-mark hold package_name || apt-mark unhold package_name
 	dpkg --audit | grep -q . && { echo "There are broken packages. Please fix them before proceeding with the upgrade."; exit 1; }
-	if apt-get list '?obsolete' 2>/dev/null | grep -q .; then
-		echo "There are obsolete packages. Please remove them before proceeding with the upgrade."
-		apt-get autoremove
-		exit 1
-	fi
-	if apt-get list '?orphaned' 2>/dev/null | grep -q .; then
-		echo "There are orphaned packages. Please remove them before proceeding with the upgrade."
-		apt-get autoremove
-		exit 1
-	fi
-	if apt-get list '?config-files' 2>/dev/null | grep -q .; then
-		echo "There are packages with only configuration files remaining. Please purge them before proceeding with the upgrade."
-		apt-get autoremove
-		exit 1
-	fi
+	for sMotif in obsolete orphaned config-files; do
+		if apt-get list "?${sMotif}" 2>/dev/null | grep -q .; then
+			echo "There are ${sMotif} packages. Please remove them before proceeding with the upgrade."
+			apt-get autoremove
+			exit 1
+		fi
+	done
 }
 main() {
 	getDiskBackupFolder
