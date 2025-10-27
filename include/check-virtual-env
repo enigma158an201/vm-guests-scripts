@@ -4,7 +4,9 @@
 # script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
 
 #shellcheck disable=SC2154
-source "${sLaunchDir}/include/check-user-privileges"
+sLaunchDir="$(readlink -f "$(dirname "$0")")"
+sParentDir="$(dirname "${sLaunchDir}")"
+source "${sParentDir}/include/check-user-privileges"
 #source "./check-virtual-env"
 
 checkVirtEnv() {
