@@ -6,7 +6,7 @@
 #shellcheck disable=SC2154
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 sParentDir="$(dirname "${sLaunchDir}")"
-source "${sParentDir}/include/check-user-privileges"
+source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges"
 #source "./check-virtual-env"
 
 checkVirtEnv() {
