@@ -10,8 +10,8 @@ set -euo pipefail
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 sParentDir="$(dirname "${sLaunchDir}")"
-source "${sParentDir}/include/check-user-privileges" #sLaunchDir
-source "${sParentDir}/include/check-virtual-env"	 #sLaunchDir
+source "${sLaunchDir}/include/check-virtual-env" || 	source "${sParentDir}/include/check-virtual-env"
+source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges"
 
 cachesDirectoryClean() { #find ~/.cache/ -type f -atime +365 -delete #rm -rfv ~/.cache/thumbnails
 	#for sFolder in /home /root /var; do
