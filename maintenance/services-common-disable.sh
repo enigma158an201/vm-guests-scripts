@@ -6,8 +6,9 @@ set -euo pipefail
 # script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
-source "${sLaunchDir}/../include/check-user-privileges"
-source "${sLaunchDir}/../include/check-virtual-env"
+sParentDir="$(dirname "${sLaunchDir}")"
+source "${sLaunchDir}/include/check-virtual-env" || 	source "${sParentDir}/include/check-virtual-env"
+source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges"
 
 main_disable_services() {
 	if command -v systemctl &>/dev/null; then
