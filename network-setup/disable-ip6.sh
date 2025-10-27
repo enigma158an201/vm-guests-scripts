@@ -8,7 +8,7 @@ set -euo pipefail #; set -x
 #sLaunchDir="$(dirname "$0")"; if [[ "${sLaunchDir}" = "." ]]; then sLaunchDir="$(pwd)"; elif [[ "${sLaunchDir}" = "include" ]]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 sParentDir="$(dirname "${sLaunchDir}")"
-source "${sLaunchDir}/../include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges"
+source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges"
 
 checkSysctlEnabled() {
 	if sysctl -a &>/dev/null; then 			echo -e "\t>>> sysctl is enabled"; 		return 0

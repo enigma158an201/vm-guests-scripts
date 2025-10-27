@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
 set -euo pipefail #; set -x
-sLaunchDir="$(dirname "$0")"
-source "${sLaunchDir}/../include/file-edition.sh"
+
+sLaunchDir="$(readlink -f "$(dirname "$0")")"
+sParentDir="$(dirname "${sLaunchDir}")"
+source "${sLaunchDir}/include/file-edition.sh" || source "${sParentDir}/include/file-edition.sh"
 
 edit_systemd_disable_sleep() {
 	sSleepconfDir=/etc/systemd/sleep.conf

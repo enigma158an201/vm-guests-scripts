@@ -7,7 +7,7 @@ set -euo pipefail #; set -x
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 sParentDir="$(dirname "${sLaunchDir}")"
-source "${sLaunchDir}/../include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges"
+source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges"
 
 # Function to check if the input string is a valid IPv4 address
 is_valid_ipv4() {
