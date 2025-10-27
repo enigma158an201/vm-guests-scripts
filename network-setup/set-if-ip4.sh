@@ -6,7 +6,8 @@ set -euo pipefail #; set -x
 # script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
-source "${sLaunchDir}/../include/check-user-privileges"
+sParentDir="$(dirname "${sLaunchDir}")"
+source "${sLaunchDir}/../include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges"
 
 # Function to check if the input string is a valid IPv4 address
 is_valid_ipv4() {

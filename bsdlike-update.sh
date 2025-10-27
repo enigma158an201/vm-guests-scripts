@@ -6,9 +6,10 @@ set -euo pipefail # set -euxo pipefail
 # script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
-source "${sLaunchDir}/include/check-user-privileges"
-source "${sLaunchDir}/include/check-virtual-env"
-source "${sLaunchDir}/include/git-self-update"
+sParentDir="$(dirname "${sLaunchDir}")"
+source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges"
+source "${sLaunchDir}/include/check-virtual-env" || 	source "${sParentDir}/include/check-virtual-env"
+source "${sLaunchDir}/include/git-self-update" || 		source "${sParentDir}/include/git-self-update"
 
 get_freebsd_latest_version() {
 	curl -s https://download.freebsd.org/releases/amd64/ | awk '{print $3}' | grep RELEASE | tr -d '"' | tr -d '/' | cut -f2 -d'=' | sort | tail -1

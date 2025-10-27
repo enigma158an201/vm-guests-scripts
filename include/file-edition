@@ -2,7 +2,8 @@
 
 set -euo pipefail #; set -x
 sLaunchDir="$(dirname "$0")"
-source "${sLaunchDir}/include/check-user-privileges"
+sParentDir="$(dirname "${sLaunchDir}")"
+source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges"
 
 comment() {
 	local sRegex="${1:?}"

@@ -6,7 +6,8 @@ set -euo pipefail # set -euxo pipefail
 #https://www.ssh-audit.com/hardening_guides.html#debian_12
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
-source "${sLaunchDir}/../include/check-user-privileges" #source "${sLaunchDir}/include/set-common-settings.sh"
+sParentDir="$(dirname "${sLaunchDir}")"
+source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges" #source "${sLaunchDir}/include/set-common-settings.sh"
 
 sSshUserFolder=.ssh
 sSshAliasConfig=${sSshUserFolder}/config

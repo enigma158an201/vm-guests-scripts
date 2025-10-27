@@ -15,9 +15,10 @@ set -euxo pipefail
 # deb-src http://deb.debian.org/debian bullseye-updates main
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
+sParentDir="$(dirname "${sLaunchDir}")"
 #if [[ "${sLaunchDir}" = "." ]] || [[ "${sLaunchDir}" = "include" ]] || [[ "${sLaunchDir}" = "" ]]; then eval sLaunchDir="$(pwd)"; fi
 #sLaunchDir="${sLaunchDir//include/}"
-source "${sLaunchDir}/../include/check-user-privileges" # ./include/test-superuser-privileges.sh moved to ${sLaunchDir}/../include/test-superuser-privileges
+source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges" # ./include/test-superuser-privileges.sh moved to ${sLaunchDir}/../include/test-superuser-privileges
 
 #for debugging source path purpose
 #if true; then exit; fi
