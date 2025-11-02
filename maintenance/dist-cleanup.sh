@@ -52,13 +52,13 @@ aptRemoveUnmergedConfigs() {
 }
 aptRemoveUnusedOldKernels() {
 	echo -e "\t>>> cleaning old apt kernels, if applicable"
-	if command -v purge-old-kernels &>/dev/null; then 		purge-old-kernels --keep 2 --verbose; fi
+	if command -v purge-old-kernels &>/dev/null; then 		purge-old-kernels --keep 2 --verbose; else echo -e "\t>>> purge-old-kernels not found"; fi
 }
 aptRemoveForeign() {
 	echo -e "\t>>> list foreign apt packages, if applicable"
 	apt list '?narrow(?installed, ?not(?origin(Debian)))'
 	echo -e "\t>>> list foreign apt-forktracer packages, if applicable"
-	if command -v apt-forktracer &>/dev/null; then 	apt-forktracer | sort; fi
+	if command -v apt-forktracer &>/dev/null; then 	apt-forktracer | sort; else echo -e "\t>>> apt-forktracer not found"; fi
 }
 aptRemoveForeignFonts() {
 	echo -e "\t>>> cleaning unused foreign, if applicable"
