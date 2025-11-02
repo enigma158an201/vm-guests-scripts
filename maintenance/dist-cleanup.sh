@@ -45,11 +45,20 @@ aptRemoveUnused() {
 	apt-get purge ~c || true
 	if apt-get distclean; then echo ""; else apt-get autoclean; fi
 }
+aptRemoveUnmergedConfigs() {
+	echo -e "\t>>> cleaning unmerged apt config files, if applicable"
+	#dpkg --get-selections | grep 'config-files' | awk '{print $1}' | xargs -r dpkg --purge
+	if false; then find /etc \( -name '*.dpkg-*' -o -name '*.ucf-*' -o -name '*.merge-error' \) -exec rm -f {} \; ; fi
+}
+aptRemoveUnusedOldKernels() {
+	echo -e "\t>>> cleaning old apt kernels, if applicable"
+	if command -v purge-old-kernels &>/dev/null; then 		purge-old-kernels --keep 2 --verbose; fi
+}
 aptRemoveForeign() {
 	echo -e "\t>>> list foreign apt packages, if applicable"
 	apt list '?narrow(?installed, ?not(?origin(Debian)))'
 	echo -e "\t>>> list foreign apt-forktracer packages, if applicable"
-	if command -v apt-forktracer &>/dev/null; then apt-forktracer | sort; fi
+	if command -v apt-forktracer &>/dev/null; then 	apt-forktracer | sort; fi
 }
 aptRemoveForeignFonts() {
 	echo -e "\t>>> cleaning unused foreign, if applicable"
