@@ -42,7 +42,7 @@ cpanDirectoryClean() {
 aptRemoveUnused() {
 	echo -e "\t>>> cleaning and purging unused apt packages, if applicable"
 	apt-get autoremove --purge || true
-	apt-get purge ~c
+	apt-get purge ~c || true
 	if apt-get distclean; then echo ""; else apt-get autoclean; fi
 }
 aptRemoveForeign() {
