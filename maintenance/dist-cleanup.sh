@@ -45,6 +45,12 @@ aptRemoveUnused() {
 	apt-get purge ~c
 	if apt-get distclean; then echo ""; else apt-get autoclean; fi
 }
+aptRemoveForeign() {
+	echo -e "\t>>> list foreign apt packages, if applicable"
+	apt list '?narrow(?installed, ?not(?origin(Debian)))'
+	echo -e "\t>>> list foreign apt-forktracer packages, if applicable"
+	if command -v apt-forktracer &>/dev/null; then apt-forktracer | sort; fi
+}
 aptRemoveForeignFonts() {
 	echo -e "\t>>> cleaning unused foreign, if applicable"
 	if command -v apt-get &>/dev/null; then 		apt-get remove "fonts-noto*"
