@@ -32,13 +32,13 @@ checkPrerequisites() {
 	done
 }
 installSshAlias() {
-	echo -e "\t>>> setup ssh alias config at ${sSshLocalAliasConfig}{,.d/}"
+	echo -e "\t--> setup ssh alias config at ${sSshLocalAliasConfig}{,.d/}"
 	if [[ -f "${sSshRepoAliasConfig}" ]]; then 		rsync -av "${sSshRepoAliasConfig}" "${sSshLocalAliasConfig}"; fi
 	if [[ -d "${sSshRepoAliasConfigd}" ]]; then 	rsync -av "${sSshRepoAliasConfigd}/" "${sSshLocalAliasConfigd}/"; fi
 }
 installSshKeys() {
-	echo -e "\t>>> setup ssh keys at ${sSshLocalConf}"
-	echo -e "\t>>> checking ssh authorized_keys keys at ${sSshLocalAuthKeys}"
+	echo -e "\t--> setup ssh keys at ${sSshLocalConf}"
+	echo -e "\t--> checking ssh authorized_keys keys at ${sSshLocalAuthKeys}"
 	if ! test -e "${sSshLocalAuthKeys}"; then 	touch "${sSshLocalAuthKeys}"; fi
 	install -o "${USER}" -g "${USER}" -pv truc machin
 	for sAliasPubKey in "${sSshRepoConf}"/*.pub; do 
@@ -49,7 +49,7 @@ installSshKeys() {
 	done
 }
 importSshKeys() {
-	echo -e "\t>>> setup ssh authorized_keys at ${sSshLocalConf}"	#ssh-copy-id -i debian_server.pub pragmalin@debianvm
+	echo -e "\t--> setup ssh authorized_keys at ${sSshLocalConf}"	#ssh-copy-id -i debian_server.pub pragmalin@debianvm
 	##for sSshPubKey in "${sSshRepoConf}"/*.pub; do
 	#	for sSshAlias in SKY41 testsalonk wtestsalonk #freebox-delta-wan
 	#	do
@@ -62,7 +62,7 @@ importSshKeys() {
 }
 mkdirUserSsh() {
 	if [[ ! -d "${sSshLocalConf}" ]]; then
-		echo -e "\t>>> create ssh user folder ${sSshLocalConf}"
+		echo -e "\t--> create ssh user folder ${sSshLocalConf}"
 		mkdir -p "${sSshLocalConf}"
 		chown "${USER}:${USER}" "${sSshLocalConf}"
 		chmod 700 "${sSshLocalConf}"

@@ -34,7 +34,7 @@ upgrade_release_freebsd() {
 	sFreebsdCurrent="$(get_freebsd_installed_release)" #"$(freebsd-version | cut -d '-' -f 1)"
 	#shellcheck disable=SC2053
 	if [[ ${sFreebsdLatest} != ${sFreebsdCurrent} ]]; then
-		echo -e "\t>>> FreeBSD ${sFreebsdCurrent} is not the latest version, upgrading to ${sFreebsdLatest}"
+		echo -e "\t--> FreeBSD ${sFreebsdCurrent} is not the latest version, upgrading to ${sFreebsdLatest}"
 		if command -v freebsd-update &>/dev/null; then
 			#shellcheck disable=SC2154
 			#if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'freebsd-update upgrade -r ${sFreebsdLatest} || true'"
@@ -46,7 +46,7 @@ upgrade_release_freebsd() {
 		fi
 		update_freebsd
 	else
-		echo -e "\t>>> FreeBSD ${sFreebsdCurrent} is the latest version, no need to upgrade"
+		echo -e "\t--> FreeBSD ${sFreebsdCurrent} is the latest version, no need to upgrade"
 		return 0
 	fi
 	
@@ -64,9 +64,9 @@ clean_bsd() {
 	suExecCommand 'pkg autoremove && pkg clean'
 }
 main_bsdlike_update() {
-	if ! command -v pkg &>/dev/null; then 			echo -e "\t>>> pkg command not found, exit now !!!"
+	if ! command -v pkg &>/dev/null; then 			echo -e "\t--> pkg command not found, exit now !!!"
 													exit 1
-	else 											echo -e "\t>>> pkg command found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
+	else 											echo -e "\t--> pkg command found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
 	fi
 	updateScriptsViaGit
 	update_freebsd

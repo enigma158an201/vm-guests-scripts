@@ -34,21 +34,21 @@ fi
 
 preCheck() {
 	if ! command -v tmux &> /dev/null; then 
-		echo -e "\t>>> tmux not found, please install tmux, aborting";
-		echo -e "\t>>> Install tmux with \`sudo apt-get install tmux\` command"; read -rp "(y/N) ?" -n 1 sTmuxInstall
+		echo -e "\t--> tmux not found, please install tmux, aborting";
+		echo -e "\t--> Install tmux with \`sudo apt-get install tmux\` command"; read -rp "(y/N) ?" -n 1 sTmuxInstall
 		if [[ ! "${sTmuxInstall^^}" = "N" ]] && [[ ! "${sTmuxInstall}" = "" ]]; then 	
 			if sudo apt-get install tmux; then
-				echo -e "\t>>> install tmux success, you can restart the command you entered:\n\`${sCommand}\`"
+				echo -e "\t--> install tmux success, you can restart the command you entered:\n\`${sCommand}\`"
 			fi
 		fi
 		exit 1
 	fi
 	if ! command -v tput &> /dev/null; then
-		echo -e "\t>>> tput not found, please install tput, aborting";
-		echo -e "\t>>> Install tput with \`sudo apt-get install ncurses-bin\` command"; read -rp "(y/N) ?" -n 1 sTputInstall
+		echo -e "\t--> tput not found, please install tput, aborting";
+		echo -e "\t--> Install tput with \`sudo apt-get install ncurses-bin\` command"; read -rp "(y/N) ?" -n 1 sTputInstall
 		if [[ ! "${sTputInstall^^}" = "N" ]] && [[ ! "${sTputInstall}" = "" ]]; then 	
 			if sudo apt-get install ncurses-bin; then
-				echo -e "\t>>> install tmux success, you can restart the command you entered:\n\`${sCommand}\`"
+				echo -e "\t--> install tmux success, you can restart the command you entered:\n\`${sCommand}\`"
 			fi
 		fi
 		exit 1

@@ -129,7 +129,7 @@ upgradeSourcesList() {
 }
 upgradeDebianDist() {
 	if ! env | grep XDG_SESSION_TYPE=tty; then #check tty env
-		echo -e "\t>>> Le processus d'upgrade peut prendre selon la vitesse de connexion internet et la performance matériel 30 minutes ou plus."
+		echo -e "\t--> Le processus d'upgrade peut prendre selon la vitesse de connexion internet et la performance matériel 30 minutes ou plus."
 		echo -e "\t	La mise à jour depuis un environnement graphique est déconseillée, à moins d'avoir pris les dispositions pour empêcher"
 		echo -e "\t	le verrouillage de la session graphique (ou d'avoir basculé en session sous le tty ce qui résoud tout probleme graphique),"
 		echo -e "\t	Si tel est le cas, bien vérifier que tout écran de veille a bien été désactivé"

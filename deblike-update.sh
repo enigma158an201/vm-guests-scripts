@@ -37,10 +37,10 @@ main_deblike_update() {
 		if command -v omv-upgrade &>/dev/null; then 	upgrade_omv; fi
 		if command -v pveupgrade &>/dev/null; then 		upgrade_pve; fi
 		if ! command -v apt-get &>/dev/null || ! command -v apt &>/dev/null; then 
-			echo -e "\t>>> apt not found, exit now !!!"
+			echo -e "\t--> apt not found, exit now !!!"
 			exit 1
 		else
-			echo -e "\t>>> apt found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
+			echo -e "\t--> apt found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
 		fi
 		updateScriptsViaGit
 		update_apt && clean_apt && clean_dpkg

@@ -22,10 +22,10 @@ checkGaleraDbEngine() { #mariadb -u root <<EOF #show variables like 'default_sto
 		fi
 	done
 	iErr=0
-	if ! ${bInnoDb}; then echo echo -e "\t>>> ERROR: InnoDB is not the default storage engine, please check your configuration."; iErr=$((iErr + 1)); fi
+	if ! ${bInnoDb}; then echo echo -e "\t--> ERROR: InnoDB is not the default storage engine, please check your configuration."; iErr=$((iErr + 1)); fi
 	if ${bMyISAM}; then
-		echo -e "\t>>> ERROR: MyISAM tables found in the database, please convert them to InnoDB."
-		echo -e "\t>>> ERROR: Please check your configuration and try again."
+		echo -e "\t--> ERROR: MyISAM tables found in the database, please convert them to InnoDB."
+		echo -e "\t--> ERROR: Please check your configuration and try again."
 		iErr=$((iErr + 2))
 	fi
 	return ${iErr}
@@ -59,7 +59,7 @@ log_error = /var/log/mysql/error-galera.log" | tee /etc/mysql/mariadb.conf.d/60-
 	mariadb -s -r -u root -e "show status like 'wsrep_cluster_size';"
 }
 installationTypeChoice() {
-	echo -e "\t>>> which cluster type to you want? (type m for master galera cluster, s for slave one, any other key to display status)"
+	echo -e "\t--> which cluster type to you want? (type m for master galera cluster, s for slave one, any other key to display status)"
 	read -rp "(m/S) ?" -n 1 sClusterType
 	configMainCluster "${sClusterType,,}"
 }
@@ -71,19 +71,19 @@ displayGaleraClusterStatus() { # see /usr/share/mysql/wsrep.cnf
 	mariadb -s -r -u root -e "SHOW STATUS LIKE 'wsrep_local_state_comment';"
 }
 checkMariaRemoteConnection() {
-	echo -e "\t>>> Checking remote connection..."
+	echo -e "\t--> Checking remote connection..."
 	if [[ $(grep "bind-address" /etc/mysql/mariadb.conf.d/50-server.cnf | grep -v '#') =~ 127.0.0.1 ]]; then
-		echo -e "\t>>> ERROR: bind-address is set to localhost, please change it to	0.0.0.0"
+		echo -e "\t--> ERROR: bind-address is set to localhost, please change it to	0.0.0.0"
 	else
-		echo -e "\t>>> Galera Cluster setup completed."
+		echo -e "\t--> Galera Cluster setup completed."
 	fi
 }
 dnsTodoPostInstall() {
-	echo -e "\t>>> Please add or check the following lines to your /etc/hosts file:"
+	echo -e "\t--> Please add or check the following lines to your /etc/hosts file:"
 	for sIp in $(echo "${sGaleraNodeIps}" | tr ',' ' '); do
 		echo -e "\t\t${sIp} $(getent hosts "${sIp}" | awk '{print $2}')"
 	done
-	echo -e "\t>>> or haproxy backends lines to your /etc/haproxy/haproxy.cfg file:"
+	echo -e "\t--> or haproxy backends lines to your /etc/haproxy/haproxy.cfg file:"
 	echo -e "\tdefaults
 	\tlog global
 	\tmode tcp
@@ -108,12 +108,12 @@ dnsTodoPostInstall() {
 	done
 }
 sqlTodoPostInstall() {
-	echo -e "\t>>> Please run the following SQL commands to create the haproxy user:"
+	echo -e "\t--> Please run the following SQL commands to create the haproxy user:"
 	echo -e "\tmariadb -s -r -u root -e \"CREATE USER IF NOT EXISTS 'haproxy'@'<replace.by.haproxy.ip>' IDENTIFIED BY 'password';\"" #
 	mariadb -s -r -u root -e "CREATE USER IF NOT EXISTS 'haproxy'@'%' IDENTIFIED BY 'password';" #
 }
 sqlClusterListUsers() {
-	echo -e "\t>>> The following list of users can connect database:"
+	echo -e "\t--> The following list of users can connect database:"
 	mariadb -s -r -u root -e "SELECT user, host FROM mysql.user;"
 }
 mainSetupGalera() {

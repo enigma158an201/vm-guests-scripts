@@ -23,10 +23,10 @@ clean_void() {
 main_void_update() {
 	if [[ "$(checkRootPermissions)" = "true" ]]; then
 		if ! command -v xbps-install || ! command -v xbps-remove; then 
-			echo -e "\t>>> xbps not found, exit now !!!"
+			echo -e "\t--> xbps not found, exit now !!!"
 			exit 1
 		else
-			echo -e "\t>>> xbps found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
+			echo -e "\t--> xbps found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
 		fi
 		updateScriptsViaGit
 		update_void && clean_void #&& poweroff # && shutdown 0

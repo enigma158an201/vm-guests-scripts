@@ -105,10 +105,10 @@ EndSection"
 }
 main_setup_de() {
 	if ! command -v apk &>/dev/null; then 
-		echo -e "\t>>> apk not found, exit now !!!"
+		echo -e "\t--> apk not found, exit now !!!"
 		exit 1
 	else
-		echo -e "\t>>> apk found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. setup DE \n 5. "
+		echo -e "\t--> apk found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. setup DE \n 5. "
 	fi
 	update_setup && clean_setup
 	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} apk add musl-locales"

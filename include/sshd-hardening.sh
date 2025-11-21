@@ -8,7 +8,7 @@ set -euo pipefail # -x
 updateSshdConfig() {
 	set -x
 	sSshsource="$(readlink -f "$@")"
-	echo -e "\t>>> application des fichiers config ssh et sshd"
+	echo -e "\t--> application des fichiers config ssh et sshd"
 	for sSshDst in sshd_config.d ssh_config.d; do
 		rsync -av "${sSshsource}/${sSshDst}/" "/etc/ssh/${sSshDst}/" 
 	done
@@ -19,7 +19,7 @@ updateSshdConfig() {
 	#read -rp " "
 }
 cleanModuli() {
-	echo -e "\t>>> hardening moduli"
+	echo -e "\t--> hardening moduli"
 	awk '$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.safe
 	mv /etc/ssh/moduli /etc/ssh/moduli.bak
     mv /etc/ssh/moduli.safe /etc/ssh/moduli

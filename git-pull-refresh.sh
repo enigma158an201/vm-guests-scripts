@@ -21,10 +21,10 @@ pullGitUpdates() {
 
 main_git_process() {
 	if ! command -v git &>/dev/null; then
-		echo -e "\t>>> git not found, exit now !!!"
+		echo -e "\t--> git not found, exit now !!!"
 		exit 1
 	else
-		echo -e "\t>>> git found, this script will: check and fetch git updates if needed"
+		echo -e "\t--> git found, this script will: check and fetch git updates if needed"
 	fi
 	sGitFolder=$(findScriptsGitFolder)
 	cd "${sGitFolder}"

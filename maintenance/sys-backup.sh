@@ -26,11 +26,11 @@ sBackupFile="$(getBackupFilename)"
 
 main_sys_bakcup() {
 	if ! command -v tar &>/dev/null || ! command -v ssh &>/dev/null; then
-		echo -e "\t>>> tar or ssh not found, exit now !!!"
+		echo -e "\t--> tar or ssh not found, exit now !!!"
 		exit 1
 	fi
 	if [[ "$(checkRootPermissions)" = "false" ]]; then
-		echo -e "\t>>> root privileges are required, try with either: su | sudo | doas\n\t>>> exit now !!!"
+		echo -e "\t--> root privileges are required, try with either: su | sudo | doas\n\t--> exit now !!!"
 		exit 1
 	fi
 	cd / # THIS CD IS IMPORTANT THE FOLLOWING LONG COMMAND IS RUN FROM /

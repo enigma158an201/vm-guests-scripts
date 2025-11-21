@@ -43,9 +43,9 @@ clean_dnf() {
 }
 
 main_rockylinux_upgrade() {
-	if ! command -v dnf; then 					echo -e "\t>>> dnf not found, exit now !!!"
+	if ! command -v dnf; then 					echo -e "\t--> dnf not found, exit now !!!"
 												exit 1
-	else 										echo -e "\t>>> dnf found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
+	else 										echo -e "\t--> dnf found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
 	fi
 	updateScriptsViaGit
 	update_dnf && clean_dnf #&& shutdown 0
