@@ -6,7 +6,8 @@ set -euo pipefail
 # script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
-sParentDir="$(dirname "${sLaunchDir}")"
+sParentDir="$(dirname "${sLaunchDir}")" 
+while [[ "$(basename "${sParentDir}")" != "vm-guests-scripts" ]]; do sParentDir="$(dirname "${sParentDir}")"; done
 source "${sLaunchDir}/include/check-virtual-env" || 	source "${sParentDir}/include/check-virtual-env"
 source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges"
 source "${sLaunchDir}/include/colors" || 				source "${sParentDir}/include/colors"
