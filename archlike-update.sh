@@ -34,7 +34,7 @@ cleanTrizen() { if command -v trizen &>/dev/null; then trizen -Sccd --noconfirm;
 setupParu() { #if [[ ${UID} = 0 ]] || [[ ${UID} = 0 ]]; then exit 1; fi
 	cd /tmp || exit
 	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} pacman -S --needed base-devel"; else pacman -S --needed base-devel; fi
-	if true; then sParu=paru; else sParu=paru-bin; fi
+	if false; then sParu=paru; else sParu=paru-bin; fi
 	git clone https://aur.archlinux.org/${sParu}.git && { cd ${sParu} || exit; } && makepkg -si
 }
 
