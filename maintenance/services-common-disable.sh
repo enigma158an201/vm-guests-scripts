@@ -8,9 +8,9 @@ set -euo pipefail
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 sParentDir="$(dirname "${sLaunchDir}")" 
 while [[ "$(basename "${sParentDir}")" != "vm-guests-scripts" ]]; do sParentDir="$(dirname "${sParentDir}")"; done
-source "${sLaunchDir}/include/check-virtual-env" || 	source "${sParentDir}/include/check-virtual-env"
-source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges"
-source "${sLaunchDir}/include/colors" || 				source "${sParentDir}/include/colors"
+source "${sParentDir}/include/check-virtual-env"		#source "${sLaunchDir}/include/check-virtual-env" || 	source "${sParentDir}/include/check-virtual-env"
+source "${sParentDir}/include/check-user-privileges"	#source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges"
+source "${sParentDir}/include/colors"					#source "${sLaunchDir}/include/colors" || 				source "${sParentDir}/include/colors"
 
 main_disable_services() {
 	if command -v systemctl &>/dev/null; then
