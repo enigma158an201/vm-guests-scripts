@@ -10,8 +10,9 @@ set -euo pipefail
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 sParentDir="$(dirname "${sLaunchDir}")"
-source "${sLaunchDir}/include/check-virtual-env" || 	source "${sParentDir}/include/check-virtual-env"
-source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges"
+while [[ "$(basename "${sParentDir}")" != "vm-guests-scripts" ]]; do sParentDir="$(dirname "${sParentDir}")"; done
+source "${sParentDir}/include/check-virtual-env"		#source "${sLaunchDir}/include/check-virtual-env" || 	source "${sParentDir}/include/check-virtual-env"
+source "${sParentDir}/include/check-user-privileges"	#source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges"
 
 cachesDirectoryClean() { #find ~/.cache/ -type f -atime +365 -delete #rm -rfv ~/.cache/thumbnails
 	#for sFolder in /home /root /var; do

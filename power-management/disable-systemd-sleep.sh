@@ -4,7 +4,8 @@ set -euo pipefail #; set -x
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 sParentDir="$(dirname "${sLaunchDir}")"
-source "${sLaunchDir}/include/file-edition.sh" || source "${sParentDir}/include/file-edition.sh"
+while [[ "$(basename "${sParentDir}")" != "vm-guests-scripts" ]]; do sParentDir="$(dirname "${sParentDir}")"; done
+source "${sParentDir}/include/file-edition.sh"	#source "${sLaunchDir}/include/file-edition.sh" || source "${sParentDir}/include/file-edition.sh"
 
 edit_systemd_disable_sleep() {
 	sSleepconfDir=/etc/systemd/sleep.conf

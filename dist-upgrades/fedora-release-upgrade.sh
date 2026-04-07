@@ -9,9 +9,10 @@ set -euo pipefail # set -euxo pipefail
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 sParentDir="$(dirname "${sLaunchDir}")"
-source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges"
-#source "${sLaunchDir}/include/check-virtual-env" || 	source "${sParentDir}/include/check-virtual-env"
-source "${sLaunchDir}/include/git-self-update" || 		source "${sParentDir}/include/git-self-update"
+while [[ "$(basename "${sParentDir}")" != "vm-guests-scripts" ]]; do sParentDir="$(dirname "${sParentDir}")"; done
+source "${sParentDir}/include/check-user-privileges"	#source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges"
+#source "${sParentDir}/include/check-virtual-env" 		#source "${sLaunchDir}/include/check-virtual-env" || 	source "${sParentDir}/include/check-virtual-env"
+source "${sParentDir}/include/git-self-update" 			#source "${sLaunchDir}/include/git-self-update" || 		source "${sParentDir}/include/git-self-update"
 
 upgradeRefreshDnf() { suExecCommand "dnf upgrade --refresh"; }
 getFedoraRelease() {

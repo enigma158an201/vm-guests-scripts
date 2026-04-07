@@ -10,9 +10,10 @@ sBackupFolder=/media/VMs/vm-backup
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 sParentDir="$(dirname "${sLaunchDir}")"
-#source "${sLaunchDir}/include/check-virtual-env" || 	source "${sParentDir}/include/check-virtual-env"
-source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges"
-#source "${sLaunchDir}/include/git-self-update" || 		source "${sParentDir}/include/git-self-update"
+while [[ "$(basename "${sParentDir}")" != "vm-guests-scripts" ]]; do sParentDir="$(dirname "${sParentDir}")"; done
+#source "${sParentDir}/include/check-virtual-env" 		#source "${sLaunchDir}/include/check-virtual-env" || 	source "${sParentDir}/include/check-virtual-env"
+source "${sParentDir}/include/check-user-privileges"	#source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges"
+#source "${sParentDir}/include/git-self-update"			#source "${sLaunchDir}/include/git-self-update" || 		source "${sParentDir}/include/git-self-update"
 
 getBackupFilename() {
 	if command -v hostname &>/dev/null; then 		sHostName=$(hostname)

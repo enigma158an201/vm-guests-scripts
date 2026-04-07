@@ -16,9 +16,10 @@ set -euxo pipefail
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 sParentDir="$(dirname "${sLaunchDir}")"
+while [[ "$(basename "${sParentDir}")" != "vm-guests-scripts" ]]; do sParentDir="$(dirname "${sParentDir}")"; done
 #if [[ "${sLaunchDir}" = "." ]] || [[ "${sLaunchDir}" = "include" ]] || [[ "${sLaunchDir}" = "" ]]; then eval sLaunchDir="$(pwd)"; fi
 #sLaunchDir="${sLaunchDir//include/}"
-source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges" # ./include/test-superuser-privileges.sh moved to ${sLaunchDir}/../include/test-superuser-privileges
+source "${sParentDir}/include/check-user-privileges" #source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges" # ./include/test-superuser-privileges.sh moved to ${sLaunchDir}/../include/test-superuser-privileges
 
 #for debugging source path purpose
 #if true; then exit; fi
