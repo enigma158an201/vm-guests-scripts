@@ -3,8 +3,12 @@
 set -euo pipefail #; set -x
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
-sParentDir="$(dirname "${sLaunchDir}")"
-while [[ "$(basename "${sParentDir}")" != "vm-guests-scripts" ]]; do sParentDir="$(dirname "${sParentDir}")"; done
+if [[ "$(basename "${sLaunchDir}")" = "vm-guests-scripts" ]]; then 
+	sParentDir=${sLaunchDir}
+else
+	sParentDir="$(dirname "${sLaunchDir}")" 
+	while [[ "$(basename "${sParentDir}")" != "vm-guests-scripts" ]]; do sParentDir="$(dirname "${sParentDir}")"; done
+fi
 source "${sParentDir}/include/file-edition.sh"	#source "${sLaunchDir}/include/file-edition.sh" || source "${sParentDir}/include/file-edition.sh"
 
 edit_systemd_disable_sleep() {

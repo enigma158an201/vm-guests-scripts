@@ -15,8 +15,12 @@ set -euxo pipefail
 # deb-src http://deb.debian.org/debian bullseye-updates main
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
-sParentDir="$(dirname "${sLaunchDir}")"
-while [[ "$(basename "${sParentDir}")" != "vm-guests-scripts" ]]; do sParentDir="$(dirname "${sParentDir}")"; done
+if [[ "$(basename "${sLaunchDir}")" = "vm-guests-scripts" ]]; then 
+	sParentDir=${sLaunchDir}
+else
+	sParentDir="$(dirname "${sLaunchDir}")" 
+	while [[ "$(basename "${sParentDir}")" != "vm-guests-scripts" ]]; do sParentDir="$(dirname "${sParentDir}")"; done
+fi
 #if [[ "${sLaunchDir}" = "." ]] || [[ "${sLaunchDir}" = "include" ]] || [[ "${sLaunchDir}" = "" ]]; then eval sLaunchDir="$(pwd)"; fi
 #sLaunchDir="${sLaunchDir//include/}"
 source "${sParentDir}/include/check-user-privileges" #source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges" # ./include/test-superuser-privileges.sh moved to ${sLaunchDir}/../include/test-superuser-privileges

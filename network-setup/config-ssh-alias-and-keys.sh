@@ -6,8 +6,12 @@ set -euo pipefail # set -euxo pipefail
 #https://www.ssh-audit.com/hardening_guides.html#debian_12
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
-sParentDir="$(dirname "${sLaunchDir}")"
-while [[ "$(basename "${sParentDir}")" != "vm-guests-scripts" ]]; do sParentDir="$(dirname "${sParentDir}")"; done
+if [[ "$(basename "${sLaunchDir}")" = "vm-guests-scripts" ]]; then 
+	sParentDir=${sLaunchDir}
+else
+	sParentDir="$(dirname "${sLaunchDir}")" 
+	while [[ "$(basename "${sParentDir}")" != "vm-guests-scripts" ]]; do sParentDir="$(dirname "${sParentDir}")"; done
+fi
 source "${sParentDir}/include/check-user-privileges"	#source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges" #source "${sLaunchDir}/include/set-common-settings.sh"
 
 sSshUserFolder=.ssh
