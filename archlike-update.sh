@@ -11,56 +11,37 @@ source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/in
 source "${sLaunchDir}/include/check-virtual-env" || 	source "${sParentDir}/include/check-virtual-env"
 source "${sLaunchDir}/include/git-self-update" || 		source "${sParentDir}/include/git-self-update"
 
-update_arch() {
+updateArch() {
 	#shellcheck disable=SC2154
-	if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} pacman -Syyuu"
-	else 											pacman -Syyuu
+	if pacman-Qu archlinux-keyring &>/dev/null; then 
+		if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} pacman -S --needed archlinux-keyring"; else pacman -S --needed archlinux-keyring; fi
 	fi
+	if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} pacman -Syyuu"; else pacman -Syyuu; fi
 }
-clean_arch() {
-	if command -v "${sSuPfx}" &>/dev/null; then 	if pacman -Qdtq; then eval "pacman -Qdtq | ${sSuPfx} pacman -Rs -"; fi
-													eval "${sSuPfx} pacman -Scc --noconfirm" 
-	else
-		 											if pacman -Qdtq; then pacman -Qdtq | pacman -Rs -; fi 
-													pacman -Scc --noconfirm
+cleanArch() {
+	if command -v "${sSuPfx}" &>/dev/null && pacman -Qdtq; then eval "pacman -Qdtq | ${sSuPfx} pacman -Rs -" && eval "${sSuPfx} pacman -Scc --noconfirm" 
+	elif pacman -Qdtq; then 									pacman -Qdtq | pacman -Rs - && pacman -Scc --noconfirm
 	fi
-	if [[ "$(checkRootPermissions)" = "false" ]]; then 
-													clean_trizen
-													clean_paru
-	fi
+	if [[ "$(checkRootPermissions)" = "false" ]]; then cleanTrizen; cleanParu; fi
 }
-clean_paru() {
-	if command -v paru &>/dev/null; then 			paru -Sccd --noconfirm
-	elif [[ "$(checkRootPermissions)" = "false" ]]; then 
-													setup_paru #else exit 1; 
-	fi
-}
-clean_trizen() {
-	if command -v trizen &>/dev/null; then 			trizen -Sccd --noconfirm; fi
-}
-setup_paru() {
-	#if [[ ${UID} = 0 ]] || [[ ${UID} = 0 ]]; then exit 1; fi
+cleanParu() { if command -v paru &>/dev/null; then paru -Sccd --noconfirm; elif [[ "$(checkRootPermissions)" = "false" ]]; then setupParu; fi; } #else exit 1; 
+cleanTrizen() { if command -v trizen &>/dev/null; then trizen -Sccd --noconfirm; fi; }
+setupParu() { #if [[ ${UID} = 0 ]] || [[ ${UID} = 0 ]]; then exit 1; fi
 	cd /tmp || exit
-	if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} pacman -S --needed base-devel"
-	else 											pacman -S --needed base-devel
-	fi
-	if false; then 									git clone https://aur.archlinux.org/paru.git
-													cd paru || exit
-	else 											git clone https://aur.archlinux.org/paru-bin.git
-													cd paru-bin || exit
-	fi
+	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} pacman -S --needed base-devel"; else pacman -S --needed base-devel; fi
+	if false; then git clone https://aur.archlinux.org/paru.git && { cd paru || exit; }; else git clone https://aur.archlinux.org/paru-bin.git && { cd paru-bin || exit; }; fi
 	makepkg -si
 }
 
-main_archlike_update() {	#echo ${sSuPfx}; read -rp ""
+mainArchlikeUpdate() {	#echo ${sSuPfx}; read -rp ""
 	if ! command -v pacman &>/dev/null; then 		echo -e "\t--> pacman not found, exit now !!!"
 													exit 1
 	else 											echo -e "\t--> pacman found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
 	fi
 	updateScriptsViaGit
-	update_arch && clean_arch
+	updateArch && cleanArch
 	bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
 	if [[ ${bVirtualized} -eq 0 ]]; then 			eval "${sSuPfx} shutdown 0"; fi
 }
 
-main_archlike_update
+mainArchlikeUpdate
