@@ -14,7 +14,7 @@ source "${sLaunchDir}/include/git-self-update" || 		source "${sParentDir}/includ
 updateArch() {
 	#shellcheck disable=SC2154
 	if pacman -Qu archlinux-keyring &>/dev/null; then 
-		if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} pacman -S --needed archlinux-keyring"; else pacman -S --needed archlinux-keyring; fi
+		if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} pacman -S --noconfirm archlinux-keyring"; else pacman -S --noconfirm archlinux-keyring; fi
 	fi
 	if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} pacman -Syyuu"; else pacman -Syyuu; fi
 }
@@ -24,7 +24,7 @@ cleanArch() {
 	fi
 	if [[ "$(checkRootPermissions)" = "false" ]]; then cleanTrizen; cleanParu; fi
 }
-cleanParu() { if command -v paru &>/dev/null; then paru -Sccd --noconfirm; elif [[ "$(checkRootPermissions)" = "false" ]]; then setupParu; fi; } #else exit 1; 
+cleanParu() { if command -v paru &>/dev/null; then paru -Sccd --noconfirm || setupParu; elif [[ "$(checkRootPermissions)" = "false" ]]; then setupParu; fi; } #else exit 1; 
 cleanTrizen() { if command -v trizen &>/dev/null; then trizen -Sccd --noconfirm; fi; }
 setupParu() { #if [[ ${UID} = 0 ]] || [[ ${UID} = 0 ]]; then exit 1; fi
 	cd /tmp || exit
