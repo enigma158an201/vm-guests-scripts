@@ -13,8 +13,8 @@ source "${sLaunchDir}/include/git-self-update" || 		source "${sParentDir}/includ
 
 updateArch() {
 	#shellcheck disable=SC2154
-	if pacman-Qu archlinux-keyring &>/dev/null; then 
-		if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} pacman -S --needed archlinux-keyring"; else pacman -S --needed archlinux-keyring; fi
+	if pacman -Qu archlinux-keyring &>/dev/null; then 
+		if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} pacman -S --needed archlinux-keyring"; else pacman -S --needed archlinux-keyring; fi
 	fi
 	if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} pacman -Syyuu"; else pacman -Syyuu; fi
 }
