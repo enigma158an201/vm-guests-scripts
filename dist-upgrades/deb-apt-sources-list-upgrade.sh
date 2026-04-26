@@ -31,8 +31,8 @@ source "${sParentDir}/include/check-user-privileges" #source "${sLaunchDir}/incl
 sAptSourcesListFile="/etc/apt/sources.list"
 sAptSourcesListSubfolder=${sAptSourcesListFile}.d
 sAptDebianSources=${sAptSourcesListSubfolder}/debian.sources
-sSourcesListContent="$(cat "${sAptSourcesListFile}")"
-sDebianSourcesContent="$(cat "${sAptDebianSources}")"
+sSourcesListContent="$(cat "${sAptSourcesListFile}" || true)"
+sDebianSourcesContent="$(cat "${sAptDebianSources}" || true)"
 mapfile -t tTiersRepos < <(find ${sAptSourcesListSubfolder} -iwholename '*.list' -o -iwholename '*.sources') # *.sources in deb822 format
 #bHasSudo=$(command -v sudo && echo "true" || echo "false") #bHasDoas=$(command -v doas && echo "true" || echo "false")
 preChecks() { for sCmd in apt-get tmux; do if ! command -v ${sCmd} &> /dev/null; then echo -e "\t${sCmd} is required but not installed. Please install it and re-run the script."; exit 1; fi; done; }
