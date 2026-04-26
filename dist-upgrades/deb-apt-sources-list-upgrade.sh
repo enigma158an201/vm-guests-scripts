@@ -31,9 +31,9 @@ source "${sParentDir}/include/check-user-privileges" #source "${sLaunchDir}/incl
 sAptSourcesListFile="/etc/apt/sources.list"
 sAptSourcesListSubfolder=${sAptSourcesListFile}.d
 sSourcesListContent="$(cat "${sAptSourcesListFile}")"
-sTiersRepos="$(find ${sAptSourcesListSubfolder} -iwholename '*.list')"
+sTiersRepos="$(find ${sAptSourcesListSubfolder} -iwholename '*.list')" # *.sources in deb822 format
 #bHasSudo=$(command -v sudo && echo "true" || echo "false") #bHasDoas=$(command -v doas && echo "true" || echo "false")
-
+preChecks() { for sCmd in apt-get tmux; do if ! command -v ${sCmd} &> /dev/null; then echo -e "\t${sCmd} is required but not installed. Please install it and re-run the script."; exit 1; fi; done; }
 getDebianVersion() {
 	if [[ -f /etc/debian_version ]]; then 	sDebMainVersion="$(cat /etc/debian_version)"
 											echo "${sDebMainVersion%%.*}"
@@ -124,7 +124,9 @@ upgradeSourcesList() {
 		elif [[ "${debInstalledVersion}" = "11" ]]; then 			upgradeBullseyeToBookworm
 		elif [[ "${debInstalledVersion}" = "12" ]]; then 			upgradeBookwormToTrixie
 		elif [[ "${debInstalledVersion}" = "13" ]]; then 			echo "forky not stable at moment of this script version"
-																	exit 1 #upgradeBookwormToTrixie
+																	exit 1 #upgradeTrixieToForky
+		#elif [[ "${debInstalledVersion}" = "14" ]]; then 			echo "duke not stable at moment of this script version"
+		#															exit 1 #upgradeForkyToDuke
 		else 														echo "No stable Release for upgrading to debian $((debInstalledVersion + 1))"
 		fi
 	else
@@ -148,10 +150,11 @@ upgradeDebianDist() {
 }
 
 main() {
+	preChecks
 	#1st run recommended to update old distro 
 	upgradeDebianDist
 	#uncomment next line for non debug purpose
-	#upgradeSourcesList
+	upgradeSourcesList
 	#2nd run to version upgrading
 	upgradeDebianDist
 }
