@@ -117,21 +117,27 @@ upgradeToSid() {
 }
 upgradeSourcesList() {
 	if [[ -r /etc/debian_version ]]; then
-		debInstalledVersion=$(getDebianVersion)
-		if [[ "${debInstalledVersion}" = "8" ]]; then 				upgradeJessieToStretch
-		elif [[ "${debInstalledVersion}" = "9" ]]; then 			upgradeStretchToBuster
-		elif [[ "${debInstalledVersion}" = "10" ]]; then 			upgradeBusterToBullseye
-		elif [[ "${debInstalledVersion}" = "11" ]]; then 			upgradeBullseyeToBookworm
-		elif [[ "${debInstalledVersion}" = "12" ]]; then 			upgradeBookwormToTrixie
-		elif [[ "${debInstalledVersion}" = "13" ]]; then 			echo "forky not stable at moment of this script version"
-																	exit 1 #upgradeTrixieToForky
-		#elif [[ "${debInstalledVersion}" = "14" ]]; then 			echo "duke not stable at moment of this script version"
-		#															exit 1 #upgradeForkyToDuke
-		else 														echo "No stable Release for upgrading to debian $((debInstalledVersion + 1))"
+		iDebInstVersion=$(getDebianVersion)
+		if [[ "${iDebInstVersion}" = "8" ]]; then 				upgradeJessieToStretch
+		elif [[ "${iDebInstVersion}" = "9" ]]; then 			upgradeStretchToBuster
+		elif [[ "${iDebInstVersion}" = "10" ]]; then 			upgradeBusterToBullseye
+		elif [[ "${iDebInstVersion}" = "11" ]]; then 			upgradeBullseyeToBookworm
+		elif [[ "${iDebInstVersion}" = "12" ]]; then 			upgradeBookwormToTrixie
+		elif [[ "${iDebInstVersion}" = "13" ]]; then 			echo "forky not stable at moment of this script version"
+																exit 1 #upgradeTrixieToForky
+		#elif [[ "${iDebInstVersion}" = "14" ]]; then 			echo "duke not stable at moment of this script version"
+		#														exit 1 #upgradeForkyToDuke
+		else 													echo "No stable Release for upgrading to debian $((iDebInstVersion + 1))"
 		fi
 	else
 		echo -e "\\tFile /etc/debian_version doesn't exists"
 		exit 1
+	fi
+}
+modernizeSourcesList() {
+	if [[ -r /etc/debian_version ]]; then
+		iDebInstVersion=$(getDebianVersion)
+		if [[ "${iDebInstVersion}" -ge "13" ]]; then suExecCommandNoPreserveEnv "apt modernize-sources"; fi
 	fi
 }
 upgradeDebianDist() {
@@ -147,6 +153,10 @@ upgradeDebianDist() {
 	if [[ "${sConfirmUpgrade,,}" = "y" ]]; then
 		suExecCommandNoPreserveEnv "apt-get autoremove && apt-get update && apt-get upgrade && apt-get full-upgrade && apt-get dist-upgrade && apt-get autoremove" 
 	fi
+	if [[ -r /etc/debian_version ]]; then
+		iDebInstVersion=$(getDebianVersion)
+		if [[ "${iDebInstVersion}" -ge "13" ]]; then suExecCommandNoPreserveEnv "apt modernize-sources"; fi
+	fi
 }
 
 main() {
@@ -157,5 +167,6 @@ main() {
 	upgradeSourcesList
 	#2nd run to version upgrading
 	upgradeDebianDist
+	modernizeSourcesList
 }
 main
