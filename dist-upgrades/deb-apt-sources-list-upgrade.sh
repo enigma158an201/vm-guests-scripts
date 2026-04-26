@@ -30,9 +30,9 @@ source "${sParentDir}/include/check-user-privileges" #source "${sLaunchDir}/incl
 
 sAptSourcesListFile="/etc/apt/sources.list"
 sAptSourcesListSubfolder=${sAptSourcesListFile}.d
-sAptDebianSources=${sAptSourcesListSubfolder}/debian.sources
+sAptDebianSourcesFile=${sAptSourcesListSubfolder}/debian.sources
 sSourcesListContent="$(cat "${sAptSourcesListFile}" || true)"
-sDebianSourcesContent="$(cat "${sAptDebianSources}" || true)"
+sDebianSourcesContent="$(cat "${sAptDebianSourcesFile}" || true)"
 mapfile -t tTiersRepos < <(find ${sAptSourcesListSubfolder} -iwholename '*.list' -o -iwholename '*.sources') # *.sources in deb822 format
 #bHasSudo=$(command -v sudo && echo "true" || echo "false") #bHasDoas=$(command -v doas && echo "true" || echo "false")
 preChecks() { for sCmd in apt-get tmux; do if ! command -v ${sCmd} &> /dev/null; then echo -e "\t${sCmd} is required but not installed. Please install it and re-run the script."; exit 1; fi; done; }
@@ -44,7 +44,7 @@ getDebianVersion() {
 	fi
 }
 getNonFreeToNonFreeFirmware() {
-	for sFile in ${sSourcesListContent} ${sDebianSourcesContent}; do #"${tTiersRepos[@]}"
+	for sFile in ${sAptSourcesListFile} ${sAptDebianSourcesFile}; do #"${tTiersRepos[@]}"
 		if [[ -r "${sFile}" ]]; then
 			if [[ $(cat "${sFile}") =~ non-free ]] && [[ ! $(cat "${sFile}") =~ non-free-firmware ]]; then
 				suExecCommandNoPreserveEnv "sed -i 's/ non-free/ non-free non-free-firmware /g' \"${sFile}\""
@@ -88,7 +88,7 @@ upgradeBullseyeToBookworm() {
 	getNonFreeToNonFreeFirmware
 }
 upgradeBookwormToTrixie() {
-	for sFile in ${sSourcesListContent} ${sDebianSourcesContent} "${tTiersRepos[@]}"; do
+	for sFile in ${sAptSourcesListFile} ${sAptDebianSourcesFile} "${tTiersRepos[@]}"; do
 		if [[ -r "${sFile}" ]]; then
 			if [[ $(cat "${sFile}") =~ non-free ]] && [[ ! $(cat "${sFile}") =~ non-free-firmware ]]; then
 				suExecCommandNoPreserveEnv "sed -i.old 's/bookworm/trixie/g' \"${sFile}\""
@@ -98,7 +98,7 @@ upgradeBookwormToTrixie() {
 	getNonFreeToNonFreeFirmware
 }
 upgradeTrixieToForky() {
-	for sFile in ${sSourcesListContent} ${sDebianSourcesContent} "${tTiersRepos[@]}"; do
+	for sFile in ${sAptSourcesListFile} ${sAptDebianSourcesFile} "${tTiersRepos[@]}"; do
 		if [[ -r "${sFile}" ]]; then
 			if [[ $(cat "${sFile}") =~ non-free ]] && [[ ! $(cat "${sFile}") =~ non-free-firmware ]]; then
 				suExecCommandNoPreserveEnv "sed -i.old 's/trixie/forky/g' \"${sFile}\""
@@ -108,7 +108,7 @@ upgradeTrixieToForky() {
 	getNonFreeToNonFreeFirmware
 }
 upgradeForkyToDuke() {
-	for sFile in ${sSourcesListContent} ${sDebianSourcesContent} "${tTiersRepos[@]}"; do
+	for sFile in ${sAptSourcesListFile} ${sAptDebianSourcesFile} "${tTiersRepos[@]}"; do
 		if [[ -r "${sFile}" ]]; then
 			if [[ $(cat "${sFile}") =~ non-free ]] && [[ ! $(cat "${sFile}") =~ non-free-firmware ]]; then
 				suExecCommandNoPreserveEnv "sed -i.old 's/forky/duke/g' \"${sFile}\""
