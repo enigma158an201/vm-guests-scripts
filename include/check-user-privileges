@@ -42,16 +42,16 @@ checkUserSudoOrWheelGroup() {
 	#getent group | grep -E 'wheel|sudo'
 	#echo "a coder" #true; }
 checkSudoers() {
-	bUserSudo="$(LANG=C sudo -v -A 2>&1)" #bUserSudo=$(LANG=C sudo -v -A || echo "false") # if is sudo error no SUDO_ASKPASS otherwise not
-	keyWord="try setting SUDO_ASKPASS"
-	if [[ ${bUserSudo} =~ ${keyWord} ]] || [[ "${bUserSudo}" = "" ]]; then 		bSudoers="true"
+	bUserSudo="$(LANG=C sudo -v -A 2>&1 && echo "true" || echo "false")" #bUserSudo=$(LANG=C sudo -v -A || echo "false") # if is sudo error no SUDO_ASKPASS otherwise not
+	sKeyWord="try setting SUDO_ASKPASS"
+	if [[ "${bUserSudo}" =~ "true" ]]; then 									bSudoers="true" #[[ ${bUserSudo} =~ ${sKeyWord} ]] || 
 	else 																		bSudoers="false"; fi
 	echo "${bSudoers}"
 } 
 checkDoasUser() {					#set +x
 	bUserDoas="$(LANG=C timeout -v 1 doas true 2>&1)" #echo "test doas valid user" 
-	keyWord="doas: Operation not permitted"
-	if [[ ! ${bUserDoas} =~ ${keyWord} ]]; then 								bDoasUser="true"
+	sKeyWord="doas: Operation not permitted"
+	if [[ ! ${bUserDoas} =~ ${sKeyWord} ]]; then 								bDoasUser="true"
 	else 																		bDoasUser="false"; fi
 	echo "${bDoasUser}"
 }
