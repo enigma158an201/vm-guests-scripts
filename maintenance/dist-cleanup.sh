@@ -77,7 +77,7 @@ pacmanRemoveUnused() {
 	echo -e "\t--> cleaning unused pacman packages, if applicable"
 	#shellcheck disable=SC2046
 	while pacman -Qdtq &>/dev/null; do 				pacman -Rs $(pacman -Qdtq)
-													pacman -Scc
+													paccache -rk1 || pacman -Scc
 	done
 }
 flatpakRemoveUnused() {
@@ -105,7 +105,13 @@ lessFirewallLogs() {
 	echo -e "\t--> cleaning old ufw log files and apply new settings, if applicable"
 	if command -v ufw &>/dev/null; then 			ufw logging low; fi #ufw logging off
 }
-
+ddWriteZero() {
+	echo -e "\t--> writing zeros to free space, if applicable"
+	dd if=/dev/zero of=/zerofill bs=1M || true
+	sync
+	rm -f /zerofill
+	sync
+}
 mainCleanUp() {
 	if checkRootPermissions; then
 		cachesDirectoryClean
@@ -116,6 +122,7 @@ mainCleanUp() {
 		lessSystemdLogs 																		# clean logs: 	systemd
 		lessSyslogLogs																			#				rsyslog
 		lessFirewallLogs																		#				ufw
+		ddWriteZero																				#				dd
 	fi
 }
 mainCleanUp
