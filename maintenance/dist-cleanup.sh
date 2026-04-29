@@ -87,8 +87,10 @@ flatpakRemoveUnused() {
 lessSystemdLogs() {
 	echo -e "\t--> cleaning old systemd log files and apply new settings, if applicable"
 	if command -v journalctl &>/dev/null; then 		journalctl --vacuum-size=100M
-													sed -i 's/#SystemMaxUse=/SystemMaxUse=100M/' /etc/systemd/journald.conf
+		if [[ -f /etc/systemd/journald.conf ]]; then
+												 	sed -i 's/#SystemMaxUse=/SystemMaxUse=100M/' /etc/systemd/journald.conf
 													sed -i 's/#SystemMaxFiles=100/SystemMaxFiles=7/g' /etc/systemd/journald.conf
+		fi
 													journalctl --rotate
 	fi
 }
