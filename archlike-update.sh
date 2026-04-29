@@ -35,7 +35,7 @@ setupParu() { #if [[ ${UID} = 0 ]] || [[ ${UID} = 0 ]]; then exit 1; fi
 	cd /tmp || exit
 	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} pacman -S --needed base-devel"; else pacman -S --needed base-devel; fi
 	if true; then sParu=paru; else sParu=paru-bin; fi
-	git clone https://aur.archlinux.org/${sParu}.git && { cd ${sParu} || exit; } && makepkg -si
+	{ git clone https://aur.archlinux.org/${sParu}.git && { cd ${sParu} || exit; };} || { { cd ${sParu} || exit; } && git pull; } && makepkg -si
 }
 
 mainArchlikeUpdate() {	#echo ${sSuPfx}; read -rp ""
