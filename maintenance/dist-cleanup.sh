@@ -109,9 +109,9 @@ lessFirewallLogs() {
 }
 ddWriteZero() {
 	echo -e "\t--> writing zeros to free space, if applicable"
-	sudo dd if=/dev/zero of=/tmp/zerofill bs=1M status=progress || true
+	sudo dd if=/dev/zero of=/zerofill bs=1M status=progress || true
 	sync
-	rm -f /tmp/zerofill
+	rm -f /zerofill
 	sync
 }
 mainCleanUp() {
