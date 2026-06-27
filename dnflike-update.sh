@@ -11,7 +11,7 @@ source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/in
 source "${sLaunchDir}/include/check-virtual-env" || 	source "${sParentDir}/include/check-virtual-env"
 source "${sLaunchDir}/include/git-self-update" || 		source "${sParentDir}/include/git-self-update"
 
-updatehDnf() {
+updateDnf() {
 	#shellcheck disable=SC2154
 	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'dnf update'" && eval "${sSuPfx} 'dnf upgrade'"
 	else 										dnf update && dnf upgrade
