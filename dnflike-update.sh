@@ -13,12 +13,12 @@ source "${sLaunchDir}/include/git-self-update" || 		source "${sParentDir}/includ
 
 updateDnf() {
 	#shellcheck disable=SC2154
-	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'dnf update'" && eval "${sSuPfx} 'dnf upgrade'"
+	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} dnf update" && eval "${sSuPfx} dnf upgrade"
 	else 										dnf update && dnf upgrade
 	fi
 }
 cleanDnf() {
-	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'dnf autoremove'" && eval "${sSuPfx} 'dnf clean all'"
+	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} dnf autoremove" && eval "${sSuPfx} dnf clean all"
 	else 										dnf autoremove && dnf clean all
 	fi
 }
@@ -29,7 +29,7 @@ mainRockylinuxUpdate() {
 	fi
 	updateScriptsViaGit
 	updateDnf && cleanDnf #&& shutdown 0
-	bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
+	#bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
 	#if [[ ${bVirtualized} -eq 0 ]]; then 		eval "${sSuPfx} shutdown 0"; fi
 }
 
