@@ -11,41 +11,38 @@ source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/in
 source "${sLaunchDir}/include/check-virtual-env" || 	source "${sParentDir}/include/check-virtual-env"
 source "${sLaunchDir}/include/git-self-update" || 		source "${sParentDir}/include/git-self-update"
 
-update_apt() {
+updateApt() {
 	#shellcheck disable=SC2154
 	#if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} 'apt-get update && apt-get full-upgrade'"
 	#else 											apt-get update && apt-get full-upgrade; fi
-	suExecCommand "apt-get update && apt-get full-upgrade" || return 1
+	{ suExecCommand "apt-get update" && suExecCommand "apt-get full-upgrade"; } || return 1
 }
-clean_apt() {
+cleanApt() {
 	#shellcheck disable=SC2154
 	#if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} 'apt-get autoremove --purge && apt-get clean'"
 	#else 											apt-get autoremove --purge && apt-get clean; fi
-	suExecCommand "apt-get autoremove --purge && apt-get clean" || return 1
+	{ suExecCommand "apt-get autoremove --purge" && suExecCommand "apt-get clean"; } || return 1
 }
-clean_dpkg() {
+cleanDpkg() {
 	#shellcheck disable=SC2046
 	#if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} 'apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')'"	#removed ""
 	#else 											apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}'); fi			#removed ""
 	suExecCommand "apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')" || return 1
 }
-upgrade_omv() {	if command -v omv-upgrade &>/dev/null; then 	suExecCommand omv-upgrade; fi }
-upgrade_pve() {	if command -v pveupgrade &>/dev/null; then 		suExecCommand pveupgrade; fi }
+upgradeOmv() {	if command -v omv-upgrade &>/dev/null; then 	suExecCommand omv-upgrade; fi }
+upgradePve() {	if command -v pveupgrade &>/dev/null; then 		suExecCommand pveupgrade; fi }
 
-main_deblike_update() {
+mainDeblikeUpdate() {
 	if [[ "$(checkRootPermissions)" = "true" ]]; then
-		if command -v omv-upgrade &>/dev/null; then 	upgrade_omv; fi
-		if command -v pveupgrade &>/dev/null; then 		upgrade_pve; fi
-		if ! command -v apt-get &>/dev/null || ! command -v apt &>/dev/null; then 
-			echo -e "\t--> apt not found, exit now !!!"
-			exit 1
-		else
-			echo -e "\t--> apt found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
+		if command -v omv-upgrade &>/dev/null; then 	upgradeOmv; fi
+		if command -v pveupgrade &>/dev/null; then 		upgradePve; fi
+		if ! command -v apt-get &>/dev/null || ! command -v apt &>/dev/null; then echo -e "\t--> apt not found, exit now !!!"; 	exit 1
+		else echo -e "\t--> apt found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
 		fi
 		updateScriptsViaGit
-		update_apt && clean_apt && clean_dpkg
+		updateApt && cleanApt && cleanDpkg
 		bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
 		if [[ ${bVirtualized} -eq 0 ]]; then 		suExecCommand "shutdown 0"; fi
 	fi
 }
-main_deblike_update
+mainDeblikeUpdate
