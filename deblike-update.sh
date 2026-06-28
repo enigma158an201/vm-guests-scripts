@@ -27,7 +27,8 @@ cleanDpkg() {
 	#shellcheck disable=SC2046
 	#if command -v "${sSuPfx}" &>/dev/null; then 	eval "${sSuPfx} 'apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')'"	#removed ""
 	#else 											apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}'); fi			#removed ""
-	suExecCommand "apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')" || return 1
+	{ suExecCommand "apt autoremove --purge ~c" && suExecCommand "apt-get clean"; } || return 1 # "apt-get autoremove --purge $(dpkg -l | grep ^rc | awk '{print $2}')" || return 1
+	
 }
 upgradeOmv() {	if command -v omv-upgrade &>/dev/null; then 	suExecCommand omv-upgrade; fi }
 upgradePve() {	if command -v pveupgrade &>/dev/null; then 		suExecCommand pveupgrade; fi }
