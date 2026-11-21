@@ -11,24 +11,24 @@ source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/in
 source "${sLaunchDir}/include/check-virtual-env" || 	source "${sParentDir}/include/check-virtual-env"
 source "${sLaunchDir}/include/git-self-update" || 		source "${sParentDir}/include/git-self-update"
 
-update_cards() {
-	##shellcheck disable=SC2154
-	#if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'cards sync && cards upgrade'"
-	#else 										cards sync && cards upgrade
-	#fi
-	suExecCommand "cards sync && cards upgrade"
+updateCards() {
+	#if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} 'cards sync && cards upgrade'"; else cards sync && cards upgrade; fi
+	#suExecCommand "cards sync && cards upgrade"
+	if command -v "${sSuPfx}" &>/dev/null; then { suExecCommand "cards sync" || suExecCommand "cards upgrade"; } && \
+												{ suExecCommand "cards upgrade --proceed" || suExecCommand "cards upgrade"; }
+	elif test ${UID} -eq 0; then 				{ cards sync || cards upgrade; } && { cards upgrade --proceed || cards upgrade;} 
+	fi
 }
 #useless: clean_cards() {}
 
-main_cardslike_update() {
-	if ! command -v cards &>/dev/null; then 	echo -e "\t--> cards not found, exit now !!!"
-												exit 1
-	else 										echo -e "\t--> cards found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
+mainCardslikeUpdate() {
+	if ! command -v cards &>/dev/null; then echo -e "\t--> cards not found, exit now !!!"; exit 1
+	else 									echo -e "\t--> cards found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
 	fi
 	updateScriptsViaGit
-	update_cards #&& sudo shutdown 0
+	updateCards #&& sudo shutdown 0
 	bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
-	if [[ ${bVirtualized} -eq 0 ]]; then 		suExecCommand "shutdown 0"; fi #eval ${sSuPfx}
+	if [[ ${bVirtualized} -eq 0 ]]; then 	suExecCommand "shutdown 0"; fi #eval ${sSuPfx}
 }
 
-main_cardslike_update
+mainCardslikeUpdate

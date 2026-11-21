@@ -12,7 +12,6 @@ source "${sLaunchDir}/include/check-virtual-env" || 	source "${sParentDir}/inclu
 source "${sLaunchDir}/include/git-self-update" || 		source "${sParentDir}/include/git-self-update"
 
 upgradeSolus() {
-	#shellcheck disable=SC2154
 	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} eopkg update-repo" && eval "${sSuPfx} eopkg upgrade"
 	elif test ${UID} -eq 0; then 				eopkg update-repo && eopkg upgrade
 	fi
