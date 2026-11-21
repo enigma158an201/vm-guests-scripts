@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+### this script is intended to be run on any Linux distribution to define color variables for use in shell scripts.###
+
 # https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux
 
 # shellcheck disable=SC2034

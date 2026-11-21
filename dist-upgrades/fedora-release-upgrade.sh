@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
-# script by enigma158an201
-set -euo pipefail # set -euxo pipefail
+# script by enigma158an201, available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
+### this script is intended to be run on Fedora Linux distribution to upgrade the system to the next release.###
+# refer to: https://docs.fedoraproject.org/en-US/quick-docs/upgrading-fedora-offline/
 
-# script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
-# refer to:
-# https://docs.fedoraproject.org/en-US/quick-docs/upgrading-fedora-offline/
+set -euo pipefail # set -euxo pipefail
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 if [[ "$(basename "${sLaunchDir}")" = "vm-guests-scripts" ]]; then 
@@ -24,8 +23,7 @@ getFedoraRelease() {
 											sFedoraRelease="${sFedoraRelease,,}"
 											sFedoraRelease="${sFedoraRelease//fedora release /}"
 											echo "${sFedoraRelease%%(*}"
-	else 									echo "false"
-											exit 1
+	else 									echo "false"; exit 1
 	fi
 }
 switchDownloadFedoraRelease() {
@@ -47,11 +45,8 @@ switchDownloadFedoraRelease() {
 			else 							#suExecCommand "dnf install fedora-upgrade" && suExecCommand "fedora-upgrade"											
 											suExecCommand "tmux send-keys -t supgradeF 'dnf install fedora-upgrade' C-m"
 											suExecCommand "tmux send-keys -t supgradeF 'fedora-upgrade --releasever=${sNextRelease}' C-m"
-			fi
-			#suExecCommand  "tmux kill-session -t supgradeF"
-		else 								echo -e "\t--> Upgrade cancelled, exiting now"
-											return 1
-											#exit 0
+			fi	#suExecCommand  "tmux kill-session -t supgradeF"
+		else 								echo -e "\t--> Upgrade cancelled, exiting now"; return 1 #exit 0
 		fi
 	fi
 }

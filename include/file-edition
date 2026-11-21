@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+### this script is intended to be run on any Linux distribution to define file editing functions for use in shell scripts.###
+
 set -euo pipefail #; set -x
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 if [[ "$(basename "${sLaunchDir}")" = "vm-guests-scripts" ]]; then 

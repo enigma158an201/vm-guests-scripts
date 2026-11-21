@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-# developpé par enigma158an201 le 20/02/2020
-set -euxo pipefail
 
-# script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
+# script by enigma158an201 20/02/2020, available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
+### this script is intended to be run on arch Linux distribution to install the system.###
+
+set -euxo pipefail
 
 # <>
 # A bien lire avant d'aller plus loin

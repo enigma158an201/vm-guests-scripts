@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# script by enigma158an201, available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
+### this script is intended to be run on Debian Linux distribution to upgrade or install the latest rclone deb package.###
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
@@ -10,7 +13,7 @@ set -euo pipefail
 preChecks() {
 	source /etc/os-release
 	if [[ ! ${ID_LIKE:-} =~ debian ]] && [[ ! ${ID} = debian ]]; then 	echo -e "\t${RED}--> Please run only on debian like${NOCOLOR}";	return 1; fi
-	if ! command -v dpkg &>/dev/null; then 								return 1; fi
+	if ! command -v dpkg &>/dev/null; then return 1; fi
 	mkdir -p "${sWorkDir}" || return 1
 	return 0 #|| exit 1
 }

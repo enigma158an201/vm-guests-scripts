@@ -1,12 +1,18 @@
 #!/usr/bin/env bash
 
-# script by Enigma158an201
+# script by enigma158an201, available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
+### this script is intended to be run on Debian Linux distribution to setup a Galera Cluster with MariaDB.###
 # https://www.it-connect.fr/comment-mettre-en-place-mariadb-galera-cluster-sur-debian-11/
 
 set -euo pipefail
 
 #mysql -u root -p
 
+preChecks() { 
+	for sCmd in apt-get systemctl rsync mariadb galera_new_cluster; do 
+		if ! command -v ${sCmd} &>/dev/null; then echo -e "\t--> ${sCmd} not found, please install it first"; exit 1; fi; 
+	done
+}
 prerequisites() { apt-get update && apt-get install mariadb-server galera-4; }
 checkGaleraDbEngine() { #mariadb -u root <<EOF #show variables like 'default_storage_engine'; #EOF
 	bInnoDb=$(mariadb -s -r -u root -e "show variables like 'default_storage_engine';" | grep -iq "innodb" && echo "true" || echo "false")
@@ -14,21 +20,14 @@ checkGaleraDbEngine() { #mariadb -u root <<EOF #show variables like 'default_sto
 	tDbNames=( $(mariadb -s -r -u root -e "SHOW DATABASES;" | tail -n +2) )
 	for sDbName in "${tDbNames[@]}"; do
 		sMyISAM=$(mariadb -s -r -u root -e "SELECT TABLE_NAME, ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = '${sDbName}' and ENGINE = 'myISAM';")
-		if [[ -n ${sMyISAM} ]]; then
-			bMyISAM="true"
-			break
-		else
-			bMyISAM="false"
-		fi
+		if [[ -n ${sMyISAM} ]]; then bMyISAM="true"; break; else bMyISAM="false"; fi
 	done
 	iErr=0
 	if ! ${bInnoDb}; then echo echo -e "\t--> ERROR: InnoDB is not the default storage engine, please check your configuration."; iErr=$((iErr + 1)); fi
 	if ${bMyISAM}; then
-		echo -e "\t--> ERROR: MyISAM tables found in the database, please convert them to InnoDB."
-		echo -e "\t--> ERROR: Please check your configuration and try again."
+		echo -e "\t--> ERROR: MyISAM tables found in the database, please convert them to InnoDB.\n\t--> ERROR: Please check your configuration and try again."
 		iErr=$((iErr + 2))
-	fi
-	return ${iErr}
+	fi && return ${iErr}
 }
 configMainCluster() { # see /usr/share/mysql/wsrep.cnf
 	if [[ ! -d /var/log/mysql/ ]]; then mkdir -p /var/log/mysql/; fi
@@ -80,9 +79,7 @@ checkMariaRemoteConnection() {
 }
 dnsTodoPostInstall() {
 	echo -e "\t--> Please add or check the following lines to your /etc/hosts file:"
-	for sIp in $(echo "${sGaleraNodeIps}" | tr ',' ' '); do
-		echo -e "\t\t${sIp} $(getent hosts "${sIp}" | awk '{print $2}')"
-	done
+	for sIp in $(echo "${sGaleraNodeIps}" | tr ',' ' '); do echo -e "\t\t${sIp} $(getent hosts "${sIp}" | awk '{print $2}')"; done
 	echo -e "\t--> or haproxy backends lines to your /etc/haproxy/haproxy.cfg file:"
 	echo -e "\tdefaults
 	\tlog global
@@ -102,10 +99,7 @@ dnsTodoPostInstall() {
 
 	echo -e "\tbackend backendMysql\n\t\tdescription Backend pour maria db SQL\n\t\tmode tcp\n\t\toption httpchk"
 	iBeNr=0
-	for sIp in $(echo "${sGaleraNodeIps}" | tr ',' ' '); do
-		iBeNr=$((iBeNr + 1))
-		echo -e "\t\tserver galera-${iBeNr} ${sIp}:3306 check weight 1"
-	done
+	for sIp in $(echo "${sGaleraNodeIps}" | tr ',' ' '); do iBeNr=$((iBeNr + 1)); echo -e "\t\tserver galera-${iBeNr} ${sIp}:3306 check weight 1"; done
 }
 sqlTodoPostInstall() {
 	echo -e "\t--> Please run the following SQL commands to create the haproxy user:"

@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-# script by enigma158an201 26/03/2025 @ 11:02
-set -euxo pipefail
-
-# script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
+# script by enigma158an201 26/03/2025 @ 11:02, available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
+### this script is intended to be run on Debian Linux distribution to upgrade the system to the next release.###
 
 # https://linuxize.com/post/how-to-upgrade-debian-10-to-debian-11/
 # /etc/apt/sources.list
@@ -13,6 +11,8 @@ set -euxo pipefail
 # deb-src http://security.debian.org/debian-security bullseye-security main
 # deb http://deb.debian.org/debian bullseye-updates main
 # deb-src http://deb.debian.org/debian bullseye-updates main
+
+set -euxo pipefail
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 if [[ "$(basename "${sLaunchDir}")" = "vm-guests-scripts" ]]; then 
@@ -25,8 +25,7 @@ fi
 #sLaunchDir="${sLaunchDir//include/}"
 source "${sParentDir}/include/check-user-privileges" #source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges" # ./include/test-superuser-privileges.sh moved to ${sLaunchDir}/../include/test-superuser-privileges
 
-#for debugging source path purpose
-#if true; then exit; fi
+#if true; then exit; fi #for debugging source path purpose 
 
 sAptSourcesListFile="/etc/apt/sources.list"
 sAptSourcesListSubfolder=${sAptSourcesListFile}.d

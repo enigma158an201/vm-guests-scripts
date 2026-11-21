@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
-# script by enigma158an201
-set -euo pipefail # set -euxo pipefail
-
+# script by enigma158an201, available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
+### this script is intended to be run on any Linux distribution to configure SSH alias and keys for the user.###
 #https://www.ssh-audit.com/hardening_guides.html#debian_12
+
+set -euo pipefail # set -euxo pipefail
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 if [[ "$(basename "${sLaunchDir}")" = "vm-guests-scripts" ]]; then 
@@ -56,11 +57,10 @@ installSshKeys() {
 importSshKeys() {
 	echo -e "\t--> setup ssh authorized_keys at ${sSshLocalConf}"	#ssh-copy-id -i debian_server.pub pragmalin@debianvm
 	##for sSshPubKey in "${sSshRepoConf}"/*.pub; do
-	#	for sSshAlias in SKY41 testsalonk wtestsalonk #freebox-delta-wan
-	#	do
+	#	for sSshAlias in SKY41 testsalonk wtestsalonk; do  
 	#		sSshPubKey="to-do-check_if_alias_reachable_and_key_importable"
 	#		if true; then 	echo "ssh-copy-id -i \"${sSshPubKey}\" \"${sSshAlias}\""; fi
-	#	done
+	#	done #freebox-delta-wan
 	##done
 	if [[ ! -f "${sSshLocalAuthKeys}" ]]; then touch "${sSshLocalAuthKeys}"; fi
 	if ! grep -q "${sSshAuthKeyKonnectVM}" "${sSshLocalAuthKeys}"; then echo "${sSshAuthKeyKonnectVM}" >> "${sSshLocalAuthKeys}"; fi
@@ -73,7 +73,7 @@ mkdirUserSsh() {
 		chmod 700 "${sSshLocalConf}"
 	fi
 }
-main_ssh_config() {
+mainSshConfig() {
 	checkPrerequisites
 	mkdirUserSsh
 	installSshAlias
@@ -81,4 +81,4 @@ main_ssh_config() {
 	importSshKeys #todo: import existing vm ssh keys to host #restartSshd
 	suExecCommand "$(readlink -f "${sLaunchDir}/include/sshd-hardening.sh") $(readlink -f "${sLaunchDir}/../src/etc/ssh/")" #cleanModuli #updateSshdConfig
 }
-main_ssh_config
+mainSshConfig

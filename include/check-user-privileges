@@ -1,21 +1,18 @@
 #!/usr/bin/env bash
 
-# script by enigma158an201
+# script by enigma158an201, available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
+### this script is intended to be run on any Linux distribution to check user privileges and determine the appropriate command for executing commands with elevated privileges.###
+
 set -euo pipefail # -x
 
-# script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
-
-#declare sCmdParameters
-#sCmdParameters="$*"
-declare bSudoGrp bSudoer bDoasUser
-
+declare bSudoGrp bSudoer bDoasUser #declare sCmdParameters; sCmdParameters="$*"
 checkUserSudoOrWheelGroup() { #set +x #sUser=${USER}
 	sUserGroups="$(groups "${USER}")" 		# la commande id pourrait etre une alternative
 	sUserGroups="${sUserGroups##*: }"		# sUserGroups="${`groups ${USER}`##*: }"
 	bSudoGrp="false"
 	for sGr in sudo wheel timeout; do
-		for sGr2 in ${sUserGroups}; do 	if [[ "${sGr}" = "${sGr2}" ]]; then 	bSudoGrp="true"; break; fi; done
-		if [[ "${bSudoGrp}" = "true" ]]; then 	break; fi
+		for sGr2 in ${sUserGroups}; do 	if [[ "${sGr}" = "${sGr2}" ]]; then bSudoGrp="true"; break; fi; done
+		if [[ "${bSudoGrp}" = "true" ]]; then break; fi
 	done && echo "${bSudoGrp}"
 }
 #checkSudoers() {

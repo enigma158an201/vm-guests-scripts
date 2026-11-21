@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# script by enigma158an201
-set -euo pipefail # set -euxo pipefail
+# script by enigma158an201, available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
+### this script is intended to be run on Solus Linux distribution to update the system and clean up packages.###
 
-# script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
+set -euo pipefail # set -euxo pipefail
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 sParentDir="$(dirname "${sLaunchDir}")"

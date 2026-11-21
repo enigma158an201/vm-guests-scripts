@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# script by enigma158an201, available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
+### this script is intended to be run on any Linux distribution to disable systemd sleep and hibernation.###
+
 set -euo pipefail #; set -x
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"

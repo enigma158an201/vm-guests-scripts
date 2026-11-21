@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
-# script by enigma158an201 and https://www.tecmint.com/remove-unwanted-services-from-linux/
-set -euo pipefail
+# script by enigma158an201, available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
+# inspired by https://www.tecmint.com/remove-unwanted-services-from-linux/
+### this script is intended to be run on any Linux distribution to disable unnecessary services for a VM environment.###
 
-# script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
+set -euo pipefail
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 if [[ "$(basename "${sLaunchDir}")" = "vm-guests-scripts" ]]; then 
@@ -16,7 +17,7 @@ source "${sParentDir}/include/check-virtual-env"		#source "${sLaunchDir}/include
 source "${sParentDir}/include/check-user-privileges"	#source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges"
 source "${sParentDir}/include/colors"					#source "${sLaunchDir}/include/colors" || 				source "${sParentDir}/include/colors"
 
-main_disable_services() {
+mainDisableServices() {
 	if command -v systemctl &>/dev/null; then
 		tDisableServices=( avahi-daemon bluetooth iscsi iscsid.socket iscsiuio.socket lvm2-monitor lvm2-lvmpolld.socket mdmonitor raid-check.timer \
 							nfs-convert nfs-client.target cups postfix sssd hyperv-daemons apport zeitgeist telepathy saned )
@@ -40,4 +41,4 @@ main_disable_services() {
 	fi
 	unset sService
 }
-main_disable_services
+mainDisableServices

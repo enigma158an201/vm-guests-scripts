@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# script by enigma158an201
-set -euo pipefail #; set -x
+# script by enigma158an201, available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
+### this script is intended to be run on any Linux distribution to set a static IPv4 address for a network interface.###
 
-# script available at git repo by cloning: $ git clone https://github.com/enigma158an201/vm-guests-scripts.git
+set -euo pipefail #; set -x
 
 sLaunchDir="$(readlink -f "$(dirname "$0")")"
 if [[ "$(basename "${sLaunchDir}")" = "vm-guests-scripts" ]]; then sParentDir=${sLaunchDir}
