@@ -22,8 +22,7 @@ cleanSolus() {
 	fi
 }
 mainSolusUpdate() {
-	if ! command -v eopkg &>/dev/null; then 	echo -e "\t--> eopkg command not found, exit now !!!"
-												exit 1
+	if ! command -v eopkg &>/dev/null; then 	echo -e "\t--> eopkg command not found, exit now !!!"; exit 1
 	else 										echo -e "\t--> eopkg command found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
 	fi
 	updateScriptsViaGit
