@@ -7,22 +7,17 @@ set -euo pipefail # -x
 
 #declare sCmdParameters
 #sCmdParameters="$*"
-declare bSudoGroup
-declare bSudoersUser
-declare bDoasUser
+declare bSudoGrp bSudoer bDoasUser
 
-checkUserSudoOrWheelGroup() {
-	#set +x #sUser=${USER}
+checkUserSudoOrWheelGroup() { #set +x #sUser=${USER}
 	sUserGroups="$(groups "${USER}")" 		# la commande id pourrait etre une alternative
 	sUserGroups="${sUserGroups##*: }"		# sUserGroups="${`groups ${USER}`##*: }"
-	bSudoGroup="false"
-	for sGr in sudo wheel; do
-		for sGr2 in ${sUserGroups}; do 		if [[ "${sGr}" = "${sGr2}" ]]; then 	bSudoGroup="true"; break; fi; done
-		if [[ "${bSudoGroup}" = "true" ]]; then 	break; fi
-	done
-	echo "${bSudoGroup}"
+	bSudoGrp="false"
+	for sGr in sudo wheel timeout; do
+		for sGr2 in ${sUserGroups}; do 	if [[ "${sGr}" = "${sGr2}" ]]; then 	bSudoGrp="true"; break; fi; done
+		if [[ "${bSudoGrp}" = "true" ]]; then 	break; fi
+	done && echo "${bSudoGrp}"
 }
-
 #checkSudoers() {
 	#set +x #if false; then sudo -l -U ${USER}; fi
 	#if false; then		#printf "sPassword\n" | sudo -S /bin/chmod --help >/dev/null 2>&1
@@ -44,71 +39,45 @@ checkUserSudoOrWheelGroup() {
 checkSudoers() {
 	bUserSudo="$(LANG=C sudo -v -A 2>&1 && echo "true" || echo "false")" #bUserSudo=$(LANG=C sudo -v -A || echo "false") # if is sudo error no SUDO_ASKPASS otherwise not
 	sKeyWord="try setting SUDO_ASKPASS"
-	if [[ "${bUserSudo}" =~ "true" ]]; then 									bSudoers="true" #[[ ${bUserSudo} =~ ${sKeyWord} ]] || 
-	else 																		bSudoers="false"; fi
-	echo "${bSudoers}"
+	if [[ "${bUserSudo}" =~ "true" ]]; then bSudoerUser="true"; else bSudoerUser="false"; fi && echo "${bSudoerUser}" #[[ ${bUserSudo} =~ ${sKeyWord} ]] || 
 } 
 checkDoasUser() {					#set +x
 	bUserDoas="$(LANG=C timeout -v 1 doas true 2>&1)" #echo "test doas valid user" 
 	sKeyWord="doas: Operation not permitted"
-	if [[ ! ${bUserDoas} =~ ${sKeyWord} ]]; then 								bDoasUser="true"
-	else 																		bDoasUser="false"; fi
-	echo "${bDoasUser}"
+	if [[ ! ${bUserDoas} =~ ${sKeyWord} ]]; then bDoasUser="true"; else bDoasUser="false"; fi && echo "${bDoasUser}"
 }
 getSuCmd() {						#set +x
-	if [[ ! "${sSudoPath}" = "false" ]] && { [[ ! "${bSudoGroup}" = "false" ]] || \
-		[[ ! "${bSudoersUser}" = "false" ]] ; }; then							sSuCmd="${sSudoPath}" #"/usr/bin/sudo"
-	elif [[ ! "${sDoasPath}" = "false" ]] && [[ -f /etc/doas.conf ]] && \
-		[[ ! "${bSudoGroup}" = "false" ]]; then									sSuCmd="${sDoasPath}" #"/usr/bin/doas"
-	else
-		if [[ $(whoami) = "root" ]]; then 										sSuCmd=" "
-		else 																	sSuCmd="su - -c"; fi #"su - -p -c"
-	fi
-	echo "${sSuCmd}"
+	if [[ ! "${sSudoPath}" = "false" ]] && { [[ ! "${bSudoGrp}" = "false" ]] || [[ ! "${bSudoer}" = "false" ]] ; }; then sSuCmd="${sSudoPath}" #"/usr/bin/sudo"
+	elif [[ ! "${sDoasPath}" = "false" ]] && [[ -f /etc/doas.conf ]] && [[ ! "${bSudoGrp}" = "false" ]]; then sSuCmd="${sDoasPath}" #"/usr/bin/doas"
+	elif [[ $(whoami) = "root" ]]; then sSuCmd=" "; else sSuCmd="su - -c" #"su - -p -c"
+	fi && echo "${sSuCmd}"
 }
 getSuCmdNoPreserveEnv() {			#set +x
-	if [[ ! "${sSudoPath}" = "false" ]] && { [[ ! "${bSudoGroup}" = "false" ]] || \
-		[[ ! "${bSudoersUser}" = "false" ]] ; }; then							sSuCmd="${sSudoPath}" #"/usr/bin/sudo"
-	elif [[ ! "${sDoasPath}" = "false" ]] && [[ -f /etc/doas.conf ]] && \
-		[[ ! "${bSudoGroup}" = "false" ]]; then									sSuCmd="${sDoasPath}" #"/usr/bin/doas"
-	else																		sSuCmd="su - -c"; fi #"su - -p -c"
-	echo "${sSuCmd}"
+	if [[ ! "${sSudoPath}" = "false" ]] && { [[ ! "${bSudoGrp}" = "false" ]] || [[ ! "${bSudoer}" = "false" ]] ; }; then sSuCmd="${sSudoPath}" #"/usr/bin/sudo"
+	elif [[ ! "${sDoasPath}" = "false" ]] && [[ -f /etc/doas.conf ]] && [[ ! "${bSudoGrp}" = "false" ]]; then sSuCmd="${sDoasPath}" #"/usr/bin/doas"
+	else sSuCmd="su - -c" #"su - -p -c"
+	fi && echo "${sSuCmd}"
 }
 suExecCommand() {
-	sCommand="$*"
+	sCmd="$*"
 	sSuPfx="$(getSuCmd)" #if ! sSuPfx="$(getSuCmd)"; then 					return 01; fi
-	if [[ -n ${sCommand} ]]; then 						if ! checkRootPermissions; then 	eval "${sSuPfx} ${sCommand}"
-														else 							 	eval "${sCommand}"; fi
-	fi #else 												
-	export sSuPfx
-	#fi
+	if [[ -n ${sCmd} ]]; then if ! checkRootPermissions; then eval "${sSuPfx} ${sCmd}"; else eval "${sCmd}"; fi
+	fi && export sSuPfx
 }
 suExecCommandNoPreserveEnv() {
-	sCommand="$*"
+	sCmd="$*"
 	sSuPfxNoEnv="$(getSuCmdNoPreserveEnv)" #if ! sSuPfxNoEnv="$(getSuCmdNoPreserveEnv)"; then 	return 01; fi
-	if [[ -n ${sCommand} ]]; then 						if ! checkRootPermissions; then 	eval "${sSuPfxNoEnv} ${sCommand}"
-														else 							 	eval "${sCommand}"; fi
-	fi #else
-	export sSuPfxNoEnv
-	#fi
+	if [[ -n ${sCmd} ]]; then if ! checkRootPermissions; then eval "${sSuPfxNoEnv} ${sCmd}"; else eval "${sCmd}"; fi
+	fi && export sSuPfxNoEnv
 }
-checkRootPermissions() {
-	if [[ ${UID} = 0 ]] || [[ ${EUID} = 0 ]]; then 		echo "true"
-	else 												echo "false"; return 1; fi
-}
+checkRootPermissions() { if [[ ${UID} = 0 ]] || [[ ${EUID} = 0 ]]; then echo "true"; else echo "false"; return 1; fi; }
 main_SU(){
 	sSudoPath="$(command -v sudo || echo "false")"
 	sDoasPath="$(command -v doas || echo "false")"
-	if [[ ! "${sSudoPath}" = "false" ]]; then 			bSudoGroup="$(checkUserSudoOrWheelGroup)"
-														bSudoersUser="$(checkSudoers)"
-	else 												bSudoGroup="false"; bSudoersUser="false"; fi
-	if [[ ! "${sDoasPath}" = "false" ]]; then 			bDoasUser="$(checkDoasUser)"
-	else 												bDoasUser="false"; fi				#suQuotes="$(getSuQuotes)"
-	export -f suExecCommand 							&& suExecCommand "" 
-	export -f suExecCommandNoPreserveEnv 				&& suExecCommandNoPreserveEnv ""
+	if [[ ! "${sSudoPath}" = "false" ]]; then bSudoGrp="$(checkUserSudoOrWheelGroup)"; bSudoer="$(checkSudoers)"; else bSudoGrp="false"; bSudoer="false"; fi
+	if [[ ! "${sDoasPath}" = "false" ]]; then bDoasUser="$(checkDoasUser)"; else bDoasUser="false"; fi				#suQuotes="$(getSuQuotes)"
 	export -f checkRootPermissions
-	#if [[ -n "${sCmdParameters}" ]]; then
-	#suExecCommand "${sCmdParameters}" || suExecCommandNoPreserveEnv "${sCmdParameters}"
-	#else 												echo ; fi
+	export -f suExecCommand 				&& suExecCommand "" 
+	export -f suExecCommandNoPreserveEnv 	&& suExecCommandNoPreserveEnv "" #if [[ -n "${sCmdParameters}" ]]; then suExecCommand "${sCmdParameters}" || suExecCommandNoPreserveEnv "${sCmdParameters}"; else : ; fi
 }
 main_SU

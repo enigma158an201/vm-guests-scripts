@@ -11,26 +11,26 @@ source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/in
 source "${sLaunchDir}/include/check-virtual-env" || 	source "${sParentDir}/include/check-virtual-env"
 source "${sLaunchDir}/include/git-self-update" || 		source "${sParentDir}/include/git-self-update"
 
-update_solus() {
+upgradeSolus() {
 	#shellcheck disable=SC2154
 	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} eopkg update-repo" && eval "${sSuPfx} eopkg upgrade"
 	elif test ${UID} -eq 0; then 				eopkg update-repo && eopkg upgrade
 	fi
 }
-clean_solus() {
+cleanSolus() {
 	if command -v "${sSuPfx}" &>/dev/null; then eval "${sSuPfx} eopkg remove-orphans" && eval "${sSuPfx} eopkg delete-cache" && eval "${sSuPfx} eopkg clean"
 	elif test ${UID} -eq 0; then 				eopkg remove-orphans && eopkg delete-cache && eopkg clean
 	fi
 }
-main_soluslike_update() {
+mainSolusUpdate() {
 	if ! command -v eopkg &>/dev/null; then 	echo -e "\t--> eopkg command not found, exit now !!!"
 												exit 1
 	else 										echo -e "\t--> eopkg command found, this script will:\n 1. fetch updates\n 2. install updates\n 3. clean pkg archives\n 4. shutdown vm"
 	fi
 	updateScriptsViaGit
-	update_solus && clean_solus #&& poweroff #&& sudo shutdown 0
+	upgradeSolus && cleanSolus #&& poweroff #&& sudo shutdown 0
 	bVirtualized="$(checkVirtEnv)" #; echo "${bVirtualized}" 
 	if [[ ${bVirtualized} -eq 0 ]]; then 		eval "${sSuPfx} poweroff"; fi
 }
 
-main_soluslike_update
+mainSolusUpdate
