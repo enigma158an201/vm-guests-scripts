@@ -15,12 +15,9 @@ else
 fi
 source "${sParentDir}/include/check-user-privileges" #source "${sLaunchDir}/include/check-user-privileges" || source "${sParentDir}/include/check-user-privileges"
 
-checkSysctlEnabled() {
-	if sysctl -a &>/dev/null; then 			echo -e "\t--> sysctl is enabled"; 		return 0
-	else 									echo -e "\t--> sysctl is not enabled"; 	return 1; fi
-}
-getSysctlEnabled() { if command -v sysctl &>/dev/null; then echo -e "\t--> sysctl is enabled"; else echo -e "\t--> sysctl is not enabled"; fi; }
-blacklist-ip6-kernel-modules-sysctl() {
+checkSysctlEnabled() { if sysctl -a &>/dev/null; then echo -e "\t--> sysctl enabled"; return 0; else echo -e "\t--> sysctl not enabled"; return 1; fi; }
+getSysctlEnabled() { if command -v sysctl &>/dev/null; then echo -e "\t--> sysctl enabled"; else echo -e "\t--> sysctl not enabled"; fi; }
+blacklistIp6KernelModulesSysctl() {
 	sIp6BcklDst="/etc/sysctl.d/00-disable-ip6-R13.conf"
 	sIp6BcklSrc="${sLaunchDir}/../src${sIp6BcklDst}"
 	if [[ ! -f "${sIp6BcklDst}" ]]; then
@@ -35,13 +32,12 @@ applySysctl() {
 	if command -v update-initramfs &>/dev/null; then 	eval "${sSuPfx} update-initramfs -u -k all"
 	elif command -v mkinitcpio &>/dev/null; then 		eval "${sSuPfx} mkinitcpio --allpresets"
 	elif command -v dracut &>/dev/null; then 			eval "${sSuPfx} dracut -f --regenerate-all"
-	else
-		echo -e "\t--> No initramfs tool found to update initramfs|initrd"
+	else echo -e "\t--> No initramfs tool found to update initramfs|initrd"
 	fi
 }
-blacklist-ip6-NetworkManager() {
-	#non persistant, but take effect immediately
-	if false; then
+blacklistIp6NetworkManager() {
+	#non persistant method, but take effect immediately
+	if true; then
 		echo -e "\t--> proceed set disable ipv6 to sysctl kernel parameters"
 		suExecCommand "sysctl -w net.ipv6.conf.all.disable_ipv6=1; \
 		sysctl -w net.ipv6.conf.default.disable_ipv6=1; \
@@ -49,11 +45,9 @@ blacklist-ip6-NetworkManager() {
 		sysctl -p"
 	fi
 
-	if command -v nmcli &>/dev/null && { systemctl is-active NetworkManager || systemctl is-enabled NetworkManager; }; then
-		# all=$(LC_ALL=C nmcli dev status | tail -n +2); first=${all%% *}; echo "$first"
+	if command -v nmcli &>/dev/null && { systemctl is-active NetworkManager || systemctl is-enabled NetworkManager; }; then	# all=$(LC_ALL=C nmcli dev status | tail -n +2); first=${all%% *}; echo "$first"
 		echo -e "\t--> proceed set disable ipv6 to network manager" ## $(nmcli connection show | awk '{ print $1 }')
-		# be careful with connection names including spaces
-		suExecCommand "tCn=( $(find /sys/class/net -mindepth 1 ! -iname lo) )
+		suExecCommand "mapfile -t tCn < <(find /sys/class/net -mindepth 1 ! -iname lo)
 		for ConnectionDev in \"\${tCn[@]}\"; do
 			if nmcli con show \"\$ConnectionDev\"; then 
 				sCD=\$(basename \"\$ConnectionDev\") #sCn=\$(nmcli -f NAME,DEVICE connection show | tail -n +2 | grep \"\$sCD\" }')
@@ -66,7 +60,7 @@ blacklist-ip6-NetworkManager() {
 		#if (! grep '^LinkLocalAddressing=ipv4' /etc/systemd/networkd.conf); then	suExecCommand sed -i '/^\[Network\].*/a LinkLocalAddressing=ipv4 ' /etc/systemd/networkd.conf ;fi 
 	#fi
 }
-blacklist-ip6-systemd-networkd() { #to test
+blacklistIp6SystemdNetworkd() { #to test
 	if command -v systemctl &>/dev/null && systemctl is-active systemd-networkd; then
 		echo -e "\t--> proceed set disable ipv6 to systemd-networkd"
 		suExecCommand "sed -i '/^\[Network\].*/a LinkLocalAddressing=ipv4 ' /etc/systemd/networkd.conf"
@@ -74,13 +68,10 @@ blacklist-ip6-systemd-networkd() { #to test
 	fi
 }
 main() {
-	if ! checkSysctlEnabled; then
-		echo -e "\t--> sysctl is not enabled, exiting..."
-		exit 1
-	fi
-	blacklist-ip6-kernel-modules-sysctl
+	if ! checkSysctlEnabled; then echo -e "\t--> sysctl is not enabled, exiting..."; exit 1; fi
+	blacklistIp6KernelModulesSysctl
 	applySysctl
-	blacklist-ip6-NetworkManager
-	#blacklist-ip6-systemd-networkd
+	blacklistIp6NetworkManager
+	#blacklistIp6SystemdNetworkd
 }
 main
